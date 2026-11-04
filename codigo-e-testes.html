@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<!-- ARQUIVO GERADO por tools/gerar.js a partir de src/. Não edite aqui: edite src/ e gere de novo. -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mudou o código: o que testar?</title>
+<style>
+/*
+Direção visual: ferramenta acadêmica de inspeção.
+Superfícies neutras; verde-petróleo para ações.
+Azul-petróleo e laranja identificam as duas cores da BFS (0 e 1),
+NÃO os tipos CODIGO e TESTE (esses são diferenciados por forma e texto).
+*/
+:root {
+  color-scheme: light;
+  --bg: #f7f6f2; --surface: #ffffff; --surface2: #eeece6;
+  --text: #28251d; --muted: #5a5750; --border: #c9c5bc;
+  --accent: #01696f; --accentText: #ffffff;
+  --c0: #116b74; --c1: #a45209; --danger: #aa2442; --ok: #1f6b3a; --neutral: #737b82;
+  --selected: #e0f0ee;
+  --font-body: "Segoe UI", system-ui, sans-serif;
+  --text-xs: clamp(.75rem, .72rem + .1vw, .85rem);
+  --text-sm: clamp(.875rem, .82rem + .2vw, 1rem);
+  --text-base: clamp(1rem, .96rem + .15vw, 1.1rem);
+  --text-lg: clamp(1.125rem, 1rem + .4vw, 1.4rem);
+  --text-xl: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --s1: .25rem; --s2: .5rem; --s3: .75rem; --s4: 1rem; --s6: 1.5rem; --s8: 2rem;
+  --r: .65rem;
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #171614; --surface: #201f1d; --surface2: #2a2926;
+  --text: #efede8; --muted: #c0bdb5; --border: #55524b;
+  --accent: #79c3c5; --accentText: #122426;
+  --danger: #ff8aa0; --ok: #7fd49a; --selected: #233e3d;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: var(--text-base)/1.5 var(--font-body); }
+h1, h2, h3 { line-height: 1.2; }
+h1 { font-size: var(--text-xl); margin: 0 0 var(--s2); }
+h2 { font-size: var(--text-lg); margin-top: 0; }
+h3 { font-size: var(--text-base); }
+p { max-width: 76ch; }
+button, input, textarea { font: inherit; }
+button, .button {
+  min-height: 44px; padding: var(--s2) var(--s4);
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  border-radius: var(--r); cursor: pointer; font-size: var(--text-sm);
+}
+button:hover { background: var(--surface2); }
+button:active { transform: translateY(1px); }
+button:disabled { opacity: .5; cursor: not-allowed; }
+.primary { background: var(--accent); color: var(--accentText); border-color: var(--accent); }
+.primary:hover { filter: brightness(.94); background: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+a { color: var(--accent); }
+header, main, footer { width: min(1280px, 100%); margin: auto; padding: var(--s6); }
+header { padding-bottom: var(--s3); }
+.small { font-size: var(--text-sm); color: var(--muted); }
+.toolbar, .tabs, .controls, .legend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); margin: var(--s4) 0; }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accentText); }
+.grid { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: var(--s6); align-items: start; }
+.panel { padding: var(--s6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: var(--s4); }
+textarea {
+  width: 100%; min-height: 340px; padding: var(--s3); resize: vertical;
+  background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: var(--r);
+  font: .875rem/1.5 Consolas, monospace;
+}
+input[type="file"] { width: 100%; font-size: var(--text-sm); }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); }
+.check { display: flex; gap: var(--s3); align-items: center; min-height: 44px; }
+.status { padding: var(--s3); background: var(--surface2); border-radius: var(--r); overflow-wrap: anywhere; }
+.error { color: var(--danger); font-weight: 600; }
+.ok { color: var(--ok); font-weight: 600; }
+.vazio { padding: var(--s4); border: 2px dashed var(--border); border-radius: var(--r); color: var(--muted); text-align: center; }
+.dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: var(--s1); }
+#graph svg { width: 100%; height: auto; display: block; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s3); }
+.metric { padding: var(--s3); background: var(--surface2); border-radius: var(--r); }
+.metric b { display: block; font-size: var(--text-lg); }
+/* As quatro operações, cada uma com seu resultado */
+.etapas { list-style: none; padding: 0; margin: var(--s4) 0; display: grid; gap: var(--s2); }
+.etapas > li { padding: var(--s3); border: 1px solid var(--border); border-left-width: 6px; border-radius: var(--r); background: var(--surface); }
+.etapas > li[data-estado="ok"] { border-left-color: var(--ok); }
+.etapas > li[data-estado="erro"] { border-left-color: var(--danger); }
+.etapas > li[data-estado="bloqueada"] { border-left-color: var(--danger); background: var(--surface2); }
+.etapas > li[data-estado="inativa"] { border-left-color: var(--neutral); color: var(--muted); }
+.etapas ul { margin: var(--s1) 0 0; padding-left: 1.2rem; }
+table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+th, td { padding: var(--s2); text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; overflow-wrap: anywhere; }
+th { background: var(--surface2); }
+tr.current { background: var(--selected); }
+.tabela-rolavel { overflow-x: auto; max-height: 420px; overflow-y: auto; }
+details { margin: var(--s4) 0; }
+summary { cursor: pointer; min-height: 44px; font-weight: 600; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2); padding: var(--s4); border-radius: var(--r); }
+[hidden] { display: none !important; }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: var(--s4); top: var(--s4); background: var(--surface); padding: var(--s3); }
+
+/* Apresentação */
+.deck { height: min(76vh, 760px); min-height: 470px; position: relative; background: #f0f7fb; border-radius: var(--r); overflow: hidden; color: #172c37; }
+.slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(.96); transition: opacity .5s ease, transform .5s ease; pointer-events: none; overflow: hidden; }
+.slide.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+.slide .content { position: relative; z-index: 2; width: 100%; max-width: 1100px; padding: clamp(1.5rem, 4vw, 4rem); }
+.slide h2 { font-size: clamp(1.5rem, 3.1vw, 2.7rem); margin: 0 0 var(--s6); }
+.slide li { font-size: clamp(1rem, 1.6vw, 1.35rem); margin-bottom: var(--s3); max-width: 76ch; }
+.slide .kicker { letter-spacing: .12em; text-transform: uppercase; color: #35626e; font-size: .85rem; }
+.slide .citation { color: #405660; font-size: .8rem; margin-top: var(--s6); }
+.slide .reveal { opacity: 0; transform: translateY(12px); }
+.slide.active .reveal { animation: reveal .45s ease forwards; }
+.slide.active .reveal:nth-child(2) { animation-delay: .08s; }
+.slide.active .reveal:nth-child(3) { animation-delay: .16s; }
+.slide .split { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s6); align-items: center; }
+.slide svg { width: 100%; height: auto; max-height: 52vh; color: #172c37; }
+.gradient-mesh { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(65px); opacity: .07; animation: float 12s ease-in-out infinite; }
+.blob:first-child { width: 350px; height: 350px; right: -80px; top: -90px; background: #116b74; }
+.blob:last-child { width: 280px; height: 280px; left: -80px; bottom: -80px; background: #a45209; animation-delay: -5s; }
+.slide-dots { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.slide-dots button { min-height: 22px; width: 22px; padding: 0; border-radius: 50%; background: var(--surface2); }
+.slide-dots button.active { background: var(--accent); }
+@keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+@keyframes float { 50% { transform: translateY(-12px); } }
+@media (max-width: 800px) {
+  .grid { grid-template-columns: 1fr; }
+  header, main, footer { padding: var(--s4); }
+  .panel { padding: var(--s4); }
+  .slide .split { grid-template-columns: 1fr; }
+  .slide .split > div:last-child { display: none; }
+  .deck { min-height: 570px; }
+  .metrics { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+@media print {
+  header, .tabs, .toolbar, .controls, .slide-dots, footer { display: none !important; }
+  body { background: white; color: black; }
+  main { max-width: none; padding: 0; }
+  .deck { height: auto; overflow: visible; }
+  .slide { position: relative; opacity: 1; transform: none; min-height: 95vh; break-after: page; overflow: visible; }
+  .slide .reveal { opacity: 1; transform: none; }
+  .gradient-mesh { display: none; }
+}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<header>
+  <div class="toolbar" style="justify-content:space-between">
+    <svg width="44" height="36" viewBox="0 0 44 36" role="img" aria-label="Código e testes">
+      <g stroke="currentColor" stroke-width="2" fill="none">
+        <path d="M8 9L35 9M8 9L35 27M8 27L35 27"/>
+        <rect x="2" y="3" width="12" height="12" rx="2"/>
+        <rect x="2" y="21" width="12" height="12" rx="2"/>
+        <circle cx="35" cy="9" r="6"/>
+        <circle cx="35" cy="27" r="6"/>
+      </g>
+    </svg>
+    <button id="tema" aria-label="Alternar tema claro ou escuro">Claro / escuro</button>
+  </div>
+  <h1>Mudou o código: o que testar?</h1>
+  <p class="small">Grafos bipartidos • BFS com duas cores • consulta de testes relacionados</p>
+  <div class="toolbar" aria-label="Materiais do trabalho">
+    <button id="baixarXlsx" class="primary">Baixar Excel do teste de mesa</button>
+    <button id="baixarTxt1">TXT válido</button>
+    <button id="baixarTxt2">TXT com conflito</button>
+    <button id="baixarSlides">Baixar apresentação</button>
+    <button id="baixarRoteiro">Baixar roteiro de fala</button>
+  </div>
+  <p id="statusDownload" class="small" role="status"></p>
+  <nav class="tabs" aria-label="Áreas do projeto">
+    <button data-aba="app" aria-selected="true">Aplicação</button>
+    <button data-aba="apresentacao" aria-selected="false">Apresentação</button>
+    <button data-aba="guia" aria-selected="false">Guia e verificações</button>
+  </nav>
+</header>
+
+<main id="main">
+<section id="app">
+  <div class="grid">
+    <aside>
+      <section class="panel">
+        <h2>1. Entrada do grafo</h2>
+        <div class="controls">
+          <button id="cenarioValido">Cenário válido</button>
+          <button id="cenarioConflito">Cenário com conflito</button>
+        </div>
+        <label for="arquivo">Importar TXT</label>
+        <input id="arquivo" type="file" accept=".txt,text/plain">
+        <p><label for="fonte">Dados do cenário (TXT)</label></p>
+        <textarea id="fonte" spellcheck="false"></textarea>
+        <div class="controls">
+          <button id="analisar" class="primary">Carregar e analisar</button>
+        </div>
+        <p class="small">Formato: <code>V;ID;CODIGO|TESTE;Rótulo</code>, <code>E;ID_ORIGEM;ID_DESTINO</code>, <code>A;ID_CODIGO_ALTERADO</code>. Linhas vazias e linhas iniciadas por # são ignoradas.</p>
+      </section>
+      <section class="panel">
+        <h2>2. Funções alteradas</h2>
+        <div id="escolhas"></div>
+        <p class="small">A indicação considera somente relações diretas do mapeamento informado.</p>
+      </section>
+    </aside>
+
+    <div>
+      <section class="panel">
+        <h2>3. As quatro operações</h2>
+        <ol class="etapas" id="etapas" aria-live="polite"></ol>
+        <div class="metrics">
+          <div class="metric"><b id="nVertices">—</b>Vértices</div>
+          <div class="metric"><b id="nArestas">—</b>Arestas</div>
+          <div class="metric"><b id="nComponentes">—</b>Componentes iniciados (no passo atual)</div>
+        </div>
+        <div class="legend">
+          <span><i class="dot" style="background:var(--c0)"></i>Cor 0</span>
+          <span><i class="dot" style="background:var(--c1)"></i>Cor 1</span>
+          <span><i class="dot" style="background:var(--neutral)"></i>Não visitado</span>
+          <span>▭ retângulo = CODIGO (função) • ◯ círculo = TESTE</span>
+        </div>
+        <div id="grafo" aria-label="Visualização do grafo"></div>
+      </section>
+
+      <section class="panel">
+        <h2>4. Execução da BFS</h2>
+        <div class="controls">
+          <button id="reiniciar">Reiniciar</button>
+          <button id="anterior">Anterior</button>
+          <button id="proximo">Próximo passo</button>
+          <button id="executar" class="primary">Executar</button>
+        </div>
+        <label for="posicao" class="small">Posição no rastreamento</label>
+        <input id="posicao" type="range" min="0" max="0" value="0">
+        <p id="evento" class="status" aria-live="polite"></p>
+        <p id="fila"></p>
+        <p id="ciclo" class="error"></p>
+        <details>
+          <summary>Rastreamento completo (teste de mesa)</summary>
+          <div class="tabela-rolavel">
+            <table>
+              <thead><tr><th>Passo</th><th>Evento</th><th>u → v</th><th>Fila após o evento</th><th>Exames</th></tr></thead>
+              <tbody id="rastro"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>5. Testes relacionados</h2>
+        <div id="impacto" aria-live="polite"></div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section id="apresentacao" hidden>
+  <div class="deck" id="deck"></div>
+  <div class="controls">
+    <button id="slideAnterior">← Anterior</button>
+    <span id="slideContador"></span>
+    <button id="slideProximo">Próximo →</button>
+    <button id="telaCheia">Tela cheia</button>
+  </div>
+  <div class="slide-dots" id="slidePontos"></div>
+  <p class="small">Setas do teclado navegam entre os slides. O roteiro de fala pode ser baixado no cabeçalho.</p>
+</section>
+
+<section id="guia" hidden>
+  <article class="panel">
+    <h2>Como usar</h2>
+    <ol>
+      <li>Carregue o cenário válido e mostre os dois tipos de vértice (retângulo e círculo).</li>
+      <li>Avance a BFS: observe cores, fila, pais e a visita dos três componentes (inclusive C4, isolado).</li>
+      <li>Selecione C1 e C2: devem ser indicados T1, T2 e T3, com T3 justificado por C1 e C2.</li>
+      <li>Deixe só C1: T2 não é indicado (não há propagação pelo componente).</li>
+      <li>Selecione C4: aparece o aviso “sem testes mapeados”.</li>
+      <li>Carregue o cenário com conflito e avance até o ciclo ímpar; observe o bloqueio da consulta.</li>
+      <li>Edite o TXT para provocar erros e veja linha e motivo de cada um.</li>
+    </ol>
+    <h3>Limitações do modelo</h3>
+    <p>O programa não executa testes, não lê o Git e não descobre relações no código-fonte. A qualidade da indicação depende da completude e da atualização do mapeamento. Uma seleção menor de testes não comprova economia de tempo; não foram feitos experimentos de desempenho.</p>
+    <p>O grafo de negócio já é bipartido por construção quando toda relação liga CODIGO a TESTE. A entrada negativa serve para demonstrar o verificador.</p>
+    <p>O núcleo da BFS usa listas de adjacência e fila com índice de início; sua travessia é O(V+E). A animação grava uma cópia dos estados em cada evento, o que custa O(V·(V+E)) em tempo e memória; acima de 600 (vértices + arestas) a aplicação usa o modo sem rastreamento e desativa a animação (limite técnico nosso, não exigência do TXT nem do professor).</p>
+    <p>A planilha é um registro da execução dos dois cenários; editar a aba Entradas não executa a BFS de novo. A aba Impacto recalcula por fórmulas quando se altera a seleção.</p>
+    <p><strong>Pendente:</strong> confrontar linguagem, duração da apresentação, número de vértices e formato de entrega com o enunciado original do professor, que não estava no projeto.</p>
+    <p>Referência conceitual: <a href="https://algs4.cs.princeton.edu/41graph/BipartiteX.java.html" target="_blank" rel="noopener noreferrer">Princeton — BipartiteX</a>.</p>
+  </article>
+  <section class="panel">
+    <h2>Verificações automatizadas (executadas agora, no navegador)</h2>
+    <p id="resumoVerificacoes" class="status"></p>
+    <button id="rodarVerificacoes">Executar novamente</button>
+    <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>Grupo</th><th>Verificação</th><th>Esperado</th><th>Obtido</th><th>Status</th></tr></thead>
+        <tbody id="verificacoes"></tbody>
+      </table>
+    </div>
+    <p class="small">São as mesmas verificações do <code>node --test</code>. Elas não substituem abrir o XLSX no Excel nem conferir a apresentação na tela.</p>
+  </section>
+</section>
+</main>
+
+<footer class="small">
+Cenários didáticos autorais. Não representam dados coletados de uma aplicação real.
+</footer>
+
+<script>
+globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento didático autoral (não são dados de uma aplicação real).\n# Formato:\n#   V;ID;CODIGO|TESTE;Rótulo      declara um vértice\n#   E;ID_ORIGEM;ID_DESTINO        aresta não direcionada: o teste exercita a função\n#   A;ID_CODIGO_ALTERADO          função alterada (somente CODIGO)\n# Linhas vazias e linhas iniciadas por # são ignoradas.\n\n# Funções\nV;C1;CODIGO;calcularDesconto\nV;C2;CODIGO;validarCupom\nV;C3;CODIGO;calcularFrete\nV;C4;CODIGO;registrarAuditoria\n\n# Casos de teste\nV;T1;TESTE;testeDesconto\nV;T2;TESTE;testeCupom\nV;T3;TESTE;testeCompraComCupom\nV;T4;TESTE;testeFrete\n\n# Relações função-teste\nE;C1;T1\nE;C1;T3\nE;C2;T2\nE;C2;T3\nE;C3;T4\n\n# Funções alteradas\nA;C1\nA;C2\n\n","conflito":"# Cenário de CONFLITO — igual ao válido, mais a aresta C1-C2.\n# ATENÇÃO: C1-C2 liga duas funções. NÃO é uma relação legítima código-teste.\n# Esta entrada é um TESTE NEGATIVO do verificador:\n#   - estruturalmente: surge o triângulo C1-T3-C2-C1 (ciclo ímpar), então o grafo não é bipartido;\n#   - semanticamente: a aresta liga dois vértices do tipo CODIGO.\n# Formato: V;ID;CODIGO|TESTE;Rótulo  |  E;ID_ORIGEM;ID_DESTINO  |  A;ID_CODIGO_ALTERADO\n\n# Funções\nV;C1;CODIGO;calcularDesconto\nV;C2;CODIGO;validarCupom\nV;C3;CODIGO;calcularFrete\nV;C4;CODIGO;registrarAuditoria\n\n# Casos de teste\nV;T1;TESTE;testeDesconto\nV;T2;TESTE;testeCupom\nV;T3;TESTE;testeCompraComCupom\nV;T4;TESTE;testeFrete\n\n# Relações função-teste\nE;C1;T1\nE;C1;T3\nE;C2;T2\nE;C2;T3\nE;C3;T4\n\n# Entrada negativa (não é mapeamento legítimo)\nE;C1;C2\n\n# Funções alteradas\nA;C1\nA;C2\n\n"};
+</script>
+<script>
+/* ===== src/nucleo.js ===== */
+"use strict";
+/*
+ * NÚCLEO DO TRABALHO — sem interface, sem DOM.
+ * Este arquivo roda no navegador (embutido no HTML) e no Node (testes e geração do Excel).
+ *
+ * São QUATRO operações distintas, que não devem ser confundidas:
+ *   1. analisarTxt        -> validação SINTÁTICA do arquivo (campos, IDs, duplicatas, referências).
+ *   2. executarBfs        -> verificação ESTRUTURAL da bipartição (BFS com duas cores).
+ *   3. validarSemantica   -> regra do DOMÍNIO: toda aresta liga CODIGO a TESTE.
+ *   4. consultarImpacto   -> testes diretamente ligados às funções alteradas.
+ */
+(function (exportar) {
+  const TIPOS = ["CODIGO", "TESTE"];
+
+  // Nomes dos eventos da BFS (usados na animação, no teste de mesa e no Excel).
+  const ACAO = {
+    INICIO: "Inicialização", RAIZ: "Raiz", RETIRADA: "Retirada", COLORACAO: "Coloração",
+    ARESTA_OK: "Aresta OK", CONFLITO: "Conflito", FIM_COMPONENTE: "Fim componente",
+    BIPARTIDO: "Bipartido"
+  };
+
+  // Proteção TÉCNICA da animação (não é regra do TXT nem exigência do professor):
+  // acima de V+E eventos o rastreamento guarda cópias demais, então a interface usa o modo sem rastreamento.
+  const LIMITE_RASTREAMENTO = 600;
+
+  /* ------------------------------------------------------------------ */
+  /* 1. VALIDAÇÃO SINTÁTICA                                              */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * Lê o TXT e devolve { ok, erros: [{linha, motivo}], avisos, grafo }.
+   * Todos os erros são coletados (não para no primeiro) e ordenados por linha.
+   * Se houver erro, `grafo` é null: nada é construído a partir de um TXT inválido.
+   * NÃO verifica se a aresta liga tipos diferentes — isso é a etapa 3.
+   */
+  function analisarTxt(texto) {
+    const erros = [];
+    const erro = (linha, motivo) => erros.push({ linha, motivo });
+
+    const vertices = [];            // preserva a ordem de declaração
+    const porId = new Map();        // id -> vértice válido
+    const idsRejeitados = new Set(); // ids de declarações com erro (evita erros em cascata)
+    const pendentes = [];           // E e A só são resolvidos depois: aceitam referência a vértice declarado adiante
+
+    const linhas = String(texto).replace(/^\uFEFF/, "").split(/\r?\n/);
+    linhas.forEach((bruta, i) => {
+      const numero = i + 1;
+      const linha = bruta.trim();
+      if (!linha || linha.startsWith("#")) return;        // linha vazia e comentário
+      const campos = linha.split(";").map(c => c.trim());
+      const registro = campos[0];
+
+      if (registro === "V") {
+        if (campos.length !== 4) {
+          erro(numero, `V exige 4 campos (V;ID;TIPO;Rótulo), mas a linha tem ${campos.length}.`);
+          if (campos[1]) idsRejeitados.add(campos[1]);
+          return;
+        }
+        const [, id, tipo, rotulo] = campos;
+        let valido = true;
+        if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(id)) { erro(numero, `ID inválido "${id}": use letra seguida de letras, números ou _.`); valido = false; }
+        if (!TIPOS.includes(tipo)) { erro(numero, `Tipo inválido "${tipo}": use CODIGO ou TESTE.`); valido = false; }
+        if (!rotulo) { erro(numero, "Rótulo vazio."); valido = false; }
+        if (valido && porId.has(id)) {
+          erro(numero, `Vértice duplicado: ${id} já foi declarado na linha ${porId.get(id).linha}.`);
+          valido = false;
+        }
+        if (valido) {
+          const v = { id, tipo, rotulo, linha: numero };
+          porId.set(id, v);
+          vertices.push(v);
+        } else if (id && !porId.has(id)) {
+          idsRejeitados.add(id);
+        }
+      } else if (registro === "E" || registro === "A") {
+        const esperado = registro === "E" ? 3 : 2;
+        const modelo = registro === "E" ? "E;ID_ORIGEM;ID_DESTINO" : "A;ID_CODIGO_ALTERADO";
+        if (campos.length !== esperado || campos.slice(1).some(c => !c)) {
+          erro(numero, `${registro} exige ${esperado} campos preenchidos (${modelo}).`);
+          return;
+        }
+        pendentes.push({ campos, numero });
+      } else {
+        erro(numero, `Registro desconhecido "${registro}": use V, E ou A.`);
+      }
+    });
+
+    // Segunda passada: todos os vértices já são conhecidos, então a ordem das linhas não importa.
+    const arestas = [];
+    const alteradas = [];
+    const linhaDaAresta = new Map();
+    const linhaDaAlterada = new Map();
+    for (const { campos, numero } of pendentes) {
+      if (campos[0] === "E") {
+        const [, u, v] = campos;
+        const falhas = [u, v].filter(id => !porId.has(id) && !idsRejeitados.has(id));
+        if (falhas.length) { erro(numero, `Aresta referencia vértice inexistente: ${[...new Set(falhas)].join(", ")}.`); continue; }
+        if (idsRejeitados.has(u) || idsRejeitados.has(v)) continue; // causa raiz já reportada na declaração
+        if (u === v) { erro(numero, `Laço não permitido: ${u} ligado a ele mesmo.`); continue; }
+        // A aresta não é direcionada: C1-T1 e T1-C1 são a mesma aresta.
+        const chave = [u, v].sort().join("|");
+        if (linhaDaAresta.has(chave)) {
+          erro(numero, `Aresta duplicada: ${u}–${v} já existe na linha ${linhaDaAresta.get(chave)} (arestas não têm direção).`);
+          continue;
+        }
+        linhaDaAresta.set(chave, numero);
+        arestas.push({ u, v, linha: numero });
+      } else {
+        const id = campos[1];
+        if (idsRejeitados.has(id)) continue;
+        if (!porId.has(id)) { erro(numero, `Função alterada inexistente: ${id}.`); continue; }
+        if (porId.get(id).tipo !== "CODIGO") { erro(numero, `${id} é do tipo TESTE: só funções (CODIGO) podem ser marcadas como alteradas.`); continue; }
+        if (linhaDaAlterada.has(id)) { erro(numero, `Função alterada duplicada: ${id} já foi marcada na linha ${linhaDaAlterada.get(id)}.`); continue; }
+        linhaDaAlterada.set(id, numero);
+        alteradas.push(id);
+      }
+    }
+
+    erros.sort((a, b) => a.linha - b.linha);
+    const avisos = [];
+    if (!erros.length && vertices.length === 0) avisos.push("O TXT não declara nenhum vértice (grafo vazio).");
+    if (erros.length) return { ok: false, erros, avisos, grafo: null };
+
+    // Listas de adjacência: vizinhos na ordem em que as arestas foram declaradas.
+    const adj = new Map(vertices.map(v => [v.id, []]));
+    for (const { u, v } of arestas) { adj.get(u).push(v); adj.get(v).push(u); }
+    return { ok: true, erros: [], avisos, grafo: { vertices, arestas, alteradas, porId, adj } };
+  }
+
+  /** Vale a pena guardar um rastro completo? Ver LIMITE_RASTREAMENTO. */
+  function deveRastrear(grafo) {
+    return grafo.vertices.length + grafo.arestas.length <= LIMITE_RASTREAMENTO;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 2. VERIFICAÇÃO ESTRUTURAL: BFS COM DUAS CORES                       */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * Reconstrói um ciclo ímpar com a árvore de pais.
+   * u e v foram encontrados com a MESMA cor e são vizinhos. Sobe-se de u até a raiz e de v até
+   * encontrar um ancestral comum (menor ancestral comum). O caminho u..ancestral..v mais a aresta v–u
+   * forma um ciclo de comprimento ímpar (distâncias de mesma paridade + 1 aresta).
+   */
+  function cicloImpar(u, v, pai) {
+    const subindoU = [];
+    for (let x = u; x !== null; x = pai[x]) subindoU.push(x);
+    const posicao = new Map(subindoU.map((x, i) => [x, i]));
+    const descendoV = [];
+    let x = v;
+    while (!posicao.has(x)) { descendoV.push(x); x = pai[x]; }
+    // x agora é o menor ancestral comum
+    return subindoU.slice(0, posicao.get(x) + 1).concat(descendoV.reverse(), u);
+  }
+
+  /**
+   * BFS com duas cores em TODOS os componentes (inclusive vértices isolados).
+   * Estado mantido: cor (-1 = não visitado, 0 ou 1), pai, componente de cada vértice,
+   * fila (vetor + índice de início, sem Array.shift) e quantidade de exames de adjacência.
+   *
+   * { rastrear: true }  guarda uma cópia completa dos estados a cada evento (animação e teste de mesa).
+   * { rastrear: false } roda só o núcleo. O núcleo percorre o grafo em O(V+E); gravar uma cópia de
+   *   cor/pai/componente em cada evento custa O(V) por evento, e há O(V+E) eventos: O(V·(V+E)) em
+   *   tempo e memória. Por isso o modo sem rastreamento existe.
+   */
+  function executarBfs(grafo, { rastrear = true } = {}) {
+    const cor = Object.create(null);
+    const pai = Object.create(null);
+    const componente = Object.create(null);   // número do componente de cada vértice (1, 2, ...)
+    const rastro = [];
+    for (const v of grafo.vertices) { cor[v.id] = -1; pai[v.id] = null; componente[v.id] = 0; }
+
+    let componentes = 0;
+    let exames = 0;                           // quantas vezes um vizinho foi examinado
+    let fila = [];
+    let inicio = 0;                           // índice de início: "retirar" é só avançar este número
+
+    // Registra o estado APÓS o evento. Sem rastreamento, não copia nada.
+    function registrar(acao, u = "", v = "", nota = "") {
+      if (!rastrear) return;
+      rastro.push({
+        passo: rastro.length, acao, u, v, nota,
+        fila: fila.slice(inicio),
+        cor: { ...cor }, pai: { ...pai }, componente: { ...componente },
+        componentes, exames
+      });
+    }
+
+    registrar(ACAO.INICIO, "", "", "Todos os vértices começam com cor -1 (não visitado).");
+
+    // Laço externo: cada vértice ainda não visitado inicia um novo componente.
+    // É isso que garante a visita de componentes desconectados e de vértices isolados.
+    for (const raiz of grafo.vertices.map(v => v.id)) {
+      if (cor[raiz] !== -1) continue;
+      componentes++;
+      fila = [];
+      inicio = 0;
+      cor[raiz] = 0;
+      componente[raiz] = componentes;
+      fila.push(raiz);
+      registrar(ACAO.RAIZ, raiz, "", `Início do componente ${componentes}; a raiz recebe cor 0.`);
+
+      while (inicio < fila.length) {
+        const u = fila[inicio++];
+        registrar(ACAO.RETIRADA, u, "", "Retira da fila para examinar seus vizinhos.");
+
+        for (const v of grafo.adj.get(u)) {
+          exames++;
+          if (cor[v] === -1) {
+            // vizinho novo: cor oposta, pai registrado, entra na fila
+            cor[v] = 1 - cor[u];
+            pai[v] = u;
+            componente[v] = componentes;
+            fila.push(v);
+            registrar(ACAO.COLORACAO, u, v, "Vizinho novo recebe a cor oposta e entra na fila.");
+          } else if (cor[v] === cor[u]) {
+            // DECISÃO: vizinhos com a mesma cor => não é bipartido. Reconstrói o ciclo e encerra.
+            const ciclo = cicloImpar(u, v, pai);
+            registrar(ACAO.CONFLITO, u, v, "Extremos da aresta têm a mesma cor: existe ciclo ímpar.");
+            return { bipartido: false, cor, pai, componente, ciclo, rastro, componentes, exames, rastreado: rastrear };
+          } else {
+            registrar(ACAO.ARESTA_OK, u, v, "Os extremos têm cores diferentes.");
+          }
+        }
+      }
+      registrar(ACAO.FIM_COMPONENTE, raiz, "", `Fila esgotada: componente ${componentes} verificado.`);
+    }
+
+    registrar(ACAO.BIPARTIDO, "", "", "Todos os componentes foram verificados sem conflito.");
+    return { bipartido: true, cor, pai, componente, ciclo: [], rastro, componentes, exames, rastreado: rastrear };
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 3. VALIDAÇÃO SEMÂNTICA                                              */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * Regra do domínio: cada aresta deve ligar CODIGO a TESTE.
+   * É independente da BFS: um grafo pode ser bipartido e mesmo assim violar a regra
+   * (ex.: C1–C2 e C2–T1 é um caminho, bipartido, mas C1–C2 liga duas funções).
+   */
+  function validarSemantica(grafo) {
+    const violacoes = grafo.arestas
+      .filter(e => grafo.porId.get(e.u).tipo === grafo.porId.get(e.v).tipo)
+      .map(e => ({ u: e.u, v: e.v, tipo: grafo.porId.get(e.u).tipo, linha: e.linha }));
+    return { valida: violacoes.length === 0, violacoes };
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 4. CONSULTA DE IMPACTO                                              */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * Para as funções alteradas, devolve a UNIÃO dos vizinhos diretos do tipo TESTE.
+   * Não percorre o componente: se C1 mudou, T3 entra, mas C2 (que também usa T3) não "contamina" T2.
+   * `itens` diz, para cada teste, quais funções selecionadas o justificam.
+   * Função sem vizinhos entra em `semTestes` — isso NÃO significa "não precisa testar".
+   *
+   * Bloqueia (bloqueada: true) se a estrutura não for bipartida ou a semântica for inválida.
+   */
+  function consultarImpacto(grafo, selecionadas, { estrutura, semantica } = {}) {
+    estrutura = estrutura || executarBfs(grafo, { rastrear: false });
+    semantica = semantica || validarSemantica(grafo);
+
+    const motivos = [];
+    if (!estrutura.bipartido) motivos.push("a estrutura não é bipartida (etapa 2)");
+    if (!semantica.valida) motivos.push("há relações entre vértices do mesmo tipo (etapa 3)");
+
+    const escolhidas = [...new Set(selecionadas)];
+    const invalidas = escolhidas.filter(id => !grafo.porId.has(id) || grafo.porId.get(id).tipo !== "CODIGO");
+    if (invalidas.length) motivos.push(`a seleção contém vértices que não são funções existentes: ${invalidas.join(", ")}`);
+    if (motivos.length) return { bloqueada: true, motivos };
+
+    const indice = new Map(grafo.vertices.map((v, i) => [v.id, i]));
+    const ordem = (a, b) => indice.get(a) - indice.get(b);
+    const justificativa = new Map();           // teste -> funções selecionadas que o justificam
+    const semTestes = [];
+    for (const f of escolhidas.sort(ordem)) {
+      const vizinhos = grafo.adj.get(f);       // apenas vizinhos diretos, sem busca no componente
+      if (!vizinhos.length) semTestes.push(f);
+      for (const t of vizinhos) {
+        if (!justificativa.has(t)) justificativa.set(t, []);
+        justificativa.get(t).push(f);          // o Map garante que cada teste aparece uma só vez
+      }
+    }
+    const testes = [...justificativa.keys()].sort(ordem);
+    return {
+      bloqueada: false,
+      selecaoVazia: escolhidas.length === 0,
+      testes,
+      itens: testes.map(id => ({ id, rotulo: grafo.porId.get(id).rotulo, funcoes: justificativa.get(id) })),
+      semTestes,
+      totalTestes: grafo.vertices.filter(v => v.tipo === "TESTE").length
+    };
+  }
+
+  exportar({
+    ACAO, TIPOS, LIMITE_RASTREAMENTO,
+    analisarTxt, deveRastrear, cicloImpar, executarBfs, validarSemantica, consultarImpacto
+  });
+})(typeof module === "object" ? o => { module.exports = o; } : o => { globalThis.Nucleo = o; });
+
+
+</script>
+<script>
+/* ===== src/grafo-svg.js ===== */
+"use strict";
+/*
+ * Desenho do grafo em SVG (texto puro, sem DOM), usado pela aplicação e pelos slides.
+ *
+ * Duas informações visuais INDEPENDENTES:
+ *  - TIPO do vértice: retângulo = CODIGO (coluna FUNÇÕES), círculo = TESTE (coluna TESTES).
+ *    Também aparece em texto (título do vértice e cabeçalho das colunas), não só pela forma.
+ *  - COR da BFS: preenchimento azul-petróleo (cor 0), laranja (cor 1) ou cinza (não visitado),
+ *    com o número escrito dentro do vértice, para não depender só da cor.
+ */
+(function (exportar) {
+  const esc = valor => String(valor).replace(/[&<>"']/g,
+    ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
+
+  const COR_BFS = { "-1": "#737b82", "0": "#116b74", "1": "#a45209" };
+  const VERMELHO = "#aa2442";
+
+  /**
+   * @param grafo     grafo da análise
+   * @param estado    { cor, u, v } do passo atual da BFS (ou null)
+   * @param alteradas Set com as funções selecionadas
+   * @param ciclo     vértices do ciclo ímpar a destacar (ou [])
+   * Todo texto vindo do TXT passa por esc(): rótulos nunca são interpretados como HTML.
+   */
+  function desenharGrafo(grafo, estado = null, alteradas = new Set(), ciclo = []) {
+    const codigos = grafo.vertices.filter(n => n.tipo === "CODIGO");
+    const testes = grafo.vertices.filter(n => n.tipo === "TESTE");
+    const maior = Math.max(codigos.length, testes.length);
+    const passo = maior > 12 ? 52 : 74;
+    const altura = Math.max(320, maior * passo + 110);
+    const X_CODIGO = 190, X_TESTE = 750;
+
+    const pos = new Map();
+    for (const [lista, x] of [[codigos, X_CODIGO], [testes, X_TESTE]])
+      lista.forEach((n, i) => pos.set(n.id, { x, y: 90 + i * passo }));
+
+    const par = (a, b) => [a, b].sort().join("|");
+    const arestasCiclo = new Set();
+    for (let i = 1; i < ciclo.length; i++) arestasCiclo.add(par(ciclo[i - 1], ciclo[i]));
+    const noCiclo = new Set(ciclo);
+
+    let arestas = "";
+    for (const e of grafo.arestas) {
+      const a = pos.get(e.u), b = pos.get(e.v);
+      const mesmoTipo = grafo.porId.get(e.u).tipo === grafo.porId.get(e.v).tipo; // violação semântica
+      const emCiclo = arestasCiclo.has(par(e.u, e.v));
+      const atual = estado && ((estado.u === e.u && estado.v === e.v) || (estado.u === e.v && estado.v === e.u));
+      const relacionada = alteradas.has(e.u) || alteradas.has(e.v);
+      const cor = emCiclo || mesmoTipo ? VERMELHO : atual ? "#a45209" : relacionada ? "#6a4c93" : "#a4acb1";
+      const largura = emCiclo || atual ? 5 : relacionada ? 3 : 2;
+      // Aresta entre vértices da mesma coluna é curva, abrindo para FORA da coluna.
+      const lado = a.x === X_CODIGO ? -1 : 1;
+      const caminho = a.x === b.x
+        ? `M ${a.x} ${a.y} Q ${a.x + lado * 150} ${(a.y + b.y) / 2} ${b.x} ${b.y}`
+        : `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
+      const tracejado = mesmoTipo && !emCiclo ? ' stroke-dasharray="8 5"' : "";
+      arestas += `<path d="${caminho}" fill="none" stroke="${cor}" stroke-width="${largura}"${tracejado}>` +
+        `<title>${esc(e.u)} — ${esc(e.v)}${mesmoTipo ? " (liga o mesmo tipo: viola a regra CODIGO–TESTE)" : ""}</title></path>`;
+    }
+
+    let nos = "";
+    for (const n of grafo.vertices) {
+      const { x, y } = pos.get(n.id);
+      const c = estado && estado.cor ? estado.cor[n.id] : -1;
+      const fill = COR_BFS[c];
+      const rotuloCor = c === -1 ? "cor —" : `cor ${c}`;
+      const alterada = alteradas.has(n.id);
+      const atual = estado && (estado.u === n.id || estado.v === n.id);
+      const contorno = noCiclo.has(n.id) ? VERMELHO : alterada ? "#172c37" : atual ? "#e0a100" : "#ffffff";
+      const espessura = noCiclo.has(n.id) || alterada || atual ? 4 : 2;
+      const forma = n.tipo === "CODIGO"
+        ? `<rect x="${x - 57}" y="${y - 25}" width="114" height="50" rx="7"/>`
+        : `<circle cx="${x}" cy="${y}" r="28"/>`;
+      const rotulo = n.rotulo.length > 27 ? n.rotulo.slice(0, 24) + "…" : n.rotulo;
+      nos += `<g><title>${esc(n.id)} — ${esc(n.rotulo)}; tipo ${esc(n.tipo)}; ${rotuloCor}${alterada ? "; função alterada" : ""}</title>` +
+        `<g fill="${fill}" stroke="${contorno}" stroke-width="${espessura}">${forma}</g>` +
+        `<text x="${x}" y="${y + 1}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="17" font-weight="700">${esc(n.id)}</text>` +
+        `<text x="${x}" y="${y + 16}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="11">${rotuloCor}</text>` +
+        (alterada ? `<text x="${x + (n.tipo === "CODIGO" ? 57 : 28)}" y="${y - (n.tipo === "CODIGO" ? 27 : 24)}" text-anchor="end" fill="currentColor" font-family="sans-serif" font-size="12" font-weight="700">ALTERADA</text>` : "") +
+        `<text x="${x}" y="${y + 45}" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="13">${esc(rotulo)}</text></g>`;
+    }
+
+    const vazio = grafo.vertices.length === 0
+      ? `<text x="470" y="170" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="18">Grafo vazio: nenhum vértice declarado.</text>` : "";
+
+    return `<svg viewBox="0 0 940 ${altura}" role="img" aria-label="Grafo de funções (retângulos) e testes (círculos)">` +
+      `<text x="${X_CODIGO}" y="30" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="18" font-weight="700">FUNÇÕES (CODIGO) ▭</text>` +
+      `<text x="${X_TESTE}" y="30" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="18" font-weight="700">TESTES (TESTE) ◯</text>` +
+      `${vazio}${arestas}${nos}</svg>`;
+  }
+
+  exportar({ esc, desenharGrafo });
+})(typeof module === "object" ? o => { module.exports = o; } : o => { globalThis.GrafoSvg = o; });
+
+
+</script>
+<script>
+/* ===== src/verificacoes.js ===== */
+"use strict";
+/*
+ * Lista ÚNICA de verificações automatizadas.
+ * É usada em três lugares: pelo `node --test` (tests/verificacoes.test.js), pela aba
+ * "Guia e verificações" do HTML e pela aba Validacoes do Excel — assim não há três
+ * listas que possam divergir.
+ */
+(function (exportar) {
+  const N = typeof require === "function" ? require("./nucleo.js") : globalThis.Nucleo;
+  const { analisarTxt, executarBfs, validarSemantica, consultarImpacto } = N;
+
+  /** Monta o grafo de um texto que DEVE ser sintaticamente válido (falha alto se não for). */
+  function grafoDe(texto) {
+    const r = analisarTxt(texto);
+    if (!r.ok) throw new Error("TXT de teste inválido: " + r.erros.map(e => `L${e.linha} ${e.motivo}`).join(" | "));
+    return r.grafo;
+  }
+  const erros = texto => analisarTxt(texto).erros;
+  const unicoErro = (texto, trecho) => {
+    const e = erros(texto);
+    return e.length === 1 && e[0].motivo.includes(trecho) ? `1 erro: ${trecho}` : JSON.stringify(e);
+  };
+
+  /** Cada verificação: { grupo, nome, esperado, obter } — `obter` devolve o valor a comparar. */
+  function criarVerificacoes({ valido, conflito }) {
+    const g = grafoDe(valido);
+    const b = executarBfs(g, { rastrear: false });
+    const gc = grafoDe(conflito);
+    const bc = executarBfs(gc, { rastrear: false });
+    const impacto = sel => consultarImpacto(g, sel, { estrutura: b });
+    const ids = r => r.testes.join(",");
+    const v = (grupo, nome, esperado, obter) => ({ grupo, nome, esperado, obter });
+
+    // Cabeçalho comum para os casos de erro: dois vértices e uma aresta válida.
+    const base = "V;C1;CODIGO;f1\nV;T1;TESTE;t1\nE;C1;T1\n";
+    // Caminho C1-C2-T1: é bipartido, mas C1-C2 liga duas funções.
+    const semanticaRuim = grafoDe("V;C1;CODIGO;f1\nV;C2;CODIGO;f2\nV;T1;TESTE;t1\nE;C1;C2\nE;C2;T1");
+
+    return [
+      // ---- Os 15 testes obrigatórios ----
+      v("Obrigatório", "Grafo válido: TXT aceito, 8 vértices, 5 arestas", "true,8,5",
+        () => `${analisarTxt(valido).ok},${g.vertices.length},${g.arestas.length}`),
+      v("Obrigatório", "Grafo válido: bipartido e semântica válida", "true,true",
+        () => `${b.bipartido},${validarSemantica(g).valida}`),
+      v("Obrigatório", "Ciclo ímpar: conflito não é bipartido", "false", () => bc.bipartido),
+      v("Obrigatório", "Ciclo ímpar: triângulo com C1, C2 e T3 (3 arestas, fechado)", "3,true",
+        () => `${bc.ciclo.length - 1},${bc.ciclo[0] === bc.ciclo.at(-1) &&
+          ["C1", "C2", "T3"].every(x => bc.ciclo.includes(x)) &&
+          bc.ciclo.slice(1).every((x, i) => gc.adj.get(bc.ciclo[i]).includes(x))}`),
+      v("Obrigatório", "Componentes desconectados: três no cenário válido", "3", () => b.componentes),
+      v("Obrigatório", "Componentes desconectados: {C1,C2,T1,T2,T3}, {C3,T4}, {C4} em ordem", "1,1,1,1,1|2,2|3",
+        () => {
+          const grupos = [[], [], []];
+          g.vertices.forEach(x => grupos[b.componente[x.id] - 1].push(b.componente[x.id]));
+          return grupos.map(x => x.join(",")).join("|");
+        }),
+      v("Obrigatório", "Vértice isolado: C4 visitado, cor 0, sem pai, em componente próprio", "0,null,3",
+        () => `${b.cor.C4},${b.pai.C4},${b.componente.C4}`),
+      v("Obrigatório", "Vértice isolado: C4 gera aviso 'sem testes mapeados'", "C4",
+        () => impacto(["C4"]).semTestes.join(",")),
+      v("Obrigatório", "Teste compartilhado: T3 aparece uma vez, justificado por C1 e C2", "1,C1+C2",
+        () => {
+          const r = impacto(["C1", "C2"]);
+          return `${r.testes.filter(t => t === "T3").length},${r.itens.find(i => i.id === "T3").funcoes.join("+")}`;
+        }),
+      v("Obrigatório", "Sem propagação transitiva: só C1 indica T1,T3 (T2 fica de fora)", "T1,T3", () => ids(impacto(["C1"]))),
+      v("Obrigatório", "Consulta C1 e C2: T1,T2,T3", "T1,T2,T3", () => ids(impacto(["C1", "C2"]))),
+      v("Obrigatório", "Seleção vazia: nenhum teste, sem bloqueio, marcada como vazia", "0,false,true",
+        () => { const r = impacto([]); return `${r.testes.length},${r.bloqueada},${r.selecaoVazia}`; }),
+      v("Obrigatório", "Tipo inválido em grafo bipartido: BFS aceita (estrutura OK)", "true",
+        () => executarBfs(semanticaRuim, { rastrear: false }).bipartido),
+      v("Obrigatório", "Tipo inválido em grafo bipartido: semântica rejeita C1–C2", "false,C1-C2",
+        () => { const s = validarSemantica(semanticaRuim); return `${s.valida},${s.violacoes.map(x => x.u + "-" + x.v)}`; }),
+      v("Obrigatório", "Tipo inválido em grafo bipartido: consulta bloqueada", "true",
+        () => consultarImpacto(semanticaRuim, ["C1"]).bloqueada),
+      v("Obrigatório", "Conflito: consulta bloqueada pela estrutura e pela semântica", "true,2",
+        () => { const r = consultarImpacto(gc, ["C1"]); return `${r.bloqueada},${r.motivos.length}`; }),
+      v("Obrigatório", "Vértice duplicado rejeitado (informa linha)", "1 erro: Vértice duplicado",
+        () => unicoErro(base + "V;C1;CODIGO;outra", "Vértice duplicado")),
+      v("Obrigatório", "Aresta duplicada rejeitada", "1 erro: Aresta duplicada",
+        () => unicoErro(base + "E;C1;T1", "Aresta duplicada")),
+      v("Obrigatório", "Aresta duplicada INVERTIDA rejeitada", "1 erro: Aresta duplicada",
+        () => unicoErro(base + "E;T1;C1", "Aresta duplicada")),
+      v("Obrigatório", "Referência inexistente rejeitada", "1 erro: inexistente",
+        () => unicoErro(base + "E;C1;T99", "inexistente")),
+      v("Obrigatório", "Laço rejeitado", "1 erro: Laço", () => unicoErro(base + "E;C1;C1", "Laço")),
+      v("Obrigatório", "Função alterada inexistente rejeitada", "1 erro: Função alterada inexistente",
+        () => unicoErro(base + "A;C99", "Função alterada inexistente")),
+      v("Obrigatório", "Marcar TESTE como alterado rejeitado", "1 erro: TESTE",
+        () => unicoErro(base + "A;T1", "TESTE")),
+      v("Obrigatório", "Grafo vazio: aceito, bipartido, 0 componentes, com aviso", "true,true,0,1",
+        () => {
+          const r = analisarTxt("# só comentário\n\n");
+          const bf = executarBfs(r.grafo);
+          return `${r.ok},${bf.bipartido},${bf.componentes},${r.avisos.length}`;
+        }),
+
+      // ---- Outras garantias do núcleo ----
+      v("Núcleo", "Exames de adjacência: 2 por aresta no cenário válido", "10", () => b.exames),
+      v("Núcleo", "Cores independentes dos tipos: TESTE declarado primeiro recebe cor 0", "0,1",
+        () => { const x = grafoDe("V;T1;TESTE;t\nV;C1;CODIGO;f\nE;C1;T1"); const r = executarBfs(x, { rastrear: false }); return `${r.cor.T1},${r.cor.C1}`; }),
+      v("Núcleo", "Modo sem rastreamento dá o mesmo resultado e não guarda rastro", "true,0",
+        () => {
+          const a = executarBfs(g, { rastrear: true }), c = executarBfs(g, { rastrear: false });
+          return `${JSON.stringify([a.cor, a.pai, a.componente, a.exames]) === JSON.stringify([c.cor, c.pai, c.componente, c.exames])},${c.rastro.length}`;
+        }),
+      v("Núcleo", "Núcleo da BFS não usa Array.shift", "false", () => /\.shift\s*\(/.test(executarBfs.toString())),
+      v("Núcleo", "Ciclo ímpar de 5 arestas em um pentágono", "5",
+        () => { const p = grafoDe("V;A1;CODIGO;a\nV;A2;CODIGO;b\nV;A3;CODIGO;c\nV;A4;CODIGO;d\nV;A5;CODIGO;e\nE;A1;A2\nE;A2;A3\nE;A3;A4\nE;A4;A5\nE;A5;A1"); return executarBfs(p).ciclo.length - 1; }),
+      v("Núcleo", "Conflito em componente posterior: o primeiro componente não impede a detecção", "false,2",
+        () => { const x = grafoDe("V;C1;CODIGO;f\nV;T1;TESTE;t\nV;A;CODIGO;a\nV;B;CODIGO;b\nV;D;CODIGO;d\nE;C1;T1\nE;A;B\nE;B;D\nE;D;A"); const r = executarBfs(x); return `${r.bipartido},${r.componentes}`; }),
+      v("Núcleo", "Ordem dos vértices e das arestas preservada", "C1,C2,C3,C4,T1,T2,T3,T4|C1-T1,C1-T3,C2-T2,C2-T3,C3-T4",
+        () => `${g.vertices.map(x => x.id)}|${g.arestas.map(e => e.u + "-" + e.v)}`),
+      v("Núcleo", "Funções alteradas lidas do TXT: C1,C2", "C1,C2", () => g.alteradas.join(",")),
+      v("Núcleo", "Não insere arestas automáticas entre vértices do mesmo tipo", "5", () => g.arestas.length),
+      v("Núcleo", "Referências a vértices declarados depois são aceitas", "true",
+        () => analisarTxt("E;C1;T1\nA;C1\nV;C1;CODIGO;f\nV;T1;TESTE;t").ok),
+      v("Núcleo", "Comentários, linhas vazias, BOM e CRLF aceitos", "true,2",
+        () => { const r = analisarTxt("\uFEFF# c\r\n\r\nV;C1;CODIGO;f\r\nV;T1;TESTE;t\r\n"); return `${r.ok},${r.grafo.vertices.length}`; }),
+      v("Núcleo", "Vários erros são coletados, ordenados por linha, com motivo", "3|2,3,5",
+        () => { const e = erros("V;C1;CODIGO;f\nV;C1;CODIGO;g\nE;C1;C1\nV;T1;TESTE;t\nE;C1;ZZ"); return `${e.length}|${e.map(x => x.linha)}`; }),
+      v("Núcleo", "Erros de campos: V com 3 campos, tipo inválido, ID inválido, registro desconhecido", "4",
+        () => erros("V;C1;CODIGO\nV;C2;ALGO;x\nV;9x;CODIGO;x\nX;1").length),
+      v("Núcleo", "TXT inválido não gera grafo", "null", () => String(analisarTxt("E;A;B").grafo)),
+      v("Núcleo", "Rótulo com HTML é aceito como texto (a interface escapa)", "<b>x</b>",
+        () => grafoDe("V;C1;CODIGO;<b>x</b>").vertices[0].rotulo),
+      v("Núcleo", "Grafo grande sem rastreamento: caminho com 50000 vértices é bipartido", "true,1,99998",
+        () => {
+          const n = 50000, linhas = [];
+          for (let i = 0; i < n; i++) linhas.push(`V;${i % 2 ? "T" : "C"}${i};${i % 2 ? "TESTE" : "CODIGO"};x`);
+          for (let i = 0; i < n - 1; i++) linhas.push(`E;${i % 2 ? "T" : "C"}${i};${(i + 1) % 2 ? "T" : "C"}${i + 1}`);
+          const r = executarBfs(grafoDe(linhas.join("\n")), { rastrear: false });
+          return `${r.bipartido},${r.componentes},${r.exames}`;
+        }),
+      v("Núcleo", "Consulta bloqueia seleção de TESTE ou de função inexistente", "true,true",
+        () => `${consultarImpacto(g, ["T1"], { estrutura: b }).bloqueada},${consultarImpacto(g, ["X9"], { estrutura: b }).bloqueada}`)
+    ];
+  }
+
+  /** Executa todas e devolve linhas [grupo, nome, esperado, obtido, status]. */
+  function executarVerificacoes(cenarios) {
+    return criarVerificacoes(cenarios).map(c => {
+      let obtido;
+      try { obtido = String(c.obter()); } catch (e) { obtido = "ERRO: " + e.message; }
+      return [c.grupo, c.nome, c.esperado, obtido, obtido === c.esperado ? "APROVADO" : "FALHOU"];
+    });
+  }
+
+  exportar({ criarVerificacoes, executarVerificacoes });
+})(typeof module === "object" ? o => { module.exports = o; } : o => { globalThis.Verificacoes = o; });
+
+</script>
+<script>
+/* ===== src/xlsx.js ===== */
+"use strict";
+/*
+ * Escritor de XLSX real (Open XML dentro de um ZIP sem compressão), sem bibliotecas.
+ * Roda no navegador (botão de download) e no Node (geração do arquivo entregue).
+ * Cada aba: { name, rows, widths, height, tables, cabecalhos, entradas, colorRange, validacoes }.
+ * Células: número, texto, { f, v, estilo } (fórmula com valor em cache) ou { v, estilo }.
+ */
+(function (exportar) {
+  const { esc } = typeof require === "function" ? require("./grafo-svg.js") : globalThis.GrafoSvg;
+  const utf8 = new TextEncoder();
+
+  // Estilos (índices de cellXfs, ver styles.xml abaixo)
+  const ESTILO = { NORMAL: 0, CABECALHO: 1, FORMULA: 2, PERCENTUAL: 3, ENTRADA: 4, NEGRITO: 5 };
+
+  /* ---------- ZIP (método 0 = armazenado) ---------- */
+  const tabelaCrc = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    tabelaCrc[n] = c >>> 0;
+  }
+  function crc32(bytes) {
+    let c = 0xffffffff;
+    for (const x of bytes) c = tabelaCrc[(c ^ x) & 255] ^ (c >>> 8);
+    return (c ^ 0xffffffff) >>> 0;
+  }
+  function zip(arquivos) {
+    const partes = [], central = [];
+    let deslocamento = 0, tamanhoCentral = 0;
+    for (const [nome, valor] of arquivos) {
+      const nomeBytes = utf8.encode(nome);
+      const dados = typeof valor === "string" ? utf8.encode(valor) : valor;
+      const crc = crc32(dados);
+      const local = new Uint8Array(30 + nomeBytes.length);
+      const lv = new DataView(local.buffer);
+      lv.setUint32(0, 0x04034b50, true);
+      lv.setUint16(4, 20, true);
+      lv.setUint16(6, 0x0800, true);              // bit 11: nome em UTF-8
+      lv.setUint16(12, 33, true);                 // data 01/01/1980
+      lv.setUint32(14, crc, true);
+      lv.setUint32(18, dados.length, true);
+      lv.setUint32(22, dados.length, true);
+      lv.setUint16(26, nomeBytes.length, true);
+      local.set(nomeBytes, 30);
+
+      const cd = new Uint8Array(46 + nomeBytes.length);
+      const cv = new DataView(cd.buffer);
+      cv.setUint32(0, 0x02014b50, true);
+      cv.setUint16(4, 20, true);
+      cv.setUint16(6, 20, true);
+      cv.setUint16(8, 0x0800, true);
+      cv.setUint16(14, 33, true);
+      cv.setUint32(16, crc, true);
+      cv.setUint32(20, dados.length, true);
+      cv.setUint32(24, dados.length, true);
+      cv.setUint16(28, nomeBytes.length, true);
+      cv.setUint32(42, deslocamento, true);
+      cd.set(nomeBytes, 46);
+
+      partes.push(local, dados);
+      central.push(cd);
+      deslocamento += local.length + dados.length;
+      tamanhoCentral += cd.length;
+    }
+    const fim = new Uint8Array(22), ev = new DataView(fim.buffer);
+    ev.setUint32(0, 0x06054b50, true);
+    ev.setUint16(8, arquivos.length, true);
+    ev.setUint16(10, arquivos.length, true);
+    ev.setUint32(12, tamanhoCentral, true);
+    ev.setUint32(16, deslocamento, true);
+    const todas = [...partes, ...central, fim];
+    const total = todas.reduce((s, p) => s + p.length, 0);
+    const saida = new Uint8Array(total);
+    let o = 0;
+    for (const p of todas) { saida.set(p, o); o += p.length; }
+    return saida;
+  }
+
+  /** Índice de coluna (0 = A) -> letras. */
+  function colName(indice) {
+    let out = "";
+    for (let n = indice + 1; n > 0; n = Math.floor((n - 1) / 26))
+      out = String.fromCharCode(65 + (n - 1) % 26) + out;
+    return out;
+  }
+
+  const formula = (f, v, estilo = ESTILO.FORMULA) => ({ f, v, estilo });
+  const estilizada = (v, estilo) => ({ v, estilo });
+
+  /* ---------- XLSX ---------- */
+  function gerarXlsx(abas) {
+    const ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+    const relns = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+    const pkgns = "http://schemas.openxmlformats.org/package/2006/relationships";
+    const decl = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    const arquivos = [], overrides = [];
+    let numeroTabela = 0;
+
+    abas.forEach((aba, si) => {
+      const largura = Math.max(...aba.rows.map(r => r.length));
+      const cabecalhos = aba.cabecalhos || [1];
+      const linhasXml = aba.rows.map((linha, ri) => {
+        const corpo = linha.map((valor, ci) => {
+          if (valor === undefined || valor === null || valor === "") return "";
+          const ref = colName(ci) + (ri + 1);
+          let estilo = cabecalhos.includes(ri + 1) ? ESTILO.CABECALHO : ESTILO.NORMAL;
+          if ((aba.entradas || []).includes(ref)) estilo = ESTILO.ENTRADA;
+          if (valor && typeof valor === "object") {
+            estilo = valor.estilo ?? estilo;
+            if ("f" in valor) {
+              const tipo = typeof valor.v === "string" ? ' t="str"' : "";
+              return `<c r="${ref}" s="${estilo}"${tipo}><f>${esc(valor.f)}</f><v>${esc(valor.v)}</v></c>`;
+            }
+            valor = valor.v;
+          }
+          if (typeof valor === "number") return `<c r="${ref}" s="${estilo}"><v>${valor}</v></c>`;
+          return `<c r="${ref}" s="${estilo}" t="inlineStr"><is><t xml:space="preserve">${esc(valor)}</t></is></c>`;
+        }).join("");
+        const altura = (aba.alturas || {})[ri + 1] ?? (cabecalhos.includes(ri + 1) ? 30 : (aba.height || 30));
+        return `<row r="${ri + 1}" ht="${altura}" customHeight="1">${corpo}</row>`;
+      }).join("");
+
+      const colunas = Array.from({ length: largura }, (_, i) =>
+        `<col min="${i + 1}" max="${i + 1}" width="${(aba.widths || [])[i] || 18}" customWidth="1"/>`).join("");
+
+      // Cada tabela do Excel dá filtro e estilo de listras. O nome das colunas é a linha de cabeçalho.
+      const tabelas = aba.tables || [{ startRow: 1, endRow: aba.rows.length, startCol: 1, endCol: largura }];
+      const partesTabela = [], relacoes = [];
+      for (const t of tabelas) {
+        if (t.endRow <= t.startRow) continue;
+        const ti = ++numeroTabela;
+        const ref = `${colName(t.startCol - 1)}${t.startRow}:${colName(t.endCol - 1)}${t.endRow}`;
+        const nomes = aba.rows[t.startRow - 1].slice(t.startCol - 1, t.endCol);
+        arquivos.push([`xl/tables/table${ti}.xml`, decl +
+          `<table xmlns="${ns}" id="${ti}" name="Tabela${ti}" displayName="Tabela${ti}" ref="${ref}" totalsRowShown="0">` +
+          `<autoFilter ref="${ref}"/>` +
+          `<tableColumns count="${nomes.length}">${nomes.map((h, i) => `<tableColumn id="${i + 1}" name="${esc(h)}"/>`).join("")}</tableColumns>` +
+          `<tableStyleInfo name="TableStyleMedium2" showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/></table>`]);
+        overrides.push(`<Override PartName="/xl/tables/table${ti}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/>`);
+        const rid = relacoes.length + 1;
+        relacoes.push(`<Relationship Id="rId${rid}" Type="${relns}/table" Target="../tables/table${ti}.xml"/>`);
+        partesTabela.push(`<tablePart r:id="rId${rid}"/>`);
+      }
+
+      // Cor 0 e cor 1 da BFS nas colunas cor_*: mesma paleta da aplicação.
+      const cf = aba.colorRange ? `<conditionalFormatting sqref="${aba.colorRange}">` +
+        `<cfRule type="cellIs" dxfId="0" priority="1" operator="equal"><formula>0</formula></cfRule>` +
+        `<cfRule type="cellIs" dxfId="1" priority="2" operator="equal"><formula>1</formula></cfRule></conditionalFormatting>` : "";
+
+      // Células mescladas (usadas só nas notas explicativas, fora das tabelas).
+      const mesclagem = (aba.mesclar || []).length ? `<mergeCells count="${aba.mesclar.length}">` +
+        aba.mesclar.map(r => `<mergeCell ref="${r}"/>`).join("") + `</mergeCells>` : "";
+
+      // Validação de dados: restringe as células editáveis (ex.: somente 0 ou 1).
+      const dv = (aba.validacoes || []).length ? `<dataValidations count="${aba.validacoes.length}">` +
+        aba.validacoes.map(v => `<dataValidation type="list" allowBlank="0" showInputMessage="1" showErrorMessage="1" ` +
+          `errorTitle="Valor inválido" error="${esc(v.erro)}" promptTitle="${esc(v.titulo)}" prompt="${esc(v.dica)}" sqref="${v.sqref}">` +
+          `<formula1>"${v.lista}"</formula1></dataValidation>`).join("") + `</dataValidations>` : "";
+
+      arquivos.push([`xl/worksheets/sheet${si + 1}.xml`, decl +
+        `<worksheet xmlns="${ns}" xmlns:r="${relns}">` +
+        `<dimension ref="A1:${colName(largura - 1)}${aba.rows.length}"/>` +
+        `<sheetViews><sheetView workbookViewId="0"${si === 0 ? ' tabSelected="1"' : ""}>` +
+        `<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>` +
+        `<sheetFormatPr defaultRowHeight="30"/><cols>${colunas}</cols><sheetData>${linhasXml}</sheetData>${mesclagem}${cf}${dv}` +
+        `<pageMargins left="0.3" right="0.3" top="0.5" bottom="0.5" header="0.2" footer="0.2"/>` +
+        (partesTabela.length ? `<tableParts count="${partesTabela.length}">${partesTabela.join("")}</tableParts>` : "") +
+        `</worksheet>`]);
+      if (relacoes.length)
+        arquivos.push([`xl/worksheets/_rels/sheet${si + 1}.xml.rels`,
+          decl + `<Relationships xmlns="${pkgns}">${relacoes.join("")}</Relationships>`]);
+      overrides.push(`<Override PartName="/xl/worksheets/sheet${si + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`);
+    });
+
+    const estilos = decl + `<styleSheet xmlns="${ns}">` +
+      `<fonts count="4">` +
+      `<font><sz val="11"/><color rgb="FF28251D"/><name val="Calibri"/></font>` +
+      `<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>` +
+      `<font><b/><sz val="11"/><color rgb="FF0000FF"/><name val="Calibri"/></font>` +
+      `<font><b/><sz val="11"/><color rgb="FF28251D"/><name val="Calibri"/></font></fonts>` +
+      `<fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>` +
+      `<fill><patternFill patternType="solid"><fgColor rgb="FF01696F"/><bgColor indexed="64"/></patternFill></fill>` +
+      `<fill><patternFill patternType="solid"><fgColor rgb="FFFFF2CC"/><bgColor indexed="64"/></patternFill></fill></fills>` +
+      `<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>` +
+      `<border><left style="thin"><color rgb="FF7F7F7F"/></left><right style="thin"><color rgb="FF7F7F7F"/></right>` +
+      `<top style="thin"><color rgb="FF7F7F7F"/></top><bottom style="thin"><color rgb="FF7F7F7F"/></bottom><diagonal/></border></borders>` +
+      `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>` +
+      `<cellXfs count="6">` +
+      `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
+      `<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>` +
+      `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
+      `<xf numFmtId="10" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment vertical="top"/></xf>` +
+      `<xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>` +
+      `<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
+      `</cellXfs>` +
+      `<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>` +
+      `<dxfs count="2">` +
+      `<dxf><font><color rgb="FFFFFFFF"/></font><fill><patternFill patternType="solid"><fgColor rgb="FF116B74"/><bgColor rgb="FF116B74"/></patternFill></fill></dxf>` +
+      `<dxf><font><color rgb="FFFFFFFF"/></font><fill><patternFill patternType="solid"><fgColor rgb="FFA45209"/><bgColor rgb="FFA45209"/></patternFill></fill></dxf>` +
+      `</dxfs></styleSheet>`;
+
+    arquivos.push(["xl/styles.xml", estilos]);
+    arquivos.push(["xl/workbook.xml", decl +
+      `<workbook xmlns="${ns}" xmlns:r="${relns}"><bookViews><workbookView/></bookViews>` +
+      `<sheets>${abas.map((a, i) => `<sheet name="${esc(a.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("")}</sheets>` +
+      // fullCalcOnLoad: o Excel recalcula todas as fórmulas ao abrir (os valores gravados são só um cache).
+      `<calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>`]);
+    arquivos.push(["xl/_rels/workbook.xml.rels", decl +
+      `<Relationships xmlns="${pkgns}">` +
+      abas.map((a, i) => `<Relationship Id="rId${i + 1}" Type="${relns}/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join("") +
+      `<Relationship Id="rId${abas.length + 1}" Type="${relns}/styles" Target="styles.xml"/></Relationships>`]);
+    arquivos.push(["_rels/.rels", decl +
+      `<Relationships xmlns="${pkgns}"><Relationship Id="rId1" Type="${relns}/officeDocument" Target="xl/workbook.xml"/></Relationships>`]);
+    arquivos.push(["[Content_Types].xml", decl +
+      `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">` +
+      `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>` +
+      `<Default Extension="xml" ContentType="application/xml"/>` +
+      `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>` +
+      `<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>` +
+      `${overrides.join("")}</Types>`]);
+    return zip(arquivos);
+  }
+
+  exportar({ ESTILO, colName, formula, estilizada, gerarXlsx, crc32 });
+})(typeof module === "object" ? o => { module.exports = o; } : o => { globalThis.Xlsx = o; });
+
+</script>
+<script>
+/* ===== src/planilha.js ===== */
+"use strict";
+/*
+ * Conteúdo da planilha do teste de mesa (as 7 abas exigidas):
+ * Resumo, Guia, Entradas, BFS_valido, BFS_conflito, Impacto, Validacoes.
+ *
+ * Os rastros das abas BFS_* vêm de executarBfs (o MESMO algoritmo da aplicação).
+ * São registros da execução, não uma BFS recalculada por fórmulas.
+ * Só a aba Impacto tem fórmulas vivas (a seleção de funções é editável).
+ */
+(function (exportar) {
+  const N = typeof require === "function" ? require("./nucleo.js") : globalThis.Nucleo;
+  const X = typeof require === "function" ? require("./xlsx.js") : globalThis.Xlsx;
+  const { analisarTxt, executarBfs, consultarImpacto } = N;
+  const { colName, formula, estilizada, ESTILO, gerarXlsx } = X;
+
+  function aba_rastro(nome, grafo, bfs) {
+    const ids = grafo.vertices.map(v => v.id);
+    const linhas = [[
+      "Passo", "Evento", "u", "v", "Fila (após o evento)", "Componentes iniciados", "Exames de adjacência",
+      ...ids.map(id => "cor_" + id), "Pais (filho←pai)", "Componente de cada vértice", "Observação"
+    ]];
+    for (const s of bfs.rastro) {
+      linhas.push([
+        s.passo, s.acao, s.u, s.v, s.fila.join(", "), s.componentes, s.exames,
+        ...ids.map(id => s.cor[id]),
+        ids.filter(id => s.pai[id] !== null).map(id => `${id}←${s.pai[id]}`).join("; "),
+        ids.filter(id => s.componente[id] > 0).map(id => `${id}:${s.componente[id]}`).join("; "),
+        s.nota
+      ]);
+    }
+    return {
+      name: nome, rows: linhas,
+      widths: [9, 18, 8, 8, 26, 14, 14, ...ids.map(() => 9), 40, 40, 62],
+      height: 34,
+      colorRange: `H2:${colName(6 + ids.length)}${linhas.length}`   // colunas cor_* (0 e 1 coloridos)
+    };
+  }
+
+  function montarPlanilha({ valido, conflito }, verificacoes) {
+    const g = analisarTxt(valido).grafo, b = executarBfs(g);
+    const gc = analisarTxt(conflito).grafo, bc = executarBfs(gc);
+    const abaValido = aba_rastro("BFS_valido", g, b);
+    const abaConflito = aba_rastro("BFS_conflito", gc, bc);
+
+    /* ---- Entradas: as linhas dos dois TXT, com o número da linha original ---- */
+    const entradas = [["Cenário", "Linha no TXT", "Registro", "Campo 1", "Campo 2 (tipo)", "Rótulo"]];
+    for (const [nome, texto] of [["Válido", valido], ["Conflito", conflito]]) {
+      texto.split(/\r?\n/).forEach((l, i) => {
+        if (!l.trim() || l.trim().startsWith("#")) return;
+        const p = l.split(";").map(x => x.trim());
+        entradas.push([nome, i + 1, p[0], p[1] || "", p[2] || "", p[3] || ""]);
+      });
+    }
+
+    /* ---- Impacto: matriz função × teste do cenário válido + fórmulas ---- */
+    const codigos = g.vertices.filter(v => v.tipo === "CODIGO");
+    const testes = g.vertices.filter(v => v.tipo === "TESTE");
+    const nC = codigos.length, nT = testes.length;
+    const ultimaC = 1 + nC;                         // última linha de função
+    const primeiraCol = 4;                          // E: início da matriz de testes (índice 0 = A)
+    const colTeste = i => colName(primeiraCol + i);
+    const colAviso = colName(primeiraCol + nT);
+    const cab2 = nC + 4;                            // linha do cabeçalho da 2ª tabela
+    const impacto = [[
+      "Código", "Rótulo", "Alterado (1 = sim, 0 = não)", "Testes mapeados",
+      ...testes.map(t => t.id), "Aviso"
+    ]];
+    const selecao0 = new Set(g.alteradas);
+    const resultado0 = consultarImpacto(g, g.alteradas, { estrutura: b });
+    codigos.forEach((c, i) => {
+      const r = i + 2, vizinhos = new Set(g.adj.get(c.id));
+      const alterada = selecao0.has(c.id) ? 1 : 0;
+      impacto.push([
+        c.id, c.rotulo, alterada,
+        formula(`SUM(${colTeste(0)}${r}:${colTeste(nT - 1)}${r})`, vizinhos.size),
+        ...testes.map(t => (vizinhos.has(t.id) ? 1 : 0)),
+        formula(`IF(AND(C${r}=1,D${r}=0),"Sem testes mapeados: isso NÃO dispensa testes","")`,
+          alterada && vizinhos.size === 0 ? "Sem testes mapeados: isso NÃO dispensa testes" : "")
+      ]);
+    });
+    impacto.push([]);
+    impacto.push([estilizada(`Edite as células amarelas C2:C${ultimaC} (1 = função alterada, 0 = não). Os testes indicados abaixo são recalculados por fórmulas.`, ESTILO.NEGRITO)]);
+    impacto.push(["Teste", "Rótulo", "Funções alteradas ligadas", "Indicado?", "Justificativa (funções)"]);
+    testes.forEach((t, i) => {
+      const r = cab2 + 1 + i, c = colTeste(i);
+      const ligadas = (resultado0.itens.find(x => x.id === t.id) || { funcoes: [] }).funcoes;
+      // Justificativa: concatena os códigos alterados cuja célula da matriz vale 1 para este teste.
+      const partes = codigos.map((_, k) => `IF(AND($C$${k + 2}=1,${c}$${k + 2}=1),$A$${k + 2}&" ","")`).join("&");
+      impacto.push([
+        t.id, t.rotulo,
+        formula(`SUMPRODUCT($C$2:$C$${ultimaC},${c}$2:${c}$${ultimaC})`, ligadas.length),
+        formula(`IF(C${r}>0,"SIM","NAO")`, ligadas.length ? "SIM" : "NAO"),
+        formula(`TRIM(${partes})`, ligadas.join(" "))
+      ]);
+    });
+    impacto.push([]);
+    impacto.push(["A matriz mostra relações informadas no TXT; não é cobertura medida. A consulta usa só vizinhos diretos (sem propagar pelo componente)."]);
+    impacto.push(["Função sem testes mapeados (ex.: C4) gera aviso; isso não significa que ela dispense testes."]);
+    impacto.push(["A matriz é a do cenário válido, gravada pela aplicação. Esta aba não lê a aba Entradas."]);
+    const primT = cab2 + 1, ultT = cab2 + nT;
+    // Notas do Impacto: mescladas de A até a última coluna, fora das tabelas.
+    const ultimaColImpacto = colAviso;
+    const mesclarImpacto = [`A${nC + 3}:${ultimaColImpacto}${nC + 3}`], alturasImpacto = { [nC + 3]: 24 };
+    for (let r = ultT + 2; r <= impacto.length; r++) { mesclarImpacto.push(`A${r}:${ultimaColImpacto}${r}`); alturasImpacto[r] = 24; }
+
+    /* ---- Validacoes ---- */
+    const validacoes = [["Grupo", "Verificação", "Esperado", "Obtido", "Status"], ...verificacoes];
+    const nV = validacoes.length;
+    const aprovadas = verificacoes.filter(r => r[4] === "APROVADO").length;
+
+    /* ---- Resumo ---- */
+    const indicados = resultado0.testes.length;
+    const resumo = [
+      ["Indicador", "Valor", "Interpretação"],
+      ["Vértices do cenário válido", formula("COUNTA(Impacto!A2:A" + ultimaC + ")+COUNTA(Impacto!" + colTeste(0) + "1:" + colTeste(nT - 1) + "1)", g.vertices.length), "Quatro funções e quatro testes."],
+      ["Arestas do cenário válido", formula(`SUM(Impacto!${colTeste(0)}2:${colTeste(nT - 1)}${ultimaC})`, g.arestas.length), "Relações informadas no exemplo didático."],
+      ["Componentes do cenário válido", formula(`COUNTIF(BFS_valido!B2:B${abaValido.rows.length},"Raiz")`, b.componentes), "Inclui C4, que é isolado."],
+      ["Exames de adjacência (válido)", formula(`MAX(BFS_valido!G2:G${abaValido.rows.length})`, b.exames), "Cada aresta é examinada duas vezes (uma por extremo)."],
+      ["Testes indicados (seleção atual da aba Impacto)", formula(`COUNTIF(Impacto!D${primT}:D${ultT},"SIM")`, indicados), "União dos vizinhos diretos das funções marcadas."],
+      ["Proporção indicada", formula(`COUNTIF(Impacto!D${primT}:D${ultT},"SIM")/COUNTA(Impacto!A${primT}:A${ultT})`, indicados / nT, ESTILO.PERCENTUAL), "Não é medição de economia de tempo."],
+      ["Conflitos na execução com conflito", formula(`COUNTIF(BFS_conflito!B2:B${abaConflito.rows.length},"Conflito")`, 1), "A BFS encerra no primeiro conflito."],
+      ["Ciclo ímpar encontrado (conflito)", bc.ciclo.join(" → "), "Reconstruído pela árvore de pais; tem " + (bc.ciclo.length - 1) + " arestas."],
+      ["Verificações aprovadas", formula(`COUNTIF(Validacoes!E2:E${nV},"APROVADO")`, aprovadas), "Execução automatizada com Node (ver aba Validacoes)."],
+      ["Verificações executadas", formula(`COUNTA(Validacoes!E2:E${nV})`, verificacoes.length), "Total de linhas da aba Validacoes."]
+    ];
+    const nResumo = resumo.length;
+    resumo.push([]);
+    resumo.push([estilizada("IMPORTANTE: BFS_valido e BFS_conflito são REGISTROS da execução do algoritmo da aplicação (mesmo código, src/nucleo.js). Não são uma BFS recalculada por fórmulas: editar a aba Entradas NÃO refaz o teste de mesa.", ESTILO.NEGRITO)]);
+    resumo.push(["Somente a aba Impacto recalcula: altere a seleção das funções (células amarelas) e os testes indicados mudam por fórmulas."]);
+    resumo.push(["Cenários didáticos autorais; não representam dados coletados de uma aplicação real nem cobertura ou desempenho medidos."]);
+    resumo.push(["Pendente: linguagem, prazo, duração, número de vértices e formato de entrega não foram confirmados (enunciado original não estava no projeto)."]);
+    const mesclarResumo = [], alturasResumo = {};
+    for (let r = nResumo + 2; r <= resumo.length; r++) { mesclarResumo.push(`A${r}:C${r}`); alturasResumo[r] = 36; }
+
+    /* ---- Guia ---- */
+    const guia = [
+      ["Assunto", "Orientação", "Origem ou referência"],
+      ["Natureza dos dados", "Cenários didáticos autorais; não são dados reais de uma aplicação.", "cenarios/*.txt"],
+      ["Tipo de aba", "BFS_valido e BFS_conflito: registro da execução. Impacto: fórmulas. Entradas e Validacoes: dados gravados.", "tools/gerar.js"],
+      ["Ordem de execução", "Vértices na ordem de declaração; vizinhos na ordem das arestas; fila FIFO.", "src/nucleo.js"],
+      ["Eventos", "Cada linha mostra o estado APÓS o evento: Inicialização, Raiz, Retirada, Coloração, Aresta OK, Conflito, Fim componente, Bipartido.", "src/nucleo.js"],
+      ["Cores da BFS", "-1: não visitado; 0 e 1: grupos produzidos pela BFS. Não são os tipos CODIGO/TESTE.", "src/nucleo.js"],
+      ["Pais", "O pai é gravado quando o vértice é descoberto (aresta da árvore da BFS).", "src/nucleo.js"],
+      ["Componentes", "Número do componente de cada vértice; a coluna 'Componentes iniciados' é o contador acumulado.", "src/nucleo.js"],
+      ["Exames", "Contagem acumulada de vizinhos examinados. Aresta não direcionada aparece nas duas listas.", "src/nucleo.js"],
+      ["Atualização", "Editar a aba Entradas não recalcula a BFS. Para outro grafo, use a aplicação e gere nova planilha.", "Limitação da planilha"],
+      ["Impacto", "Células amarelas C2:C5 aceitam 1 ou 0. As fórmulas calculam testes indicados, justificativa e aviso de função sem testes.", "Aba Impacto"],
+      ["Cenário de conflito", "A aresta C1-C2 viola o domínio e forma um ciclo ímpar. É um teste negativo do verificador, não uma relação legítima.", "cenarios/cenario-conflito.txt"],
+      ["Complexidade", "Núcleo da BFS: O(V+E). Gravar uma cópia dos estados em cada evento custa O(V·(V+E)) em tempo e memória.", "Análise da implementação"],
+      ["Garantia", "A indicação depende do mapeamento informado; não garante cobertura completa.", "Limitação do modelo"],
+      ["Referência conceitual", "BFS com duas cores e ciclo ímpar (BipartiteX).", "https://algs4.cs.princeton.edu/41graph/BipartiteX.java.html"],
+      ["Conferência", "Abrir no Excel ou LibreOffice e conferir fórmulas, filtros, formatação e ausência de aviso de reparo.", "docs/resultado-verificacoes.md"]
+    ];
+
+    return gerarXlsx([
+      { name: "Resumo", rows: resumo, widths: [46, 30, 70], height: 32, mesclar: mesclarResumo, alturas: alturasResumo, tables: [{ startRow: 1, endRow: nResumo, startCol: 1, endCol: 3 }] },
+      { name: "Guia", rows: guia, widths: [26, 100, 54], height: 40 },
+      { name: "Entradas", rows: entradas, widths: [14, 14, 12, 14, 18, 36], height: 20 },
+      abaValido, abaConflito,
+      {
+        name: "Impacto", rows: impacto,
+        widths: [16, 28, 20, 18, 22, 12, 12, 12, 40],
+        height: 32, cabecalhos: [1, cab2], mesclar: mesclarImpacto, alturas: alturasImpacto,
+        entradas: codigos.map((_, i) => `C${i + 2}`),
+        validacoes: [{
+          sqref: `C2:C${ultimaC}`, lista: "0,1", titulo: "Função alterada", dica: "Digite 1 (alterada) ou 0 (não alterada).",
+          erro: "Use somente 1 (alterada) ou 0 (não alterada)."
+        }],
+        tables: [
+          { startRow: 1, endRow: ultimaC, startCol: 1, endCol: primeiraCol + nT + 1 },
+          { startRow: cab2, endRow: ultT, startCol: 1, endCol: 5 }
+        ]
+      },
+      { name: "Validacoes", rows: validacoes, widths: [14, 78, 34, 34, 14], height: 24 }
+    ]);
+  }
+
+  exportar({ montarPlanilha });
+})(typeof module === "object" ? o => { module.exports = o; } : o => { globalThis.Planilha = o; });
+
+</script>
+<script>
+/* ===== src/slides.js ===== */
+"use strict";
+/*
+ * Conteúdo da apresentação: cada slide tem o que aparece na tela (titulo, topicos, grafo)
+ * e o texto que será dito (fala). O roteiro de fala é gerado a partir deste mesmo vetor,
+ * para a tela e a fala nunca ficarem desencontradas.
+ * Os grafos dos slides são desenhados pelo mesmo desenharGrafo da aplicação.
+ */
+(function (exportar) {
+  const N = typeof require === "function" ? require("./nucleo.js") : globalThis.Nucleo;
+  const S = typeof require === "function" ? require("./grafo-svg.js") : globalThis.GrafoSvg;
+  const { analisarTxt, executarBfs } = N;
+  const { esc, desenharGrafo } = S;
+
+  // Números que aparecem em slide vêm do cálculo, não de texto digitado à mão.
+  function slidesDe({ valido, conflito }, verificacoes) {
+    const g = analisarTxt(valido).grafo, b = executarBfs(g);
+    const gc = analisarTxt(conflito).grafo, bc = executarBfs(gc);
+    const aprovadas = verificacoes ? verificacoes.filter(r => r[4] === "APROVADO").length : null;
+    const total = verificacoes ? verificacoes.length : null;
+    const ciclo = bc.ciclo.join(" → ");
+    const quem = { M: "Marcos", A: "André" };
+
+    return [
+      {
+        quem: quem.M, kicker: "Técnicas de Programação Avançada • Prof. Rafael Vargas",
+        titulo: "Mudou o código: o que testar?",
+        topicos: ["Grafos bipartidos aplicados a funções e casos de teste.", "Marcos Ribeiro e André Valane"],
+        fala: "Olá. Somos o Marcos e o André e vamos apresentar o trabalho de Grafos Bipartidos. A pergunta do título é: quando uma função muda, quais testes eu devo olhar? A ferramenta que construímos responde isso a partir de um mapeamento informado por arquivo de texto. Ela não executa testes, não lê o Git e não descobre cobertura sozinha."
+      },
+      {
+        quem: quem.M, titulo: "O problema",
+        topicos: ["Uma alteração pode afetar vários testes.", "Um teste pode exercitar várias funções.", "O mapeamento função–teste é informado manualmente, em TXT."],
+        fala: "Em um projeto real, uma função costuma ser usada por mais de um teste, e um teste costuma passar por mais de uma função. Quando alguém altera uma função, precisamos saber quais testes estão ligados a ela. Aqui o mapeamento é dado por nós, em um TXT. Por isso o resultado vale tanto quanto o mapeamento: se ele estiver incompleto, a indicação também estará."
+      },
+      {
+        quem: quem.M, titulo: "Dois conjuntos, uma relação",
+        topicos: ["CODIGO: funções da aplicação.", "TESTE: casos de teste.", "Aresta não direcionada: o teste exercita a função, sem peso.", "Não existe relação legítima dentro do mesmo tipo."],
+        fala: "O modelo tem dois tipos de vértice: CODIGO, que são as funções, e TESTE, que são os casos de teste. Uma aresta liga uma função a um teste que a exercita. Ela não tem direção nem peso. Uma função pode ter vários testes e um teste pode ter várias funções. Esse é exatamente o formato de um grafo bipartido: todas as arestas cruzam entre os dois conjuntos."
+      },
+      {
+        quem: quem.M, titulo: "O cenário válido", grafo: "valido",
+        topicos: [`${g.vertices.length} vértices e ${g.arestas.length} arestas.`, "T3 é compartilhado por C1 e C2.", "C4 é uma função isolada, sem testes mapeados.", `${b.componentes} componentes conectados.`],
+        fala: `Este é o nosso primeiro arquivo de entrada. Temos quatro funções e quatro testes, com cinco relações. O teste T3, testeCompraComCupom, usa tanto calcularDesconto quanto validarCupom. A função C4, registrarAuditoria, não tem nenhum teste ligado: é um vértice isolado. O grafo tem ${b.componentes} componentes: o principal, o par C3 e T4, e o C4 sozinho. Os retângulos são funções e os círculos são testes, então o tipo não depende de cor.`
+      },
+      {
+        quem: quem.M, titulo: "Quatro operações diferentes",
+        topicos: ["1. Sintaxe do TXT: campos, IDs, duplicatas, referências.", "2. Estrutura: BFS com duas cores decide se é bipartido.", "3. Semântica: cada aresta liga CODIGO a TESTE.", "4. Consulta: testes ligados diretamente às funções alteradas."],
+        fala: "Separamos quatro operações que são fáceis de confundir. Primeiro, a sintaxe: o arquivo está bem formado? Segundo, a estrutura: a BFS com duas cores diz se o grafo é bipartido. Terceiro, a semântica: cada aresta liga mesmo uma função a um teste? E só então, quarto, a consulta de impacto. Se qualquer uma das etapas anteriores falhar, a recomendação fica bloqueada."
+      },
+      {
+        quem: quem.M, titulo: "BFS com duas cores",
+        topicos: ["Cada vértice ainda sem cor inicia um componente e recebe a cor 0.", "Fila com índice de início: retirar é avançar um número, sem Array.shift.", "Vizinho novo recebe a cor oposta, guarda o pai e entra na fila.", "Vizinho já visitado com a mesma cor: conflito e ciclo ímpar pela árvore de pais.", "Mantemos cor, pai, componente, fila e exames de adjacência."],
+        fala: "A BFS percorre todos os componentes. O laço externo olha cada vértice, então o isolado C4 e o componente C3–T4 também são visitados. A raiz recebe cor 0, os vizinhos novos recebem a cor oposta e entram na fila. Se encontramos um vizinho já colorido com a mesma cor, existe ciclo ímpar: subimos pela árvore de pais até o ancestral comum e reconstruímos o ciclo. A fila usa um índice de início, então retirar elemento não desloca o vetor."
+      },
+      {
+        quem: quem.M, titulo: "Como ler o teste de mesa", grafo: "colorido",
+        topicos: ["Cada linha mostra o estado depois de um evento.", "Observar fila, cores, pais e componente.", "Vértices e arestas seguem a ordem do arquivo.", "O Excel registra a execução do mesmo algoritmo da aplicação."],
+        fala: "No teste de mesa, cada linha é um evento da BFS: inicialização, raiz, retirada da fila, coloração, aresta verificada e fim de componente. Em cada linha vemos a fila, a cor de cada vértice, os pais, o componente e quantos vizinhos já foram examinados. A planilha foi gerada pelo mesmo código da aplicação. Ela é um registro da execução; se alguém editar o TXT dentro da planilha, a BFS não é recalculada."
+      },
+      {
+        quem: quem.A, titulo: "Cor da BFS não é tipo do vértice", grafo: "colorido",
+        topicos: ["Cor 0 e cor 1 identificam os dois lados encontrados pela BFS.", "CODIGO e TESTE identificam o papel no domínio.", "Aqui os dois coincidem porque cada componente começa por uma função.", "Se um TESTE for declarado primeiro, ele recebe cor 0."],
+        fala: "Um ponto importante: azul e laranja são as cores da BFS, não os tipos. Neste exemplo elas coincidem com função e teste só porque a raiz de cada componente é uma função. Se um teste fosse declarado primeiro, ele receberia a cor zero. Por isso o tipo aparece por forma e por texto, e a cor aparece com o número escrito dentro do vértice."
+      },
+      {
+        quem: quem.A, titulo: "O cenário de conflito", grafo: "conflito",
+        topicos: ["O segundo TXT acrescenta a aresta C1–C2.", `Ciclo ímpar encontrado: ${ciclo} (${bc.ciclo.length - 1} arestas).`, "A BFS encerra no primeiro conflito.", "É um teste negativo, não uma relação legítima."],
+        fala: `O segundo arquivo acrescenta uma aresta entre C1 e C2, duas funções. Isso cria o triângulo C1, T3, C2. A BFS encontra dois vizinhos com a mesma cor e reconstrói o ciclo: ${ciclo}. Ele tem ${bc.ciclo.length - 1} arestas, ou seja, comprimento ímpar, então o grafo não é bipartido. Deixamos claro na interface que essa aresta não é uma relação legítima de código e teste: é uma entrada negativa para provar que o verificador funciona.`
+      },
+      {
+        quem: quem.A, titulo: "Estrutura não é semântica",
+        topicos: ["Caminho C1–C2–T1 é bipartido.", "Mesmo assim, C1–C2 liga duas funções.", "A BFS não vê tipos; a validação semântica não vê cores.", "Estrutura ou semântica inválida bloqueiam a consulta."],
+        fala: "Atenção: ser bipartido não basta. Um caminho C1, C2, T1 é bipartido, mas a aresta C1–C2 liga duas funções, o que o domínio não permite. Por isso temos duas verificações independentes: a BFS cuida da estrutura e outra etapa confere os tipos das pontas de cada aresta. Basta uma delas falhar para a consulta de impacto ser bloqueada."
+      },
+      {
+        quem: quem.A, titulo: "Consulta de impacto: C1 e C2", grafo: "impacto",
+        topicos: ["Vizinhos TESTE de C1: T1 e T3.", "Vizinhos TESTE de C2: T2 e T3.", "União sem repetição: T1, T2 e T3.", "T3 é justificado por C1 e C2."],
+        fala: "Agora a consulta. Para as funções alteradas, C1 e C2, pegamos os vizinhos do tipo teste de cada uma e fazemos a união. C1 traz T1 e T3, C2 traz T2 e T3. O resultado é T1, T2 e T3, e o T3 aparece uma única vez, com a justificativa de que ele se liga às duas funções alteradas. O T4 fica de fora porque não se liga a nenhuma função alterada."
+      },
+      {
+        quem: quem.A, titulo: "Sem propagação e sem testes mapeados",
+        topicos: ["Só C1 alterada: T1 e T3. T2 não entra.", "A consulta olha só vizinhos diretos, não o componente inteiro.", "Função sem vizinhos: aviso “sem testes mapeados”.", "Isso não significa que a função não precisa de testes."],
+        fala: "Se só C1 mudou, indicamos T1 e T3. O T2 não entra, mesmo que o T3 também se ligue a C2, porque não percorremos o componente de forma transitiva. Se escolhermos a função C4, não há teste ligado a ela, e a ferramenta mostra o aviso de que não há testes mapeados. Esse aviso é diferente de dizer que a função não precisa ser testada: apenas não existe relação cadastrada."
+      },
+      {
+        quem: quem.A, titulo: "Custo e limites",
+        topicos: ["Núcleo da BFS: O(V+E) com listas de adjacência e fila indexada.", "Gravar uma cópia dos estados em cada evento custa O(V·(V+E)).", "Por isso existe o modo sem rastreamento.", "O resultado depende do mapeamento informado; não mede cobertura nem tempo."],
+        fala: "Sobre custo: o núcleo da BFS percorre cada vértice e cada aresta uma vez, então é O(V+E). Mas, para animar e montar o teste de mesa, gravamos uma cópia completa dos estados a cada evento. Isso tem custo maior, na ordem de V vezes V+E. Por isso a BFS tem um modo sem rastreamento, usado nas consultas e nos testes com grafos grandes. E lembramos os limites: não medimos economia de tempo e a qualidade da indicação depende do mapeamento."
+      },
+      {
+        quem: quem.A, titulo: "Verificações e demonstração",
+        topicos: [aprovadas === null ? "Verificações automatizadas executadas com Node." : `${aprovadas} de ${total} verificações automatizadas aprovadas.`, "Cobrem os 15 casos obrigatórios e o núcleo da BFS.", "Demonstração: cenário válido, seleção de funções, cenário de conflito.", "Excel com 7 abas e fórmulas na aba Impacto."],
+        fala: `Para garantir o comportamento, escrevemos verificações automatizadas${aprovadas === null ? "" : `: ${aprovadas} de ${total} aprovadas na última execução`}. Elas cobrem os casos obrigatórios, como ciclo ímpar, vértice isolado, teste compartilhado, seleção vazia e todos os erros de entrada. Agora vamos mostrar a aplicação: carregar o cenário válido, avançar a BFS, selecionar C1 e C2, depois só C4, e por fim carregar o cenário de conflito.`
+      },
+      {
+        quem: quem.A, titulo: "Conclusão",
+        topicos: ["Funções e testes representados como grafo bipartido.", "BFS explicável, com teste de mesa e animação.", "Indicação de testes por vizinhança direta, com justificativa.", "Limite: o resultado é tão bom quanto o mapeamento."],
+        fala: "Concluindo: representamos funções e testes como um grafo bipartido, verificamos a bipartição com BFS e usamos a vizinhança direta das funções alteradas para indicar testes, sempre mostrando a justificativa. Voltando à pergunta do título: mudou o código, o que testar? Os testes ligados diretamente às funções alteradas, conforme o mapeamento informado. Obrigado."
+      }
+    ].map((s, i) => ({ ...s, numero: i + 1 }));
+  }
+
+  function marcacaoSlides(cenarios, verificacoes) {
+    const g = analisarTxt(cenarios.valido).grafo, b = executarBfs(g, { rastrear: false });
+    const gc = analisarTxt(cenarios.conflito).grafo, bc = executarBfs(gc, { rastrear: false });
+    const slides = slidesDe(cenarios, verificacoes);
+    return slides.map((s, i) => {
+      let visual = "";
+      if (s.grafo === "valido") visual = desenharGrafo(g, null, new Set());
+      else if (s.grafo === "colorido") visual = desenharGrafo(g, { cor: b.cor }, new Set());
+      else if (s.grafo === "conflito") visual = desenharGrafo(gc, { cor: bc.cor }, new Set(), bc.ciclo);
+      else if (s.grafo === "impacto") visual = desenharGrafo(g, { cor: b.cor }, new Set(["C1", "C2"]));
+      const corpo = `<ul class="reveal">${s.topicos.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
+      return `<article class="slide ${i === 0 ? "active" : ""}" data-slide="${i + 1}" aria-label="Slide ${i + 1}">` +
+        `<div class="gradient-mesh"><div class="blob"></div><div class="blob"></div></div>` +
+        `<div class="content"><p class="kicker reveal">${esc(s.kicker || "Código e testes • Grafos bipartidos")}</p>` +
+        `<h2 class="reveal">${esc(s.titulo)}</h2>` +
+        (visual ? `<div class="split"><div>${corpo}</div><div class="reveal">${visual}</div></div>` : corpo) +
+        `<p class="citation reveal">Cenários didáticos autorais • Não representa medição de desempenho • ${i + 1}/${slides.length}</p></div></article>`;
+    }).join("");
+  }
+
+  /** Apresentação em um único arquivo HTML, com setas, espaço e deslizar no celular. */
+  function htmlApresentacao(css, cenarios, verificacoes) {
+    const navegacao = `
+      let n = 0;
+      const slides = [...document.querySelectorAll(".slide")];
+      function mostrar(i) {
+        n = (i + slides.length) % slides.length;
+        slides.forEach((s, k) => s.classList.toggle("active", k === n));
+        document.getElementById("contador").textContent = (n + 1) + " / " + slides.length;
+      }
+      document.getElementById("anterior").onclick = () => mostrar(n - 1);
+      document.getElementById("proximo").onclick = () => mostrar(n + 1);
+      document.addEventListener("keydown", e => {
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") { e.preventDefault(); mostrar(n + 1); }
+        if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); mostrar(n - 1); }
+      });
+      let inicio = 0;
+      document.addEventListener("touchstart", e => inicio = e.changedTouches[0].clientX, { passive: true });
+      document.addEventListener("touchend", e => {
+        const dx = e.changedTouches[0].clientX - inicio;
+        if (Math.abs(dx) > 60) mostrar(n + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+      mostrar(0);`;
+    return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">` +
+      `<meta name="viewport" content="width=device-width,initial-scale=1"><title>Mudou o código: o que testar? — apresentação</title>` +
+      `<style>${css}\nbody{margin:0;background:#f0f7fb}.deck{height:calc(100dvh - 80px);min-height:0;border-radius:0}` +
+      `.controls{justify-content:center;height:64px;margin:0}@media print{.deck{height:auto}.controls{display:none!important}}</style></head><body>` +
+      `<div class="deck">${marcacaoSlides(cenarios, verificacoes)}</div>` +
+      `<nav class="controls" aria-label="Navegação dos slides"><button id="anterior">← Anterior</button><span id="contador"></span>` +
+      `<button id="proximo">Próximo →</button></nav><script>${navegacao}<\/script></body></html>`;
+  }
+
+  /** Roteiro de fala em Markdown, um bloco por slide. */
+  function textoRoteiro(cenarios, verificacoes) {
+    const slides = slidesDe(cenarios, verificacoes);
+    return `# Roteiro de fala — Mudou o código: o que testar?
+
+Dupla: Marcos Ribeiro e André Valane — Técnicas de Programação Avançada (Prof. Rafael Vargas).
+
+> **Pendente:** o enunciado original não estava no projeto. Duração, formato e linguagem exigidos **não foram confirmados**.
+> Por isso este roteiro **não** declara tempo total. A divisão de falas abaixo é só uma sugestão — ajustem como preferirem,
+> mas ambos devem saber explicar a BFS **e** a consulta de impacto.
+
+## Antes de começar
+- Abrir \`codigo-e-testes.html\` (aplicação) e \`saida/apresentacao.html\` (slides) em abas separadas.
+- Abrir \`saida/teste-de-mesa.xlsx\` no Excel já na aba BFS_valido.
+- Testar o som/projetor e a tela cheia (tecla F11 no navegador).
+
+${slides.map(s => `## Slide ${s.numero} — ${s.titulo}\n**Quem fala (sugestão):** ${s.quem}\n\n**Na tela:**\n${s.topicos.map(t => `- ${t}`).join("\n")}\n\n**Fala:**\n> ${s.fala}\n`).join("\n")}
+## Demonstração ao vivo (depois do slide 14)
+1. Aplicação, cenário válido: mostrar retângulos (funções) e círculos (testes) e a legenda de cores da BFS.
+2. Avançar a BFS passo a passo: fila, cores, pais; mostrar que C4 e o par C3–T4 também são visitados.
+3. Marcar C1 e C2: testes T1, T2 e T3, com T3 justificado por C1 e C2.
+4. Desmarcar C2: T1 e T3 (T2 sai: não há propagação pelo componente).
+5. Selecionar só C4: aviso “sem testes mapeados”, e explicar que não é “não precisa testar”.
+6. Carregar o cenário de conflito: avançar até o conflito, mostrar o ciclo destacado e o bloqueio da consulta.
+7. Abrir o Excel: BFS_valido (comparar as primeiras linhas), Impacto (editar C2:C5 e ver as fórmulas reagirem).
+
+## Perguntas prováveis
+**Por que não usar só uma tabela?** Uma tabela também guarda as relações. O grafo deixa as adjacências explícitas e permite demonstrar o algoritmo estudado.
+
+**O grafo válido já não é bipartido por construção?** Sim, se toda aresta liga CODIGO a TESTE. A BFS é o algoritmo demonstrado e o cenário de conflito mostra o diagnóstico estrutural; a validação semântica é uma etapa separada.
+
+**A BFS seleciona os testes?** Não. A BFS verifica a bipartição. A seleção consulta os vizinhos diretos das funções alteradas.
+
+**Uma função sem testes não precisa ser testada?** Não é isso. Significa apenas que não há relação cadastrada.
+
+**O resultado garante cobertura?** Não. Depende da qualidade e atualização do mapeamento.
+
+**Por que T3 não aparece duas vezes?** A saída é uma união de conjuntos; a justificativa guarda as duas funções.
+
+**Por que não usar Array.shift na fila?** Porque deslocar o vetor a cada retirada pode custar O(n) por operação; com um índice de início, retirar é O(1).
+
+**A animação também é O(V+E)?** Não. O núcleo é O(V+E); a gravação de cópias dos estados a cada evento custa mais, O(V·(V+E)).
+`;
+  }
+
+  exportar({ slidesDe, marcacaoSlides, htmlApresentacao, textoRoteiro });
+})(typeof module === "object" ? o => { module.exports = o; } : o => { globalThis.Slides = o; });
+
+</script>
+<script>
+/* ===== src/interface.js ===== */
+"use strict";
+/*
+ * Interface da aplicação (somente navegador).
+ * Toda a lógica de grafos está em nucleo.js; aqui só se lê o TXT, mostra os resultados
+ * das QUATRO operações e controla a animação.
+ * Texto vindo do TXT (rótulos, IDs, mensagens) sempre passa por esc() antes de entrar em innerHTML.
+ */
+(function () {
+  const { ACAO, analisarTxt, deveRastrear, executarBfs, validarSemantica, consultarImpacto } = Nucleo;
+  const { esc, desenharGrafo } = GrafoSvg;
+  const CENARIOS = CENARIOS_EMBUTIDOS;
+  const $ = id => document.getElementById(id);
+
+  // Estado da tela
+  let analise = null;          // { sintaxe, grafo, bfs, semantica } — grafo é null se o TXT for inválido
+  let passo = 0;
+  let temporizador = null;
+  let selecionadas = new Set();
+
+  /* ---------- Carregamento: operações 1, 2 e 3 ---------- */
+
+  function carregar(texto) {
+    parar();
+    $("fonte").value = texto;
+    const sintaxe = analisarTxt(texto);                       // 1. sintaxe
+    if (!sintaxe.ok) {
+      // TXT inválido: nada do TXT anterior permanece na tela (evita recomendação enganosa).
+      analise = { sintaxe, grafo: null };
+      selecionadas = new Set();
+      passo = 0;
+    } else {
+      const grafo = sintaxe.grafo;
+      // Grafos grandes: modo sem rastreamento (ver LIMITE_RASTREAMENTO em nucleo.js).
+      const bfs = executarBfs(grafo, { rastrear: deveRastrear(grafo) });   // 2. estrutura
+      const semantica = validarSemantica(grafo);                           // 3. semântica
+      analise = { sintaxe, grafo, bfs, semantica };
+      selecionadas = new Set(grafo.alteradas);
+      passo = 0;
+    }
+    desenharEscolhas();
+    desenharRastro();
+    renderizar();
+  }
+
+  /** Estado a mostrar: o passo do rastro, ou o resultado final se não houve rastreamento. */
+  function estadoAtual() {
+    const { bfs } = analise;
+    if (bfs.rastreado) return bfs.rastro[passo];
+    return {
+      passo: 0, acao: "Resultado final", u: "", v: "", fila: [],
+      nota: "Grafo grande: BFS executada sem rastreamento; animação desativada.",
+      cor: bfs.cor, componente: bfs.componente, componentes: bfs.componentes, exames: bfs.exames
+    };
+  }
+
+  /* ---------- Desenho ---------- */
+
+  function desenharEscolhas() {
+    const area = $("escolhas");
+    if (!analise.grafo) { area.innerHTML = `<p class="vazio">Nenhuma função disponível: corrija o TXT.</p>`; return; }
+    const funcoes = analise.grafo.vertices.filter(v => v.tipo === "CODIGO");
+    if (!funcoes.length) { area.innerHTML = `<p class="vazio">O TXT não declara nenhuma função (CODIGO).</p>`; return; }
+    area.innerHTML = funcoes.map(v => `<label class="check">
+      <input type="checkbox" data-id="${esc(v.id)}" ${selecionadas.has(v.id) ? "checked" : ""}>
+      <span><b>${esc(v.id)}</b> — ${esc(v.rotulo)}</span></label>`).join("");
+    area.querySelectorAll("input").forEach(caixa => {
+      caixa.addEventListener("change", () => {
+        if (caixa.checked) selecionadas.add(caixa.dataset.id); else selecionadas.delete(caixa.dataset.id);
+        renderizar();
+      });
+    });
+  }
+
+  function desenharRastro() {
+    const corpo = $("rastro");
+    if (!analise.grafo) { corpo.innerHTML = `<tr><td colspan="5">Sem rastreamento: nenhum grafo carregado.</td></tr>`; return; }
+    if (!analise.bfs.rastreado) { corpo.innerHTML = `<tr><td colspan="5">Rastreamento desativado para este grafo (modo sem rastreamento).</td></tr>`; return; }
+    corpo.innerHTML = analise.bfs.rastro.map(s => `<tr data-passo="${s.passo}">
+      <td>${s.passo}</td><td>${esc(s.acao)}</td>
+      <td>${esc([s.u, s.v].filter(Boolean).join(" → "))}</td>
+      <td>${esc(s.fila.join(", ") || "∅")}</td><td>${s.exames}</td></tr>`).join("");
+  }
+
+  /** Um item da lista das quatro operações. */
+  const etapa = (estado, titulo, corpo) =>
+    `<li data-estado="${estado}"><b>${esc(titulo)}</b><br>${corpo}</li>`;
+
+  function desenharEtapas(impacto) {
+    const { sintaxe, grafo, bfs, semantica } = analise;
+    const itens = [];
+
+    // 1. Sintaxe
+    if (!sintaxe.ok) {
+      itens.push(etapa("erro", "1. Sintaxe do TXT: inválido",
+        `<span class="error">${sintaxe.erros.length} erro(s). Nada foi carregado.</span><ul>` +
+        sintaxe.erros.map(e => `<li>Linha ${e.linha}: ${esc(e.motivo)}</li>`).join("") + `</ul>`));
+    } else {
+      const avisos = sintaxe.avisos.map(a => `<br><span class="small">Aviso: ${esc(a)}</span>`).join("");
+      itens.push(etapa("ok", "1. Sintaxe do TXT: válido",
+        `${grafo.vertices.length} vértice(s), ${grafo.arestas.length} aresta(s), ${grafo.alteradas.length} função(ões) alterada(s) no arquivo.${avisos}`));
+    }
+
+    // 2. Estrutura (resultado final da BFS; a animação mostra o caminho até ele)
+    if (!grafo) itens.push(etapa("inativa", "2. Estrutura (BFS com duas cores): não executada", "Corrija o TXT (etapa 1)."));
+    else if (bfs.bipartido) itens.push(etapa("ok", "2. Estrutura (BFS com duas cores): bipartido",
+      `${bfs.componentes} componente(s) verificado(s) sem conflito; ${bfs.exames} exames de adjacência.`));
+    else itens.push(etapa("erro", "2. Estrutura (BFS com duas cores): NÃO bipartido",
+      `<span class="error">Ciclo ímpar: ${esc(bfs.ciclo.join(" → "))} (${bfs.ciclo.length - 1} arestas).</span>`));
+
+    // 3. Semântica
+    if (!grafo) itens.push(etapa("inativa", "3. Semântica (CODIGO–TESTE): não executada", "Corrija o TXT (etapa 1)."));
+    else if (semantica.valida) itens.push(etapa("ok", "3. Semântica (CODIGO–TESTE): válida", "Todas as arestas ligam CODIGO a TESTE."));
+    else itens.push(etapa("erro", "3. Semântica (CODIGO–TESTE): INVÁLIDA",
+      `<span class="error">Arestas entre vértices do mesmo tipo (não são relações legítimas código–teste):</span><ul>` +
+      semantica.violacoes.map(x => `<li>${esc(x.u)}–${esc(x.v)} (ambos ${esc(x.tipo)}, linha ${x.linha})</li>`).join("") + `</ul>`));
+
+    // 4. Consulta
+    if (!grafo) itens.push(etapa("inativa", "4. Consulta de impacto: bloqueada", "Depende das etapas anteriores."));
+    else if (impacto.bloqueada) itens.push(etapa("bloqueada", "4. Consulta de impacto: BLOQUEADA",
+      `<span class="error">Recomendação bloqueada: ${impacto.motivos.map(esc).join("; ")}.</span>`));
+    else itens.push(etapa("ok", "4. Consulta de impacto: liberada", "Vizinhos diretos das funções selecionadas (sem busca no componente)."));
+
+    $("etapas").innerHTML = itens.join("");
+  }
+
+  function desenharImpacto(impacto) {
+    const area = $("impacto");
+    if (!analise.grafo) { area.innerHTML = `<p class="vazio">Nenhum grafo válido carregado. Corrija o TXT para consultar testes.</p>`; return; }
+    if (impacto.bloqueada) {
+      area.innerHTML = `<p class="error">Recomendação bloqueada: ${impacto.motivos.map(esc).join("; ")}.</p>
+        <p class="small">Corrija o mapeamento: nenhuma indicação de testes é feita com estrutura ou relações inválidas.</p>`;
+      return;
+    }
+    let html = "";
+    if (impacto.selecaoVazia) {
+      html += `<p class="vazio">Nenhuma função selecionada. Marque ao menos uma função alterada em “2. Funções alteradas”.</p>`;
+    } else {
+      html += `<p><strong>${impacto.testes.length} de ${impacto.totalTestes} testes indicados</strong> pelo mapeamento atual.</p>`;
+      html += impacto.itens.map(it => `<p><b>${esc(it.id)}</b> — ${esc(it.rotulo)}<br>
+        <span class="small">Justificado por: ${esc(it.funcoes.join(", "))}</span></p>`).join("");
+      if (!impacto.itens.length) html += `<p>Nenhum teste encontrado para as funções selecionadas.</p>`;
+    }
+    if (impacto.semTestes.length) {
+      html += `<p class="error">Sem testes mapeados: ${esc(impacto.semTestes.join(", "))}. Isso não comprova que essas funções dispensam testes.</p>`;
+    }
+    html += `<p class="small">Consulta independente da animação: usa os vizinhos diretos das funções selecionadas, não uma busca no componente.</p>`;
+    area.innerHTML = html;
+  }
+
+  function renderizar() {
+    const semGrafo = !analise.grafo;
+    const impacto = semGrafo ? null : consultarImpacto(analise.grafo, selecionadas, { estrutura: analise.bfs, semantica: analise.semantica });
+    desenharEtapas(impacto);
+    desenharImpacto(impacto);
+
+    const rastreado = !semGrafo && analise.bfs.rastreado;
+    const ultimo = rastreado ? analise.bfs.rastro.length - 1 : 0;
+    ["reiniciar", "anterior", "proximo", "executar", "posicao"].forEach(id => { $(id).disabled = !rastreado; });
+
+    if (semGrafo) {
+      $("nVertices").textContent = $("nArestas").textContent = $("nComponentes").textContent = "—";
+      $("grafo").innerHTML = `<p class="vazio">Nenhum grafo para desenhar: o TXT tem erros (veja a etapa 1). A tela não mostra grafo de um TXT inválido.</p>`;
+      $("evento").textContent = "Nenhuma execução: corrija o TXT.";
+      $("fila").textContent = "";
+      $("ciclo").textContent = "";
+      $("posicao").max = 0; $("posicao").value = 0;
+      return;
+    }
+
+    const s = estadoAtual();
+    const g = analise.grafo;
+    $("nVertices").textContent = g.vertices.length;
+    $("nArestas").textContent = g.arestas.length;
+    $("nComponentes").textContent = s.componentes;
+
+    // O ciclo só aparece quando a animação chega ao evento de conflito (ou sempre, sem rastreamento).
+    const cicloVisivel = (s.acao === ACAO.CONFLITO || !analise.bfs.rastreado) ? analise.bfs.ciclo : [];
+    $("grafo").innerHTML = desenharGrafo(g, s, selecionadas, cicloVisivel);
+
+    $("posicao").max = Math.max(0, ultimo);
+    $("posicao").value = passo;
+    $("evento").textContent = rastreado
+      ? `Passo ${s.passo} de ${ultimo} — ${s.acao}. ${s.nota}`
+      : `${s.acao}. ${s.nota}`;
+    $("fila").textContent = `Fila após o evento: [${s.fila.join(", ")}]${s.fila.length ? "" : " (vazia)"} | Exames de adjacência: ${s.exames}`;
+    $("ciclo").textContent = cicloVisivel.length
+      ? `Conflito: ciclo ímpar ${cicloVisivel.join(" → ")} com ${cicloVisivel.length - 1} arestas.` : "";
+
+    $("anterior").disabled = passo === 0;
+    $("proximo").disabled = passo >= ultimo;
+    $("rastro").querySelectorAll("tr[data-passo]").forEach(linha =>
+      linha.classList.toggle("current", Number(linha.dataset.passo) === passo));
+  }
+
+  /* ---------- Animação ---------- */
+
+  function parar() {
+    if (temporizador !== null) clearInterval(temporizador);
+    temporizador = null;
+    $("executar").textContent = "Executar";
+  }
+
+  function avancar() {
+    if (!analise.grafo || !analise.bfs.rastreado) return;
+    if (passo < analise.bfs.rastro.length - 1) passo++;
+    else parar();
+    renderizar();
+  }
+
+  $("reiniciar").onclick = () => { parar(); passo = 0; renderizar(); };
+  $("anterior").onclick = () => { parar(); passo = Math.max(0, passo - 1); renderizar(); };
+  $("proximo").onclick = () => { parar(); avancar(); };
+  $("posicao").oninput = e => { parar(); passo = Number(e.target.value); renderizar(); };
+  $("executar").onclick = () => {
+    if (temporizador !== null) { parar(); return; }        // alterna executar/pausar
+    if (passo >= analise.bfs.rastro.length - 1) passo = 0;  // recomeça se já estava no fim
+    $("executar").textContent = "Pausar";
+    temporizador = setInterval(avancar, 850);
+    renderizar();
+  };
+
+  /* ---------- Entrada ---------- */
+
+  $("cenarioValido").onclick = () => carregar(CENARIOS.valido);
+  $("cenarioConflito").onclick = () => carregar(CENARIOS.conflito);
+  $("analisar").onclick = () => carregar($("fonte").value);
+  $("arquivo").onchange = async evento => {
+    const arquivo = evento.target.files[0];
+    if (!arquivo) return;
+    if (arquivo.size > 2 * 1024 * 1024) {      // proteção do navegador, não regra do TXT
+      $("statusDownload").textContent = "O arquivo excede 2 MB e não foi lido.";
+      return;
+    }
+    try { carregar(await arquivo.text()); }
+    catch (erro) { $("statusDownload").textContent = "Não foi possível ler o arquivo: " + erro.message; }
+  };
+
+  /* ---------- Downloads (mesmo código usado pelos scripts de geração) ---------- */
+
+  function baixar(nome, conteudo, mime) {
+    const blob = conteudo instanceof Blob ? conteudo : new Blob([conteudo], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = nome;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+  const verificacoesAtuais = () => Verificacoes.executarVerificacoes(CENARIOS);
+
+  $("baixarTxt1").onclick = () => baixar("cenario-valido.txt", CENARIOS.valido, "text/plain;charset=utf-8");
+  $("baixarTxt2").onclick = () => baixar("cenario-conflito.txt", CENARIOS.conflito, "text/plain;charset=utf-8");
+  $("baixarXlsx").onclick = () => {
+    try {
+      const bytes = Planilha.montarPlanilha(CENARIOS, verificacoesAtuais());
+      baixar("teste-de-mesa.xlsx", new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+      $("statusDownload").textContent = "Excel gerado pelo mesmo algoritmo da aplicação. Abra-o no Excel ou LibreOffice para conferir.";
+    } catch (erro) { $("statusDownload").textContent = "Falha ao gerar o Excel: " + erro.message; }
+  };
+  $("baixarSlides").onclick = () => {
+    const css = document.querySelector("style").textContent;
+    baixar("apresentacao.html", Slides.htmlApresentacao(css, CENARIOS, verificacoesAtuais()), "text/html;charset=utf-8");
+  };
+  $("baixarRoteiro").onclick = () =>
+    baixar("roteiro-de-fala.md", Slides.textoRoteiro(CENARIOS, verificacoesAtuais()), "text/markdown;charset=utf-8");
+
+  /* ---------- Guia e verificações ---------- */
+
+  function mostrarVerificacoes() {
+    const linhas = verificacoesAtuais();
+    const aprovadas = linhas.filter(l => l[4] === "APROVADO").length;
+    $("resumoVerificacoes").textContent = `${aprovadas}/${linhas.length} verificações aprovadas nesta execução.`;
+    $("verificacoes").innerHTML = linhas.map(l =>
+      `<tr${l[4] === "APROVADO" ? "" : ' class="error"'}>` + l.map(c => `<td>${esc(c)}</td>`).join("") + `</tr>`).join("");
+    return linhas;
+  }
+  $("rodarVerificacoes").onclick = mostrarVerificacoes;
+
+  /* ---------- Tema, abas e apresentação ---------- */
+
+  $("tema").onclick = () => {
+    document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  };
+  document.documentElement.dataset.theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+  document.querySelectorAll("[data-aba]").forEach(botao => {
+    botao.onclick = () => {
+      parar();
+      document.querySelectorAll("[data-aba]").forEach(b => b.setAttribute("aria-selected", String(b === botao)));
+      ["app", "apresentacao", "guia"].forEach(id => { $(id).hidden = id !== botao.dataset.aba; });
+    };
+  });
+
+  let slideAtual = 0;
+  function mostrarSlide(i) {
+    const total = document.querySelectorAll("#deck .slide").length;
+    slideAtual = (i + total) % total;
+    document.querySelectorAll("#deck .slide").forEach((s, k) => s.classList.toggle("active", k === slideAtual));
+    document.querySelectorAll("#slidePontos button").forEach((b, k) => b.classList.toggle("active", k === slideAtual));
+    $("slideContador").textContent = `${slideAtual + 1} / ${total}`;
+  }
+
+  const linhasVerificacao = mostrarVerificacoes();
+  $("deck").innerHTML = Slides.marcacaoSlides(CENARIOS, linhasVerificacao);
+  const totalSlides = document.querySelectorAll("#deck .slide").length;
+  $("slidePontos").innerHTML = Array.from({ length: totalSlides }, (_, i) =>
+    `<button aria-label="Ir ao slide ${i + 1}" data-slide-indice="${i}"></button>`).join("");
+  $("slidePontos").querySelectorAll("button").forEach(b => { b.onclick = () => mostrarSlide(Number(b.dataset.slideIndice)); });
+  $("slideAnterior").onclick = () => mostrarSlide(slideAtual - 1);
+  $("slideProximo").onclick = () => mostrarSlide(slideAtual + 1);
+  $("telaCheia").onclick = async () => {
+    try {
+      if (!document.fullscreenElement) await $("apresentacao").requestFullscreen(); else await document.exitFullscreen();
+    } catch { $("statusDownload").textContent = "Tela cheia indisponível. Use a apresentação baixada ou a tela cheia do navegador."; }
+  };
+  document.addEventListener("keydown", e => {
+    if ($("apresentacao").hidden) return;
+    if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+    if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); mostrarSlide(slideAtual + 1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); mostrarSlide(slideAtual - 1); }
+  });
+
+  // Exposto só para as verificações automatizadas do navegador (tests/navegador.test.js).
+  window.__app = { carregar, estado: () => ({ analise, passo, selecionadas }) };
+
+  mostrarSlide(0);
+  carregar(CENARIOS.valido);
+})();
+
+
+</script>
+</body>
+</html>
+
