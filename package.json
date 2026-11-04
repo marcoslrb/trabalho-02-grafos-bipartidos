@@ -1,0 +1,13 @@
+{
+  "name": "trabalho-02-grafos-bipartidos",
+  "version": "1.0.0",
+  "description": "Mudou o código: o que testar? — grafos bipartidos, BFS com duas cores e consulta de testes.",
+  "private": true,
+  "scripts": {
+    "gerar": "node tools/gerar.js",
+    "test": "node --test tests/*.test.js",
+    "excel": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/verificar-excel.ps1"
+  },
+  "engines": { "node": ">=22" }
+}
+

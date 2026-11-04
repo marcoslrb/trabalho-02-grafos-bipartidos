@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mudou o código: o que testar?</title>
+<style>
+/*ESTILO*/
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+<header>
+  <div class="toolbar" style="justify-content:space-between">
+    <svg width="44" height="36" viewBox="0 0 44 36" role="img" aria-label="Código e testes">
+      <g stroke="currentColor" stroke-width="2" fill="none">
+        <path d="M8 9L35 9M8 9L35 27M8 27L35 27"/>
+        <rect x="2" y="3" width="12" height="12" rx="2"/>
+        <rect x="2" y="21" width="12" height="12" rx="2"/>
+        <circle cx="35" cy="9" r="6"/>
+        <circle cx="35" cy="27" r="6"/>
+      </g>
+    </svg>
+    <button id="tema" aria-label="Alternar tema claro ou escuro">Claro / escuro</button>
+  </div>
+  <h1>Mudou o código: o que testar?</h1>
+  <p class="small">Grafos bipartidos • BFS com duas cores • consulta de testes relacionados</p>
+  <div class="toolbar" aria-label="Materiais do trabalho">
+    <button id="baixarXlsx" class="primary">Baixar Excel do teste de mesa</button>
+    <button id="baixarTxt1">TXT válido</button>
+    <button id="baixarTxt2">TXT com conflito</button>
+    <button id="baixarSlides">Baixar apresentação</button>
+    <button id="baixarRoteiro">Baixar roteiro de fala</button>
+  </div>
+  <p id="statusDownload" class="small" role="status"></p>
+  <nav class="tabs" aria-label="Áreas do projeto">
+    <button data-aba="app" aria-selected="true">Aplicação</button>
+    <button data-aba="apresentacao" aria-selected="false">Apresentação</button>
+    <button data-aba="guia" aria-selected="false">Guia e verificações</button>
+  </nav>
+</header>
+
+<main id="main">
+<section id="app">
+  <div class="grid">
+    <aside>
+      <section class="panel">
+        <h2>1. Entrada do grafo</h2>
+        <div class="controls">
+          <button id="cenarioValido">Cenário válido</button>
+          <button id="cenarioConflito">Cenário com conflito</button>
+        </div>
+        <label for="arquivo">Importar TXT</label>
+        <input id="arquivo" type="file" accept=".txt,text/plain">
+        <p><label for="fonte">Dados do cenário (TXT)</label></p>
+        <textarea id="fonte" spellcheck="false"></textarea>
+        <div class="controls">
+          <button id="analisar" class="primary">Carregar e analisar</button>
+        </div>
+        <p class="small">Formato: <code>V;ID;CODIGO|TESTE;Rótulo</code>, <code>E;ID_ORIGEM;ID_DESTINO</code>, <code>A;ID_CODIGO_ALTERADO</code>. Linhas vazias e linhas iniciadas por # são ignoradas.</p>
+      </section>
+      <section class="panel">
+        <h2>2. Funções alteradas</h2>
+        <div id="escolhas"></div>
+        <p class="small">A indicação considera somente relações diretas do mapeamento informado.</p>
+      </section>
+    </aside>
+
+    <div>
+      <section class="panel">
+        <h2>3. As quatro operações</h2>
+        <ol class="etapas" id="etapas" aria-live="polite"></ol>
+        <div class="metrics">
+          <div class="metric"><b id="nVertices">—</b>Vértices</div>
+          <div class="metric"><b id="nArestas">—</b>Arestas</div>
+          <div class="metric"><b id="nComponentes">—</b>Componentes iniciados (no passo atual)</div>
+        </div>
+        <div class="legend">
+          <span><i class="dot" style="background:var(--c0)"></i>Cor 0</span>
+          <span><i class="dot" style="background:var(--c1)"></i>Cor 1</span>
+          <span><i class="dot" style="background:var(--neutral)"></i>Não visitado</span>
+          <span>▭ retângulo = CODIGO (função) • ◯ círculo = TESTE</span>
+        </div>
+        <div id="grafo" aria-label="Visualização do grafo"></div>
+      </section>
+
+      <section class="panel">
+        <h2>4. Execução da BFS</h2>
+        <div class="controls">
+          <button id="reiniciar">Reiniciar</button>
+          <button id="anterior">Anterior</button>
+          <button id="proximo">Próximo passo</button>
+          <button id="executar" class="primary">Executar</button>
+        </div>
+        <label for="posicao" class="small">Posição no rastreamento</label>
+        <input id="posicao" type="range" min="0" max="0" value="0">
+        <p id="evento" class="status" aria-live="polite"></p>
+        <p id="fila"></p>
+        <p id="ciclo" class="error"></p>
+        <details>
+          <summary>Rastreamento completo (teste de mesa)</summary>
+          <div class="tabela-rolavel">
+            <table>
+              <thead><tr><th>Passo</th><th>Evento</th><th>u → v</th><th>Fila após o evento</th><th>Exames</th></tr></thead>
+              <tbody id="rastro"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>5. Testes relacionados</h2>
+        <div id="impacto" aria-live="polite"></div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section id="apresentacao" hidden>
+  <div class="deck" id="deck"></div>
+  <div class="controls">
+    <button id="slideAnterior">← Anterior</button>
+    <span id="slideContador"></span>
+    <button id="slideProximo">Próximo →</button>
+    <button id="telaCheia">Tela cheia</button>
+  </div>
+  <div class="slide-dots" id="slidePontos"></div>
+  <p class="small">Setas do teclado navegam entre os slides. O roteiro de fala pode ser baixado no cabeçalho.</p>
+</section>
+
+<section id="guia" hidden>
+  <article class="panel">
+    <h2>Como usar</h2>
+    <ol>
+      <li>Carregue o cenário válido e mostre os dois tipos de vértice (retângulo e círculo).</li>
+      <li>Avance a BFS: observe cores, fila, pais e a visita dos três componentes (inclusive C4, isolado).</li>
+      <li>Selecione C1 e C2: devem ser indicados T1, T2 e T3, com T3 justificado por C1 e C2.</li>
+      <li>Deixe só C1: T2 não é indicado (não há propagação pelo componente).</li>
+      <li>Selecione C4: aparece o aviso “sem testes mapeados”.</li>
+      <li>Carregue o cenário com conflito e avance até o ciclo ímpar; observe o bloqueio da consulta.</li>
+      <li>Edite o TXT para provocar erros e veja linha e motivo de cada um.</li>
+    </ol>
+    <h3>Limitações do modelo</h3>
+    <p>O programa não executa testes, não lê o Git e não descobre relações no código-fonte. A qualidade da indicação depende da completude e da atualização do mapeamento. Uma seleção menor de testes não comprova economia de tempo; não foram feitos experimentos de desempenho.</p>
+    <p>O grafo de negócio já é bipartido por construção quando toda relação liga CODIGO a TESTE. A entrada negativa serve para demonstrar o verificador.</p>
+    <p>O núcleo da BFS usa listas de adjacência e fila com índice de início; sua travessia é O(V+E). A animação grava uma cópia dos estados em cada evento, o que custa O(V·(V+E)) em tempo e memória; acima de 600 (vértices + arestas) a aplicação usa o modo sem rastreamento e desativa a animação (limite técnico nosso, não exigência do TXT nem do professor).</p>
+    <p>A planilha é um registro da execução dos dois cenários; editar a aba Entradas não executa a BFS de novo. A aba Impacto recalcula por fórmulas quando se altera a seleção.</p>
+    <p><strong>Pendente:</strong> confrontar linguagem, duração da apresentação, número de vértices e formato de entrega com o enunciado original do professor, que não estava no projeto.</p>
+    <p>Referência conceitual: <a href="https://algs4.cs.princeton.edu/41graph/BipartiteX.java.html" target="_blank" rel="noopener noreferrer">Princeton — BipartiteX</a>.</p>
+  </article>
+  <section class="panel">
+    <h2>Verificações automatizadas (executadas agora, no navegador)</h2>
+    <p id="resumoVerificacoes" class="status"></p>
+    <button id="rodarVerificacoes">Executar novamente</button>
+    <div class="tabela-rolavel">
+      <table>
+        <thead><tr><th>Grupo</th><th>Verificação</th><th>Esperado</th><th>Obtido</th><th>Status</th></tr></thead>
+        <tbody id="verificacoes"></tbody>
+      </table>
+    </div>
+    <p class="small">São as mesmas verificações do <code>node --test</code>. Elas não substituem abrir o XLSX no Excel nem conferir a apresentação na tela.</p>
+  </section>
+</section>
+</main>
+
+<footer class="small">
+Cenários didáticos autorais. Não representam dados coletados de uma aplicação real.
+</footer>
+
+<!--SCRIPTS-->
+</body>
+</html>
+

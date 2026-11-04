@@ -1,0 +1,30 @@
+# Cenário VÁLIDO — mapeamento didático autoral (não são dados de uma aplicação real).
+# Formato:
+#   V;ID;CODIGO|TESTE;Rótulo      declara um vértice
+#   E;ID_ORIGEM;ID_DESTINO        aresta não direcionada: o teste exercita a função
+#   A;ID_CODIGO_ALTERADO          função alterada (somente CODIGO)
+# Linhas vazias e linhas iniciadas por # são ignoradas.
+
+# Funções
+V;C1;CODIGO;calcularDesconto
+V;C2;CODIGO;validarCupom
+V;C3;CODIGO;calcularFrete
+V;C4;CODIGO;registrarAuditoria
+
+# Casos de teste
+V;T1;TESTE;testeDesconto
+V;T2;TESTE;testeCupom
+V;T3;TESTE;testeCompraComCupom
+V;T4;TESTE;testeFrete
+
+# Relações função-teste
+E;C1;T1
+E;C1;T3
+E;C2;T2
+E;C2;T3
+E;C3;T4
+
+# Funções alteradas
+A;C1
+A;C2
+

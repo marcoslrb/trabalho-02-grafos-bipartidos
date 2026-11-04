@@ -1,0 +1,33 @@
+# Cenário de CONFLITO — igual ao válido, mais a aresta C1-C2.
+# ATENÇÃO: C1-C2 liga duas funções. NÃO é uma relação legítima código-teste.
+# Esta entrada é um TESTE NEGATIVO do verificador:
+#   - estruturalmente: surge o triângulo C1-T3-C2-C1 (ciclo ímpar), então o grafo não é bipartido;
+#   - semanticamente: a aresta liga dois vértices do tipo CODIGO.
+# Formato: V;ID;CODIGO|TESTE;Rótulo  |  E;ID_ORIGEM;ID_DESTINO  |  A;ID_CODIGO_ALTERADO
+
+# Funções
+V;C1;CODIGO;calcularDesconto
+V;C2;CODIGO;validarCupom
+V;C3;CODIGO;calcularFrete
+V;C4;CODIGO;registrarAuditoria
+
+# Casos de teste
+V;T1;TESTE;testeDesconto
+V;T2;TESTE;testeCupom
+V;T3;TESTE;testeCompraComCupom
+V;T4;TESTE;testeFrete
+
+# Relações função-teste
+E;C1;T1
+E;C1;T3
+E;C2;T2
+E;C2;T3
+E;C3;T4
+
+# Entrada negativa (não é mapeamento legítimo)
+E;C1;C2
+
+# Funções alteradas
+A;C1
+A;C2
+
