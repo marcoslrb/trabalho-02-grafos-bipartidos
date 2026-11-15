@@ -26,13 +26,13 @@
     const codigos = grafo.vertices.filter(n => n.tipo === "CODIGO");
     const testes = grafo.vertices.filter(n => n.tipo === "TESTE");
     const maior = Math.max(codigos.length, testes.length);
-    const passo = maior > 12 ? 52 : 74;
-    const altura = Math.max(320, maior * passo + 110);
-    const X_CODIGO = 190, X_TESTE = 750;
+    const passo = maior > 12 ? 56 : 94;
+    const altura = Math.max(320, maior * passo + 115);
+    const X_CODIGO = 210, X_TESTE = 740;
 
     const pos = new Map();
     for (const [lista, x] of [[codigos, X_CODIGO], [testes, X_TESTE]])
-      lista.forEach((n, i) => pos.set(n.id, { x, y: 90 + i * passo }));
+      lista.forEach((n, i) => pos.set(n.id, { x, y: 95 + i * passo }));
 
     const par = (a, b) => [a, b].sort().join("|");
     const arestasCiclo = new Set();
@@ -48,10 +48,12 @@
       const relacionada = alteradas.has(e.u) || alteradas.has(e.v);
       const cor = emCiclo || mesmoTipo ? VERMELHO : atual ? "#a45209" : relacionada ? "#6a4c93" : "#a4acb1";
       const largura = emCiclo || atual ? 5 : relacionada ? 3 : 2;
-      // Aresta entre vértices da mesma coluna é curva, abrindo para FORA da coluna.
+      // Aresta entre vértices da mesma coluna sai pela borda externa, formando um arco visível fora dos nós.
       const lado = a.x === X_CODIGO ? -1 : 1;
+      const xBorda = a.x + lado * (a.x === X_CODIGO ? 57 : 28);
+      const abertura = Math.min(130, 55 + Math.abs(b.y - a.y) * 0.35);
       const caminho = a.x === b.x
-        ? `M ${a.x} ${a.y} Q ${a.x + lado * 150} ${(a.y + b.y) / 2} ${b.x} ${b.y}`
+        ? `M ${xBorda} ${a.y} Q ${xBorda + lado * abertura} ${(a.y + b.y) / 2} ${xBorda} ${b.y}`
         : `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
       const tracejado = mesmoTipo && !emCiclo ? ' stroke-dasharray="8 5"' : "";
       arestas += `<path d="${caminho}" fill="none" stroke="${cor}" stroke-width="${largura}"${tracejado}>` +
@@ -66,7 +68,7 @@
       const rotuloCor = c === -1 ? "cor —" : `cor ${c}`;
       const alterada = alteradas.has(n.id);
       const atual = estado && (estado.u === n.id || estado.v === n.id);
-      const contorno = noCiclo.has(n.id) ? VERMELHO : alterada ? "#172c37" : atual ? "#e0a100" : "#ffffff";
+      const contorno = noCiclo.has(n.id) ? VERMELHO : atual ? "#e0a100" : alterada ? "currentColor" : "#ffffff";
       const espessura = noCiclo.has(n.id) || alterada || atual ? 4 : 2;
       const forma = n.tipo === "CODIGO"
         ? `<rect x="${x - 57}" y="${y - 25}" width="114" height="50" rx="7"/>`
@@ -76,8 +78,8 @@
         `<g fill="${fill}" stroke="${contorno}" stroke-width="${espessura}">${forma}</g>` +
         `<text x="${x}" y="${y + 1}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="17" font-weight="700">${esc(n.id)}</text>` +
         `<text x="${x}" y="${y + 16}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="11">${rotuloCor}</text>` +
-        (alterada ? `<text x="${x + (n.tipo === "CODIGO" ? 57 : 28)}" y="${y - (n.tipo === "CODIGO" ? 27 : 24)}" text-anchor="end" fill="currentColor" font-family="sans-serif" font-size="12" font-weight="700">ALTERADA</text>` : "") +
-        `<text x="${x}" y="${y + 45}" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="13">${esc(rotulo)}</text></g>`;
+        (alterada ? `<text x="${x + (n.tipo === "CODIGO" ? 57 : 28)}" y="${y - 31}" text-anchor="end" fill="currentColor" font-family="sans-serif" font-size="11" font-weight="700" letter-spacing="0.5">ALTERADA</text>` : "") +
+        `<text x="${x}" y="${y + 43}" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="13">${esc(rotulo)}</text></g>`;
     }
 
     const vazio = grafo.vertices.length === 0
