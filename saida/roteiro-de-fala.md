@@ -1,216 +1,161 @@
-# Roteiro de fala — Mudou o código: o que testar?
+# Roteiro de fala — Trabalho 02: Grafo Bipartido (20 minutos)
 
-Dupla: Marcos Ribeiro e André Valane — Técnicas de Programação Avançada (Prof. Rafael Vargas).
+**Dupla:** Marcos Ribeiro e André Valane  
+**Disciplina:** Técnicas de Programação Avançada — Prof. Rafael Vargas Mesquita (Ifes Campus Cachoeiro)  
+**Modelo Visual:** Baseado fielmente no `modelo2-apresentacao-institucional.ppt` do Prof. Rafael Vargas Mesquita  
+**Tempo oficial do edital (AVA):** **20 minutos** (pontuação máxima de 4,67 pts na apresentação).
 
-> **Pendente:** o enunciado original não estava no projeto. Duração, formato e linguagem exigidos **não foram confirmados**.
-> Por isso este roteiro **não** declara tempo total. A divisão de falas abaixo é só uma sugestão — ajustem como preferirem,
-> mas ambos devem saber explicar a BFS **e** a consulta de impacto.
+## Divisão de tempo sugerida (20 minutos)
+- **Parte 1 — Marcos (0:00 a 8:30 · Slides 1 a 5):** Capa institucional, contextualização histórica (Dénes König, 1916/1936), definição + problema interativo de 2 cores, demonstração animada da BFS e implementação com destaque de código.
+- **Parte 2 — André (8:30 a 19:00 · Slides 6 a 13):** Interface gráfica + os 2 arquivos TXT, Teste de Mesa (Início e Término no padrão do professor), prova pela paridade de nível + cenário de conflito, cuidados conceituais (Cor ≠ Tipo e Estrutura ≠ Semântica), simulador prático ("Mudou o código: o que testar?"), complexidade e encerramento institucional.
+- **Fechamento e Demonstração Complementar / Excel (19:00 a 20:00):** Abrir `saida/teste-de-mesa.xlsx` na aba `Impacto` e mostrar as fórmulas reagindo.
 
-## Antes de começar
-- Abrir `codigo-e-testes.html` (aplicação) e `saida/apresentacao.html` (slides) em abas separadas.
-- Abrir `saida/teste-de-mesa.xlsx` no Excel já na aba BFS_valido.
-- Testar o som/projetor e a tela cheia (tecla F11 no navegador).
+## Atalhos da Apresentação (`saida/apresentacao.html`)
+- `←` / `→` ou `PageUp` / `PageDown`: slide anterior / próximo.
+- `Espaço`: toca ou pausa a animação da BFS (no Slide 4) ou avança nos demais slides.
+- `↓` / `↑`: avança ou volta passo a passo na BFS (Slide 4) e alterna a faixa branca de destaque entre os blocos do código (Slide 5).
+- `F`: entra/sai da tela cheia.
+- `B` ou `.`: deixa a tela preta (para focar a atenção na fala).
 
-## Slide 1 — Mudou o código: o que testar?
-**Quem fala (sugestão):** Marcos
+---
 
-**Na tela:**
-- Grafos bipartidos aplicados a funções e casos de teste.
-- Marcos Ribeiro e André Valane
-
-**Fala:**
-> Olá. Somos o Marcos e o André e vamos apresentar o trabalho de Grafos Bipartidos. A pergunta do título é: quando uma função muda, quais testes eu devo olhar? A ferramenta que construímos responde isso a partir de um mapeamento informado por arquivo de texto. Ela não executa testes, não lê o Git e não descobre cobertura sozinha.
-
-## Slide 2 — O problema
-**Quem fala (sugestão):** Marcos
+## Slide 1 (0:00–1:00) — Trabalho sobre Grafos — Grafo Bipartido
+**Quem fala:** Marcos
 
 **Na tela:**
-- Uma alteração pode afetar vários testes.
-- Um teste pode exercitar várias funções.
-- O mapeamento função–teste é informado manualmente, em TXT.
+- Tema (Grupo 06): Reconhecimento de Grafo Bipartido por BFS com 2 cores.
+- Aplicação prática: seleção de casos de teste impactados por alterações de código.
 
 **Fala:**
-> Em um projeto real, uma função costuma ser usada por mais de um teste, e um teste costuma passar por mais de uma função. Quando alguém altera uma função, precisamos saber quais testes estão ligados a ela. Aqui o mapeamento é dado por nós, em um TXT. Por isso o resultado vale tanto quanto o mapeamento: se ele estiver incompleto, a indicação também estará.
+> Olá, professor Rafael e colegas. Eu sou o Marcos e, junto com o André, vamos apresentar o Trabalho 02 de Técnicas de Programação Avançada sobre Grafos Bipartidos. Nosso trabalho responde a uma pergunta prática do dia a dia de desenvolvimento: quando alteramos funções do código, quais testes precisam ser reexecutados?
 
-## Slide 3 — Dois conjuntos, uma relação
-**Quem fala (sugestão):** Marcos
+## Slide 2 (1:00–2:30) — Problema: Contextualização
+**Quem fala:** Marcos
 
 **Na tela:**
-- CODIGO: funções da aplicação.
-- TESTE: casos de teste.
-- Aresta não direcionada: o teste exercita a função, sem peso.
-- Não existe relação legítima dentro do mesmo tipo.
+- Problema: Grafo Bipartido (Reconhecimento e Bipartição em 2 Cores);
+- Primeiro Teorema Estrutural: Dénes König (1916 / livro clássico de 1936);
+- Algoritmo de Decisão: Busca em Largura (BFS) com 2 cores alternadas;
+- Complexidade: V + A em tempo e V em espaço com listas de adjacência.
 
 **Fala:**
-> O modelo tem dois tipos de vértice: CODIGO, que são as funções, e TESTE, que são os casos de teste. Uma aresta liga uma função a um teste que a exercita. Ela não tem direção nem peso. Uma função pode ter vários testes e um teste pode ter várias funções. Esse é exatamente o formato de um grafo bipartido: todas as arestas cruzam entre os dois conjuntos.
+> Começando pela contextualização histórica: o estudo formal dos grafos bipartidos foi consolidado pelo matemático húngaro Dénes König em 1916 e publicado em 1936 no primeiro livro-texto da história da Teoria dos Grafos. König provou que um grafo é bipartido se, e somente se, não possui ciclo de comprimento ímpar. Usando busca em largura com duas cores sobre listas de adjacência, decidimos isso em tempo linear V mais A.
 
-## Slide 4 — O cenário válido
-**Quem fala (sugestão):** Marcos
+## Slide 3 (2:30–4:15) — Problema: Contextualização
+**Quem fala:** Marcos
 
 **Na tela:**
-- 8 vértices e 5 arestas.
-- T3 é compartilhado por C1 e C2.
-- C4 é uma função isolada, sem testes mapeados.
-- 3 componentes conectados.
+- Definição: Um grafo G = (V, A) é bipartido quando V pode ser particionado em dois conjuntos disjuntos V₁ e V₂ tais que toda aresta une um vértice de V₁ a um vértice de V₂.
 
 **Fala:**
-> Este é o nosso primeiro arquivo de entrada. Temos quatro funções e quatro testes, com cinco relações. O teste T3, testeCompraComCupom, usa tanto calcularDesconto quanto validarCupom. A função C4, registrarAuditoria, não tem nenhum teste ligado: é um vértice isolado. O grafo tem 3 componentes: o principal, o par C3 e T4, e o C4 sozinho. Os retângulos são funções e os círculos são testes, então o tipo não depende de cor.
+> Pela definição formal, um grafo é bipartido quando conseguimos dividir seus vértices em dois conjuntos disjuntos V1 e V2 de modo que toda aresta atravesse de um lado para o outro, sem arestas internas. Aqui no slide podemos testar ao vivo: com funções de um lado e testes do outro, duas cores bastam. Mas se clicarmos em 'Adicionar aresta C1–C2', fechamos o triângulo C1–T3–C2 de 3 arestas, e duas cores se tornam matematicamente impossíveis.
 
-## Slide 5 — Quatro operações diferentes
-**Quem fala (sugestão):** Marcos
+## Slide 4 (4:15–6:45) — Solução: BFS 2-Cores — Demonstração
+**Quem fala:** Marcos
 
 **Na tela:**
-- 1. Sintaxe do TXT: campos, IDs, duplicatas, referências.
-- 2. Estrutura: BFS com duas cores decide se é bipartido.
-- 3. Semântica: cada aresta liga CODIGO a TESTE.
-- 4. Consulta: testes ligados diretamente às funções alteradas.
+- A raiz de cada componente recebe cor 0; cada vizinho novo recebe 1 − cor[u] e entra na fila FIFO.
 
 **Fala:**
-> Separamos quatro operações que são fáceis de confundir. Primeiro, a sintaxe: o arquivo está bem formado? Segundo, a estrutura: a BFS com duas cores diz se o grafo é bipartido. Terceiro, a semântica: cada aresta liga mesmo uma função a um teste? E só então, quarto, a consulta de impacto. Se qualquer uma das etapas anteriores falhar, a recomendação fica bloqueada.
+> Neste slide demonstramos o algoritmo em funcionamento passo a passo. A busca começa em C1 com cor 0. Ao inspecionar a lista de adjacência de C1, descobrimos T1 e T3 com a cor oposta, cor 1, e colocamos ambos na fila FIFO. De T3, descobrimos C2 com cor 0. Quando o primeiro componente termina, o laço externo garante a visita a C3 e T4 e também ao vértice isolado C4. E trocando aqui em cima para o segundo cenário, vemos a BFS detectar o conflito ímpar no exato momento em que examina T3 para C2.
 
-## Slide 6 — BFS com duas cores
-**Quem fala (sugestão):** Marcos
+## Slide 5 (6:45–8:30) — Solução: BFS 2-Cores — Implementação
+**Quem fala:** Marcos
 
 **Na tela:**
-- Cada vértice ainda sem cor inicia um componente e recebe a cor 0.
-- Fila com índice de início: retirar é avançar um número, sem Array.shift.
-- Vizinho novo recebe a cor oposta, guarda o pai e entra na fila.
-- Vizinho já visitado com a mesma cor: conflito e ciclo ímpar pela árvore de pais.
-- Mantemos cor, pai, componente, fila e exames de adjacência.
+- Implementação em JavaScript (src/nucleo.js) fiel à estrutura clássica com listas de adjacência.
 
 **Fala:**
-> A BFS percorre todos os componentes. O laço externo olha cada vértice, então o isolado C4 e o componente C3–T4 também são visitados. A raiz recebe cor 0, os vizinhos novos recebem a cor oposta e entram na fila. Se encontramos um vizinho já colorido com a mesma cor, existe ciclo ímpar: subimos pela árvore de pais até o ancestral comum e reconstruímos o ciclo. A fila usa um índice de início, então retirar elemento não desloca o vetor.
+> Aqui temos a implementação da nossa função executarBfs, seguindo exatamente o estilo de destaque do modelo da disciplina. No bloco destacado em branco, para cada vértice u retirado da fila, percorremos sua lista de adjacência: se o vizinho v ainda tem cor menos 1, ele recebe a cor complementar 1 menos cor de u, guarda u como pai e entra na fila. Se clicarmos no Bloco 4, vemos o tratamento de conflito: quando v já tem a mesma cor de u, reconstruímos o ciclo ímpar subindo pelos pais até o menor ancestral comum. Passo agora a palavra ao André.
 
-## Slide 7 — Como ler o teste de mesa
-**Quem fala (sugestão):** Marcos
+## Slide 6 (8:30–10:00) — Solução: Implementação — Interface Gráfica
+**Quem fala:** André
 
 **Na tela:**
-- Cada linha mostra o estado depois de um evento.
-- Observar fila, cores, pais e componente.
-- Vértices e arestas seguem a ordem do arquivo.
-- O Excel registra a execução do mesmo algoritmo da aplicação.
+- Leitura dos 2 arquivos TXT e separação rigorosa das 4 operações na interface.
 
 **Fala:**
-> No teste de mesa, cada linha é um evento da BFS: inicialização, raiz, retirada da fila, coloração, aresta verificada e fim de componente. Em cada linha vemos a fila, a cor de cada vértice, os pais, o componente e quantos vizinhos já foram examinados. A planilha foi gerada pelo mesmo código da aplicação. Ela é um registro da execução; se alguém editar o TXT dentro da planilha, a BFS não é recalculada.
+> Obrigado, Marcos. Seguindo o modelo da apresentação, aqui mostramos o formato dos nossos dois arquivos TXT à esquerda e a interface gráfica à direita. O arquivo declara vértices com V, arestas com E e funções alteradas com A. Nossa arquitetura separa quatro operações independentes: validação sintática do TXT com linha e motivo, verificação estrutural pela BFS, validação semântica entre CODIGO e TESTE, e consulta de impacto.
 
-## Slide 8 — Cor da BFS não é tipo do vértice
-**Quem fala (sugestão):** André
+## Slide 7 (10:00–11:15) — Teste de Mesa :: Início
+**Quem fala:** André
 
 **Na tela:**
-- Cor 0 e cor 1 identificam os dois lados encontrados pela BFS.
-- CODIGO e TESTE identificam o papel no domínio.
-- Aqui os dois coincidem porque cada componente começa por uma função.
-- Se um TESTE for declarado primeiro, ele recebe cor 0.
+- Visual completo de Teste de Mesa / Encerramento no padrão do professor.
 
 **Fala:**
-> Um ponto importante: azul e laranja são as cores da BFS, não os tipos. Neste exemplo elas coincidem com função e teste só porque a raiz de cada componente é uma função. Se um teste fosse declarado primeiro, ele receberia a cor zero. Por isso o tipo aparece por forma e por texto, e a cor aparece com o número escrito dentro do vértice.
+> No Teste de Mesa :: Início, damos a visão geral do estado das estruturas antes da execução do laço principal da BFS sobre o cenario-valido.txt. À esquerda temos o grafo G e sua lista de adjacência adj com as células pontilhadas ainda não visitadas. À direita, a fila FIFO está vazia e todos os 8 vértices começam na tabela com cor igual a menos 1, pai nulo e componente 0.
 
-## Slide 9 — O cenário de conflito
-**Quem fala (sugestão):** André
+## Slide 8 (11:15–12:30) — Teste de Mesa :: Término
+**Quem fala:** André
 
 **Na tela:**
-- O segundo TXT acrescenta a aresta C1–C2.
-- Ciclo ímpar encontrado: T3 → C1 → C2 → T3 (3 arestas).
-- A BFS encerra no primeiro conflito.
-- É um teste negativo, não uma relação legítima.
+- Visual completo de Teste de Mesa / Encerramento no padrão do professor.
 
 **Fala:**
-> O segundo arquivo acrescenta uma aresta entre C1 e C2, duas funções. Isso cria o triângulo C1, T3, C2. A BFS encontra dois vizinhos com a mesma cor e reconstrói o ciclo: T3 → C1 → C2 → T3. Ele tem 3 arestas, ou seja, comprimento ímpar, então o grafo não é bipartido. Deixamos claro na interface que essa aresta não é uma relação legítima de código e teste: é uma entrada negativa para provar que o verificador funciona.
+> E aqui temos o Teste de Mesa :: Término, após percorrer todas as listas de adjacência. Note que na representação adj à esquerda todas as 10 entradas ficaram marcadas em salmão, confirmando que cada uma das 5 arestas foi inspecionada nos dois sentidos: 2 vezes A exames. Na tabela à direita, todas as funções receberam cor 0, todos os testes receberam cor 1, e os três componentes conexos foram identificados, conforme a floresta BFS desenhada abaixo da fila.
 
-## Slide 10 — Estrutura não é semântica
-**Quem fala (sugestão):** André
+## Slide 9 (12:30–14:00) — Teste de Mesa :: Conflito e Prova Formal
+**Quem fala:** André
 
 **Na tela:**
-- Caminho C1–C2–T1 é bipartido.
-- Mesmo assim, C1–C2 liga duas funções.
-- A BFS não vê tipos; a validação semântica não vê cores.
-- Estrutura ou semântica inválida bloqueiam a consulta.
+- Visual completo de Teste de Mesa / Encerramento no padrão do professor.
 
 **Fala:**
-> Atenção: ser bipartido não basta. Um caminho C1, C2, T1 é bipartido, mas a aresta C1–C2 liga duas funções, o que o domínio não permite. Por isso temos duas verificações independentes: a BFS cuida da estrutura e outra etapa confere os tipos das pontas de cada aresta. Basta uma delas falhar para a consulta de impacto ser bloqueada.
+> Por que duas cores sempre bastam quando não há ciclo ímpar? Porque na árvore da BFS a cor de cada vértice é a paridade da sua distância até a raiz. Se uma aresta liga dois vértices u e v da mesma cor, a soma dos dois caminhos até o ancestral comum é par, e somando a própria aresta u–v obtemos um ciclo ímpar. É exatamente o que ocorre no segundo arquivo, cenario-conflito.txt: no passo 10, T3 encontra C2 ambos com cor 1, reconstruindo o triângulo T3–C1–C2–T3.
 
-## Slide 11 — Consulta de impacto: C1 e C2
-**Quem fala (sugestão):** André
+## Slide 10 (14:00–15:30) — Solução: Cuidados Conceituais (Cor ≠ Tipo e Estrutura ≠ Semântica)
+**Quem fala:** André
 
 **Na tela:**
-- Vizinhos TESTE de C1: T1 e T3.
-- Vizinhos TESTE de C2: T2 e T3.
-- União sem repetição: T1, T2 e T3.
-- T3 é justificado por C1 e C2.
+- Cor 0/1 depende apenas da ordem de visita da BFS; já a etapa semântica exige que toda aresta ligue CODIGO a TESTE.
 
 **Fala:**
-> Agora a consulta. Para as funções alteradas, C1 e C2, pegamos os vizinhos do tipo teste de cada uma e fazemos a união. C1 traz T1 e T3, C2 traz T2 e T3. O resultado é T1, T2 e T3, e o T3 aparece uma única vez, com a justificativa de que ele se liga às duas funções alteradas. O T4 fica de fora porque não se liga a nenhuma função alterada.
+> Dois cuidados conceituais importantes: primeiro, cor da BFS não é tipo de vértice. Se declararmos T1 antes de C1 no arquivo TXT, T1 recebe cor 0 e C1 recebe cor 1, enquanto C4 isolado continua com cor 0 por ser raiz do seu próprio componente. Segundo, ser bipartido na BFS não basta para o domínio: o caminho C1–C2–T1 à direita é bipartido, mas nossa etapa semântica bloqueia a consulta porque C1–C2 liga duas funções.
 
-## Slide 12 — Sem propagação e sem testes mapeados
-**Quem fala (sugestão):** André
+## Slide 11 (15:30–17:45) — Problema: Aplicação prática
+**Quem fala:** André
 
 **Na tela:**
-- Só C1 alterada: T1 e T3. T2 não entra.
-- A consulta olha só vizinhos diretos, não o componente inteiro.
-- Função sem vizinhos: aviso “sem testes mapeados”.
-- Isso não significa que a função não precisa de testes.
+- Identificar quais casos de teste devem ser reexecutados quando funções são alteradas, sem propagar pelo componente e alertando funções sem cobertura.
+- Arestas: cobertura declarada (teste exercita função) | Vértices: funções (CODIGO) e testes (TESTE)
 
 **Fala:**
-> Se só C1 mudou, indicamos T1 e T3. O T2 não entra, mesmo que o T3 também se ligue a C2, porque não percorremos o componente de forma transitiva. Se escolhermos a função C4, não há teste ligado a ela, e a ferramenta mostra o aviso de que não há testes mapeados. Esse aviso é diferente de dizer que a função não precisa ser testada: apenas não existe relação cadastrada.
+> Chegamos à aplicação prática, que é o coração do nosso problema. Os vértices representam funções e casos de teste, e as arestas representam quais testes exercitam quais funções. Podemos simular aqui no próprio slide: com C1 e C2 alteradas, o sistema recomenda T1, T2 e T3 sem duplicar T3. Se marcarmos apenas C1, ele recomenda apenas T1 e T3 — sem propagar para C2 nem puxar T2 indevidamente. E se clicarmos em C4, recebemos o alerta de que registrarAuditoria não possui testes mapeados.
 
-## Slide 13 — Custo e limites
-**Quem fala (sugestão):** André
+## Slide 12 (17:45–19:00) — Problema: Complexidade e Outras Aplicações Práticas
+**Quem fala:** André
 
 **Na tela:**
-- Núcleo da BFS: O(V+E) com listas de adjacência e fila indexada.
-- Gravar uma cópia dos estados em cada evento custa O(V·(V+E)).
-- Por isso existe o modo sem rastreamento.
-- O resultado depende do mapeamento informado; não mede cobertura nem tempo.
+- Núcleo da BFS roda em O(V + A); a mesma estrutura bipartida modela problemas clássicos de pareamento e alocação.
 
 **Fala:**
-> Sobre custo: o núcleo da BFS percorre cada vértice e cada aresta uma vez, então é O(V+E). Mas, para animar e montar o teste de mesa, gravamos uma cópia completa dos estados a cada evento. Isso tem custo maior, na ordem de V vezes V+E. Por isso a BFS tem um modo sem rastreamento, usado nas consultas e nos testes com grafos grandes. E lembramos os limites: não medimos economia de tempo e a qualidade da indicação depende do mapeamento.
+> Na tabela de complexidade separamos o custo do núcleo da BFS, que é O de V mais A com fila indexada sem shift, do modo com rastreamento O de V vezes V mais A, usado para gravar cada passo da animação e da planilha Excel. Ao lado, destacamos que essa mesma estrutura bipartida resolve problemas clássicos de alocação de candidatos a vagas e matrícula de alunos em turmas.
 
-## Slide 14 — Verificações e demonstração
-**Quem fala (sugestão):** André
+## Slide 13 (19:00–20:00) — Conclusão e Encerramento
+**Quem fala:** André
 
 **Na tela:**
-- 41 de 41 verificações automatizadas aprovadas.
-- Cobrem os 15 casos obrigatórios e o núcleo da BFS.
-- Demonstração: cenário válido, seleção de funções, cenário de conflito.
-- Excel com 7 abas e fórmulas na aba Impacto.
+- Entregáveis completos: código modular + aplicação em arquivo único, 2 TXTs, planilha Excel real com teste de mesa e apresentação interativa.
+- Obrigado pela atenção! Estamos à disposição para perguntas.
 
 **Fala:**
-> Para garantir o comportamento, escrevemos verificações automatizadas: 41 de 41 aprovadas na última execução. Elas cobrem os casos obrigatórios, como ciclo ímpar, vértice isolado, teste compartilhado, seleção vazia e todos os erros de entrada. Agora vamos mostrar a aplicação: carregar o cenário válido, avançar a BFS, selecionar C1 e C2, depois só C4, e por fim carregar o cenário de conflito.
+> Para concluir, todos os entregáveis solicitados no edital estão prontos e validados por 66 testes automatizados: o código com a aplicação visual, os dois arquivos TXT, a planilha Excel com o teste de mesa completo e as fórmulas de impacto, que podemos abrir agora para demonstrar, além desta apresentação. Muito obrigado pela atenção, professor Rafael e colegas! Estamos à disposição para perguntas.
 
-## Slide 15 — Conclusão
-**Quem fala (sugestão):** André
+---
 
-**Na tela:**
-- Funções e testes representados como grafo bipartido.
-- BFS explicável, com teste de mesa e animação.
-- Indicação de testes por vizinhança direta, com justificativa.
-- Limite: o resultado é tão bom quanto o mapeamento.
+## Perguntas prováveis da banca
+**1. Por que não usar só uma tabela em vez de um grafo?**  
+Uma tabela também armazena os pares, mas o grafo bipartido explicita as adjacências em duas classes disjuntas ($V_1 	imes V_2$) e permite validar estruturalmente a bipartição em $O(V + A)$ usando a BFS.
 
-**Fala:**
-> Concluindo: representamos funções e testes como um grafo bipartido, verificamos a bipartição com BFS e usamos a vizinhança direta das funções alteradas para indicar testes, sempre mostrando a justificativa. Voltando à pergunta do título: mudou o código, o que testar? Os testes ligados diretamente às funções alteradas, conforme o mapeamento informado. Obrigado.
+**2. O grafo válido já não nasce bipartido por construção se só ligarmos CODIGO a TESTE?**  
+Sim, quando a semântica é respeitada. O papel da BFS é demonstrar o algoritmo clássico de reconhecimento de bipartição (inclusive detectando o ciclo ímpar no segundo arquivo TXT), enquanto a validação semântica garante que um caminho bipartido como $C_1	ext{–}C_2	ext{–}T_1$ não passe despercebido.
 
-## Demonstração ao vivo (depois do slide 14)
-1. Aplicação, cenário válido: mostrar retângulos (funções) e círculos (testes) e a legenda de cores da BFS.
-2. Avançar a BFS passo a passo: fila, cores, pais; mostrar que C4 e o par C3–T4 também são visitados.
-3. Marcar C1 e C2: testes T1, T2 e T3, com T3 justificado por C1 e C2.
-4. Desmarcar C2: T1 e T3 (T2 sai: não há propagação pelo componente).
-5. Selecionar só C4: aviso “sem testes mapeados”, e explicar que não é “não precisa testar”.
-6. Carregar o cenário de conflito: avançar até o conflito, mostrar o ciclo destacado e o bloqueio da consulta.
-7. Abrir o Excel: BFS_valido (comparar as primeiras linhas), Impacto (editar C2:C5 e ver as fórmulas reagirem).
+**3. A BFS é quem seleciona os testes na consulta?**  
+Não. A BFS verifica se o grafo é bipartido (etapa 2). A consulta de impacto (etapa 4) percorre apenas os vizinhos diretos das funções alteradas, em tempo proporcional à soma dos graus das funções escolhidas.
 
-## Perguntas prováveis
-**Por que não usar só uma tabela?** Uma tabela também guarda as relações. O grafo deixa as adjacências explícitas e permite demonstrar o algoritmo estudado.
+**4. Por que não propagar a consulta pelo componente conexo inteiro?**  
+Porque se $C_1$ mudou e $T_3$ testa $C_1$ e $C_2$, a função $C_2$ **não** foi alterada. Propagar para os outros testes de $C_2$ (como $T_2$) selecionaria testes de funções intactas.
 
-**O grafo válido já não é bipartido por construção?** Sim, se toda aresta liga CODIGO a TESTE. A BFS é o algoritmo demonstrado e o cenário de conflito mostra o diagnóstico estrutural; a validação semântica é uma etapa separada.
-
-**A BFS seleciona os testes?** Não. A BFS verifica a bipartição. A seleção consulta os vizinhos diretos das funções alteradas.
-
-**Uma função sem testes não precisa ser testada?** Não é isso. Significa apenas que não há relação cadastrada.
-
-**O resultado garante cobertura?** Não. Depende da qualidade e atualização do mapeamento.
-
-**Por que T3 não aparece duas vezes?** A saída é uma união de conjuntos; a justificativa guarda as duas funções.
-
-**Por que não usar Array.shift na fila?** Porque deslocar o vetor a cada retirada pode custar O(n) por operação; com um índice de início, retirar é O(1).
-
-**A animação também é O(V+E)?** Não. O núcleo é O(V+E); a gravação de cópias dos estados a cada evento custa mais, O(V·(V+E)).
+**5. Por que usar fila com índice `inicio++` em vez de `Array.shift()`?**  
+Porque `Array.shift()` desloca todos os elementos restantes na memória e custa $O(V)$ por retirada; com ponteiro de início, cada retirada é $O(1)$ e a BFS inteira mantém custo linear $O(V + A)$.

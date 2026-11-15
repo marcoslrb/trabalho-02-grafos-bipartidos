@@ -1,6 +1,6 @@
 # Registro Real das Verificações Automatizadas
 
-Data de execução: 03/11/2026  
+Data de execução: 15/11/2026  
 Ambiente: Windows 11, Node.js v24.14.1, Microsoft Excel 16.0 (Office 365 / Desktop), Microsoft Edge 141 (Chromium headless)
 
 ---
@@ -9,7 +9,7 @@ Ambiente: Windows 11, Node.js v24.14.1, Microsoft Excel 16.0 (Office 365 / Deskt
 
 | Categoria | Comando Executado | Total de Testes / Verificações | Aprovados | Falhas | Tempo / Status |
 |---|---|---|---|---|---|
-| Suíte Completa de Testes | `npm test` | 66 | 66 | 0 | ~7.7s (100% OK) |
+| Suíte Completa de Testes | `npm test` | 66 | 66 | 0 | ~7.6s (100% OK) |
 | Validação no Excel Real (COM) | `npm run excel` | 27 conferências | 27 | 0 | Todas aprovadas |
 | Verificações Locais no Navegador | Execução embutida no HTML | 41 verificações | 41 | 0 | Instantâneo |
 
@@ -76,7 +76,7 @@ Ambiente: Windows 11, Node.js v24.14.1, Microsoft Excel 16.0 (Office 365 / Deskt
 - `grafo grande usa o modo sem rastreamento e desativa a animação` — **APROVADO**
 - `alternância claro/escuro` — **APROVADO**
 - `celular (390 px): sem rolagem horizontal` — **APROVADO**
-- `apresentação: 15 slides, navegação e grafos desenhados` — **APROVADO**
+- `apresentação: slides completos, navegação e grafos desenhados` — **APROVADO**
 - `guia: verificações automatizadas do navegador todas aprovadas` — **APROVADO**
 - `Excel e roteiro gerados no navegador são idênticos aos arquivos entregues` — **APROVADO**
 
@@ -88,7 +88,7 @@ Ambiente: Windows 11, Node.js v24.14.1, Microsoft Excel 16.0 (Office 365 / Deskt
 - `HTML gerado não depende de rede nem de arquivos externos` — **APROVADO**
 - `XLSX é um ZIP Open XML real (não CSV renomeado), com 7 abas, tabelas e fórmulas` — **APROVADO**
 - `XLSX: rastro BFS_valido tem o mesmo número de eventos que o algoritmo` — **APROVADO**
-- `apresentação e roteiro: 15 slides, fala para cada um, sem promessa de duração` — **APROVADO**
+- `apresentação e roteiro: slides completos, fala para cada um, sem promessa de duração` — **APROVADO**
 
 ---
 

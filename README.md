@@ -136,8 +136,9 @@ trabalho-02-grafos-bipartidos/
 │   └── resultado-verificacoes.md # Registro das verificações automatizadas executadas
 ├── saida/
 │   ├── teste-de-mesa.xlsx        # Planilha Excel (.xlsx real) com 7 abas e fórmulas
-│   ├── apresentacao.html         # Apresentação de slides autônoma (15 slides)
-│   └── roteiro-de-fala.md        # Roteiro de fala detalhado slide a slide
+│   ├── apresentacao.html         # Apresentação interativa autônoma (13 slides, padrão Ifes)
+│   ├── apresentacao-reserva.pdf  # Versão estática em PDF (reserva de segurança para projetor)
+│   └── roteiro-de-fala.md        # Roteiro de fala de 20 minutos sincronizado slide a slide
 ├── src/                          # Código-fonte modular comentado
 │   ├── nucleo.js                 # Parser TXT, BFS com 2 cores, semântica e consulta
 │   ├── grafo-svg.js              # Renderizador SVG acessível do grafo
@@ -174,9 +175,24 @@ O arquivo é um `.xlsx` real em Open XML legítimo (não CSV renomeado), contend
 
 ---
 
-## 9. Pendências e Confronto Acadêmico
+## 9. Apresentação Interativa (13 slides · 20 minutos — Padrão Institucional Ifes)
 
-Conforme registrado na [Matriz de Atendimento](docs/matriz-atendimento.md):
-- O enunciado original do professor Rafael Vargas **não estava presente no repositório inicial**.
-- Portanto, **não foram inventadas restrições**: duração exata de apresentação, prazo de entrega, exigência de linguagem de programação específica ou número fixo de vértices não foram presumidos.
-- A dupla deve conferir com o professor ou com a plataforma da disciplina se há requisitos adicionais de submissão (ex.: envio em zip, repositório git ou apresentação em aula).
+A apresentação autônoma (`saida/apresentacao.html` + cópia de segurança em `saida/apresentacao-reserva.pdf`) segue a identidade visual institucional do Ifes (`modelo2-apresentacao-institucional.ppt` do Prof. Rafael Vargas Mesquita) e os critérios de avaliação do AVA (**20 minutos**, valendo 4,67 pts na rubrica), com roteiro cronometrado em `saida/roteiro-de-fala.md`:
+
+1. **Capa e Problema Interativo** (slides 1–2): capa institucional e widget interativo ao vivo onde o apresentador clica nos vértices para testar a 2-coloração ou adiciona a aresta `C1–C2` para fechar o triângulo `C1–T3–C2`.
+2. **Contextualização Histórica e Entradas TXT** (slides 3–4): Dénes König (1916/1936), caracterização por ausência de ciclos ímpares, os 2 arquivos TXT (`cenario-valido.txt` e `cenario-conflito.txt`) e as 4 operações separadas.
+3. **Demonstração Animada da BFS e Implementação Interativa** (slides 5–6):
+   - **Slide 5:** reprodutor completo da BFS embutido no slide (Play/Pause na tecla `Espaço`, passo a passo nas setas `↑`/`↓`, velocidade `1×/2×/4×`, troca ao vivo entre os 3 cenários).
+   - **Slide 6:** código real de `executarBfs` com destaque interativo dos blocos 1 a 5 (clique ou setas `↓`/`↑`).
+4. **Teste de Mesa :: Início e Término** (slides 7–8): visão geral do *antes* (Passo 0) e *depois* (Passo 25) no formato do template do professor (`Grafo G` + lista de adjacência `adj[ ]` + vetores `cor[ ]`, `pai[ ]`, `comp[ ]`).
+5. **Prova Formal, Conflito e Cuidados do Modelo** (slides 9–10): paridade do nível na árvore BFS, reconstrução do ciclo ímpar via LCA, `Cor ≠ Tipo` e `Estrutura ≠ Semântica` (`C1–C2–T1`).
+6. **Aplicação Prática Interativa, Complexidade e Conclusão** (slides 11–13): simulador ao vivo de seleção de testes de regressão (*"Mudou o código: o que testar?"*), tabela de complexidade + outras aplicações e síntese dos entregáveis.
+
+## 10. Atendimento ao Edital Oficial do AVA
+
+Conforme registrado na [Matriz de Atendimento](docs/matriz-atendimento.md), todos os itens do documento oficial (`conteudo_ava/IFES-TPA-Trabalho02 (1).pdf`) e da planilha de critérios (`conteudo_ava/criterios de avaliação.png`) estão 100% atendidos e verificados:
+- **Código (2,32 pts):** algoritmo correto em $O(V + E)$, apresentação visual clara e abstração de grafo associada à aplicação prática.
+- **Apresentação (4,67 pts):** roteiro cronometrado para **20 minutos**, contextualização histórica (König, 1916/1936), ideia geral do algoritmo e aplicação prática conectada ao problema.
+- **Arquivos TXT com Grafos (0,67 pt):** `cenarios/cenario-valido.txt` e `cenarios/cenario-conflito.txt`.
+- **Arquivo Excel com Teste de Mesa (0,67 pt):** `saida/teste-de-mesa.xlsx` (7 abas e fórmulas nativas).
+- **Animação com Funcionamento do Algoritmo (0,67 pt):** interativa tanto na aplicação principal (`codigo-e-testes.html`) quanto dentro dos próprios slides (`saida/apresentacao.html`).

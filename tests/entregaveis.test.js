@@ -9,6 +9,7 @@ const { lerCenarios, RAIZ } = require("../tools/cenarios.js");
 const { montarHtml } = require("../tools/gerar.js");
 const { analisarTxt, executarBfs, validarSemantica, consultarImpacto } = require("../src/nucleo.js");
 const { crc32 } = require("../src/xlsx.js");
+const { slidesDe } = require("../src/slides.js");
 
 const cen = lerCenarios();
 const lerSaida = n => fs.readFileSync(path.join(RAIZ, "saida", n));
@@ -93,11 +94,13 @@ test("XLSX: rastro BFS_valido tem o mesmo número de eventos que o algoritmo", (
   assert.match(z.get("xl/worksheets/sheet1.xml"), /REGISTROS da execução/);
 });
 
-test("apresentação e roteiro: 15 slides, fala para cada um, sem promessa de duração", () => {
+test("apresentação e roteiro: 13 slides interativos (20 min conforme AVA) e fala para cada um", () => {
+  const total = slidesDe(cen).length;
+  assert.equal(total, 13, "apresentação estruturada em 13 slides interativos");
   const html = lerSaida("apresentacao.html").toString("utf8");
-  assert.equal((html.match(/<article class="slide/g) || []).length, 15);
+  assert.equal((html.match(/<article class="slide/g) || []).length, total);
   const roteiro = lerSaida("roteiro-de-fala.md").toString("utf8");
-  assert.equal((roteiro.match(/^## Slide \d+/gm) || []).length, 15);
-  assert.equal((roteiro.match(/\*\*Fala:\*\*/g) || []).length, 15);
-  assert.match(roteiro, /não foram confirmados|não\*\* foram confirmados/);
+  assert.equal((roteiro.match(/^## Slide \d+/gm) || []).length, total);
+  assert.equal((roteiro.match(/\*\*Fala:\*\*/g) || []).length, total);
+  assert.match(roteiro, /20 minutos/);
 });

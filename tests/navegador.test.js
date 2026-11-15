@@ -151,15 +151,22 @@ test("interface no navegador", opcoes, async t => {
     await nav.tamanho(1280, 900);
   });
 
-  await t.test("apresentação: 15 slides, navegação e grafos desenhados", async () => {
+  await t.test("apresentação: slides completos, navegação e grafos desenhados", async () => {
     await js(`document.querySelector('[data-aba="apresentacao"]').click()`);
-    assert.equal(await js(`document.querySelectorAll("#deck .slide").length`), 15);
-    assert.equal(await texto("slideContador"), "1 / 15");
+    const total = await js(`document.querySelectorAll("#deck .slide").length`);
+    assert.equal(total, 13, "apresentação de 13 slides interativos");
+    assert.equal(await texto("slideContador"), `1 / ${total}`);
     await clicar("slideProximo");
-    assert.equal(await texto("slideContador"), "2 / 15");
+    assert.equal(await texto("slideContador"), `2 / ${total}`);
     assert.ok(await js(`document.querySelectorAll("#deck svg").length`) >= 4);
+    const ativo = await js(`(() => {
+      const c = document.querySelector("#deck .slide.active .content");
+      return { escala: c.style.transform, altura: Math.round(c.getBoundingClientRect().height) };
+    })()`);
+    assert.ok(ativo.altura > 100, "conteúdo visível ao abrir a aba Apresentação");
+    assert.ok(!/scale\(0(\.0+)?\)/.test(ativo.escala), "escala não pode ser zero");
     await clicar("slideAnterior"); await clicar("slideAnterior");
-    assert.equal(await texto("slideContador"), "15 / 15");
+    assert.equal(await texto("slideContador"), `${total} / ${total}`);
   });
 
   await t.test("guia: verificações automatizadas do navegador todas aprovadas", async () => {

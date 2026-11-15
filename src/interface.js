@@ -287,6 +287,8 @@
       parar();
       document.querySelectorAll("[data-aba]").forEach(b => b.setAttribute("aria-selected", String(b === botao)));
       ["app", "apresentacao", "guia"].forEach(id => { $(id).hidden = id !== botao.dataset.aba; });
+      // A aba estava oculta quando o deck foi montado: medir de novo ao ficar visível.
+      if (botao.dataset.aba === "apresentacao") Slides.ajustarDeck($("deck"));
     };
   });
 
@@ -297,10 +299,15 @@
     document.querySelectorAll("#deck .slide").forEach((s, k) => s.classList.toggle("active", k === slideAtual));
     document.querySelectorAll("#slidePontos button").forEach((b, k) => b.classList.toggle("active", k === slideAtual));
     $("slideContador").textContent = `${slideAtual + 1} / ${total}`;
+    Slides.ajustarDeck($("deck"));
   }
 
   const linhasVerificacao = mostrarVerificacoes();
   $("deck").innerHTML = Slides.marcacaoSlides(CENARIOS, linhasVerificacao);
+  Slides.ativarInteratividade($("deck"), CENARIOS);
+  const ajustarDeck = () => Slides.ajustarDeck($("deck"));
+  window.addEventListener("resize", ajustarDeck);
+  ajustarDeck();
   const totalSlides = document.querySelectorAll("#deck .slide").length;
   $("slidePontos").innerHTML = Array.from({ length: totalSlides }, (_, i) =>
     `<button aria-label="Ir ao slide ${i + 1}" data-slide-indice="${i}"></button>`).join("");

@@ -2,26 +2,32 @@
 
 Documento confrontado antes da implementação e atualizado ao término do projeto com as evidências reais de execução.
 
-## 1. Enunciado original do professor
+## 1. Enunciado oficial do AVA e Critérios de Avaliação
 
-**Situação:** O repositório inicial continha apenas o `README.md` com menção aos nomes da dupla (Marcos Ribeiro e André Valane), professor (Rafael Vargas), disciplina (*Técnicas de Programação Avançada*) e tema (*Grafos Bipartidos*). O PDF ou documento oficial com diretrizes específicas não estava presente no repositório.
-
-**Postura Acadêmica:** Nenhuma restrição não declarada foi inventada (como prazo, duração máxima/mínima de apresentação, limite de vértices do trabalho ou linguagem obrigatória). O projeto foi implementado atendendo integralmente aos requisitos conhecidos do prompt e aos fundamentos de grafos bipartidos.
+**Situação:** Os materiais oficiais publicados pelo Prof. Rafael Vargas Mesquita no AVA foram adicionados em `conteudo_ava/`:
+- Especificação oficial: `conteudo_ava/IFES-TPA-Trabalho02 (1).pdf` (Grupo 06: **Grafo Bipartido** — Marcos e André).
+- Rubrica de avaliação: `conteudo_ava/criterios de avaliação.png`:
+  - **Código (2,32 pts):** algoritmo correto; apresentação visual; abstração de grafo associado à aplicação prática.
+  - **Apresentação (4,67 pts):** tempo de **20 minutos**; contextualização do tema; ideia geral do algoritmo; aplicação prática vinculada ao problema.
+  - **Arquivos TXT com Grafos (0,67 pt):** dois arquivos distintos (`cenarios/cenario-valido.txt` e `cenarios/cenario-conflito.txt`).
+  - **Arquivo Excel com Teste de Mesa (0,67 pt):** `saida/teste-de-mesa.xlsx`.
+  - **Animação com Funcionamento do Algoritmo (0,67 pt):** interativa tanto em `codigo-e-testes.html` quanto embutida nos slides de `saida/apresentacao.html`.
+- Modelo institucional de slides do professor: `conteudo_ava/_Apresentacao/modelo2-apresentacao-institucional.ppt`.
 
 ---
 
-## 2. Matriz: Requisitos Conhecidos × Situação Final
+## 2. Matriz: Requisitos do Edital × Situação Final
 
-Legenda: ✅ Atendido integralmente com testes reais · ❓ Depende do enunciado original
+Legenda: ✅ Atendido integralmente com testes reais
 
 | # | Requisito Conhecido | Situação Inicial (HTML-base) | Ação Realizada | Situação Final e Evidência Real |
 |---|---|---|---|---|
 | **R1** | Algoritmo de bipartição por BFS com 2 cores | Existia no arquivo | Refatorado para `src/nucleo.js`, modular, documentado e testado isoladamente | ✅ 100% aprovado nos testes automatizados e no navegador |
-| **R2** | Aplicação prática (funções × testes) | Existia no arquivo | Preservada a metáfora: vértices CODIGO e TESTE, arestas sem peso | ✅ Exibição clara na UI e no Excel com justificativas |
-| **R3** | Animação da execução | Existia | Passo a passo, slider, executar/pausar, reiniciar | ✅ Testado via DevTools Protocol (`tests/navegador.test.js`) |
+| **R2** | Aplicação prática (funções × testes) | Existia no arquivo | Preservada a metáfora: vértices CODIGO e TESTE, arestas sem peso | ✅ Exibição clara na UI, nos slides interativos e no Excel com justificativas |
+| **R3** | Animação da execução | Existia apenas na aba principal | Passo a passo, play/pause (`Espaço`), setas `↑`/`↓` na aplicação e também dentro do Slide 5 da apresentação | ✅ Testado via DevTools Protocol (`tests/navegador.test.js` e `tests/apresentacao.test.js`) |
 | **R4** | Leitura de dois TXT com situações distintas | Embutidos no HTML (não existiam arquivos físicos) | Criados `cenarios/cenario-valido.txt` e `cenarios/cenario-conflito.txt` | ✅ Arquivos no repositório e leitura por upload/botões testada |
-| **R5** | Teste de mesa | Gerado somente em runtime | Criado `saida/teste-de-mesa.xlsx` real e script COM de validação | ✅ 7 abas, fórmulas vivas, validado no Excel 16.0 |
-| **R6** | Apresentação e roteiro de fala | Apenas tela embutida; sem texto de fala | Criados `saida/apresentacao.html` (15 slides) e `saida/roteiro-de-fala.md` | ✅ Roteiro com fala real slide a slide, sincronizado |
+| **R5** | Teste de mesa | Gerado somente em runtime | Criado `saida/teste-de-mesa.xlsx` real + slides `Teste de Mesa :: Início` e `Término` | ✅ 7 abas, fórmulas vivas, validado no Excel 16.0 |
+| **R6** | Apresentação (20 min, padrão Ifes) e roteiro de fala | Sem identidade Ifes e sem interatividade nos slides | Criados `saida/apresentacao.html` (13 slides interativos no padrão Ifes), `saida/apresentacao-reserva.pdf` e `saida/roteiro-de-fala.md` (20 min) | ✅ Identidade institucional Ifes, 4 widgets ao vivo nos slides e roteiro cronometrado |
 | **R7** | Separação das 4 operações | Misturadas na UI; erro interrompia no 1º | UI separada em 4 etapas numeradas com badges e feedback próprio | ✅ Cada etapa possui seu status independente (ok, erro, bloqueada) |
 | **R8** | BFS com fila indexada, sem `Array.shift` | Atendia no código | Mantida fila indexada (`inicio++`); teste unitário dedicado | ✅ `tests/verificacoes.test.js` testa ausência de `.shift()` |
 | **R9** | Rastrear cor, pai, fila, componente e exames | Componente era só contador global | Adicionado vetor `componente[v]` para cada vértice | ✅ Testado e gravado no teste de mesa em `BFS_valido` |

@@ -88,6 +88,7 @@ async function abrir(url, { largura = 1280, altura = 900 } = {}) {
       const r = await enviar("Page.captureScreenshot", { format: "png" });
       fs.writeFileSync(arquivo, Buffer.from(r.data, "base64"));
     },
+    enviar,
     dormir,
     async fechar() {
       try { ws.close(); } catch { /* já fechado */ }
