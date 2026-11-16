@@ -135,7 +135,7 @@ trabalho-02-grafos-bipartidos/
 │   ├── matriz-atendimento.md     # Matriz de requisitos confrontada com o código
 │   └── resultado-verificacoes.md # Registro das verificações automatizadas executadas
 ├── saida/
-│   ├── teste-de-mesa.xlsx        # Planilha Excel (.xlsx real) com 7 abas e fórmulas
+│   ├── teste-de-mesa.xlsx        # Planilha Excel (.xlsx real) com 18 abas (11 no padrão visual do professor + 7 analíticas/fórmulas)
 │   ├── apresentacao.html         # Apresentação interativa autônoma (13 slides, padrão Ifes)
 │   ├── apresentacao-reserva.pdf  # Versão estática em PDF (reserva de segurança para projetor)
 │   └── roteiro-de-fala.md        # Roteiro de fala de 20 minutos sincronizado slide a slide
@@ -143,7 +143,7 @@ trabalho-02-grafos-bipartidos/
 │   ├── nucleo.js                 # Parser TXT, BFS com 2 cores, semântica e consulta
 │   ├── grafo-svg.js              # Renderizador SVG acessível do grafo
 │   ├── xlsx.js                   # Gerador de Open XML / ZIP sem bibliotecas externas
-│   ├── planilha.js               # Montagem das 7 abas do teste de mesa
+│   ├── planilha.js               # Montagem das 18 abas do teste de mesa (padrão do professor + fórmulas)
 │   ├── slides.js                 # Dados dos slides e gerador do roteiro
 │   ├── interface.js              # Camada de controle da UI e eventos
 │   ├── estilo.css                # Folha de estilos responsiva com suporte a temas
@@ -164,14 +164,23 @@ trabalho-02-grafos-bipartidos/
 
 ## 8. Conteúdo da Planilha Excel (`saida/teste-de-mesa.xlsx`)
 
-O arquivo é um `.xlsx` real em Open XML legítimo (não CSV renomeado), contendo 7 abas estruturadas:
-1. **Resumo:** Indicadores gerais (vértices, arestas, componentes, testes indicados, conferências).
-2. **Guia:** Glossário e orientações de leitura do teste de mesa.
-3. **Entradas:** Dados brutos dos cenários com o número das linhas originais.
-4. **BFS_valido:** Rastreamento evento a evento da BFS no cenário válido (fila, cores, pais, componentes, exames).
-5. **BFS_conflito:** Rastreamento evento a evento até a detecção do ciclo ímpar no cenário com conflito.
-6. **Impacto:** Matriz de relações com seleção interativa nas células `C2:C5` (`1` ou `0`). Os testes recomendados, totalizadores e avisos de funções sem testes são calculados exclusivamente por **fórmulas nativas do Excel** (`SUMPRODUCT`, `IF`, `SUM`, `COUNTA`, `COUNTIF`).
-7. **Validacoes:** Tabela com o resultado das verificações automatizadas de integridade.
+O arquivo é um `.xlsx` real em Open XML legítimo (não CSV renomeado), contendo **18 abas** divididas em dois grupos:
+
+### A. Abas Visuais de Teste de Mesa no Padrão do Prof. Rafael (11 abas)
+Seguem exatamente o layout utilizado pelo Prof. Rafael Vargas Mesquita nas aulas de TPA (`Grafo G` com imagem PNG embutida + `Representação do Grafo G / adj[]` com bordas pontilhadas e preenchimento salmão `#FF7C80` + código-fonte + vetores `v | marcado[] | cor[] | pai[] | comp[]` em vermelho + `Fila FIFO q` riscando os itens removidos e destacando em salmão os recém-inseridos):
+1. **`Bipartido-Ex01`:** Estado **Início** em branco (antes do laço principal da BFS).
+2. **`Bipartido-GAB`:** Estado **Término / Gabarito Final** (todas as listas `adj[]` inspecionadas em salmão, fila toda riscada e 3 componentes identificados).
+3. **`Bipartido-GAB-C1` a `Bipartido-GAB-C4` (8 abas passo a passo):** Uma aba para cada vértice `u` retirado da fila (`C1, T1, T3, C2, T2, C3, T4, C4`), mostrando a evolução da busca quadro a quadro.
+4. **`Conflito-GAB`:** Teste de mesa do `cenario-conflito.txt` no exato passo em que `T3` encontra `C2` com a mesma cor (`cor = 1`) e reconstrói o ciclo ímpar `T3 → C1 → C2 → T3`.
+
+### B. Abas Analíticas e de Fórmulas Vivas (7 abas)
+5. **`Resumo`:** Indicadores gerais calculados por fórmulas (`COUNTA`, `SUM`, `COUNTIF`, `MAX`).
+6. **`Guia`:** Glossário e orientações de leitura do teste de mesa.
+7. **`Entradas`:** Dados brutos dos cenários com o número das linhas originais.
+8. **`BFS_valido`:** Registro linear completo dos 26 eventos da BFS no cenário válido.
+9. **`BFS_conflito`:** Registro linear dos eventos até a detecção do ciclo ímpar no cenário com conflito.
+10. **`Impacto`:** Matriz de relações com seleção interativa nas células amarelas `C2:C5` (`1` ou `0`) e recálculo automático por **fórmulas nativas do Excel** (`SUMPRODUCT`, `IF`, `SUM`, `TRIM`).
+11. **`Validacoes`:** Tabela com o resultado das 41 verificações automatizadas do núcleo.
 
 ---
 
@@ -194,5 +203,5 @@ Conforme registrado na [Matriz de Atendimento](docs/matriz-atendimento.md), todo
 - **Código (2,32 pts):** algoritmo correto em $O(V + E)$, apresentação visual clara e abstração de grafo associada à aplicação prática.
 - **Apresentação (4,67 pts):** roteiro cronometrado para **20 minutos**, contextualização histórica (König, 1916/1936), ideia geral do algoritmo e aplicação prática conectada ao problema.
 - **Arquivos TXT com Grafos (0,67 pt):** `cenarios/cenario-valido.txt` e `cenarios/cenario-conflito.txt`.
-- **Arquivo Excel com Teste de Mesa (0,67 pt):** `saida/teste-de-mesa.xlsx` (7 abas e fórmulas nativas).
+- **Arquivo Excel com Teste de Mesa (0,67 pt):** `saida/teste-de-mesa.xlsx` (18 abas: 11 no padrão visual passo a passo do professor + 7 abas analíticas e de fórmulas nativas).
 - **Animação com Funcionamento do Algoritmo (0,67 pt):** interativa tanto na aplicação principal (`codigo-e-testes.html`) quanto dentro dos próprios slides (`saida/apresentacao.html`).

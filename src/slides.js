@@ -239,19 +239,24 @@
       "}"
     ].join("\n");
 
-    // 4. Coluna da Fila FIFO (mostra os vértices enfileirados no Início vs processados no Término)
-    const ordemFila = ["C1", "T1", "T3", "C2", "T2", "C3", "T4", "C4"];
-    const linhasFila = ordemFila.map(id =>
-      `<tr><td class="tm-vermelho">${ehTermino ? "" : (id === "C1" ? "C1 (raiz 1)" : "—")}</td>` +
-      `<td class="tm-vermelho">${ehTermino ? `${id} (ok)` : "—"}</td></tr>`
+    // 4. Coluna da Fila FIFO q (igual ao Gabarito do professor: itens retirados aparecem riscados no Término)
+    const ordemFila = [
+      ["C1", 0], ["T1", 1], ["T3", 1], ["C2", 0],
+      ["T2", 1], ["C3", 0], ["T4", 1], ["C4", 0]
+    ];
+    const linhasFila = ordemFila.map(([id, c]) =>
+      `<tr><td class="tm-vermelho">${ehTermino ? `<del>${id}</del>` : "—"}</td>` +
+      `<td class="tm-vermelho">${ehTermino ? `<del>${c}</del>` : "—"}</td></tr>`
     ).join("");
 
-    // 5. Tabela Vetores da BFS (v | cor[] | pai[] | comp[])
+    // 5. Tabela Vetores da BFS (v | marcado[] | cor[] | pai[] | comp[])
     const linhasVetores = grafo.vertices.map(v => {
+      const m = ehTermino ? "T" : "F";
       const c = ehTermino ? estado.cor[v.id] : -1;
-      const p = ehTermino ? (estado.pai[v.id] ?? "—") : "null";
+      const p = ehTermino ? (estado.pai[v.id] ?? "-") : "-";
       const cp = ehTermino ? estado.componente[v.id] : 0;
       return `<tr><td>${esc(v.id)}</td>` +
+        `<td class="tm-vermelho">${m}</td>` +
         `<td class="tm-vermelho">${c}</td>` +
         `<td class="tm-vermelho">${esc(String(p))}</td>` +
         `<td class="tm-vermelho">${cp}</td></tr>`;
@@ -287,11 +292,11 @@
       `<p class="tm-chamada">let resultado;<br>resultado = executarBfs(G);</p>` +
       `</div>` +
       `<div class="tm-col-fila">` +
-      `<table class="tm-wire"><thead><tr><th colspan="2">Fila FIFO (fila[])</th></tr><tr><th>Início</th><th>Saída</th></tr></thead><tbody>${linhasFila}</tbody></table>` +
+      `<table class="tm-wire"><thead><tr><th colspan="2">Fila FIFO q</th></tr><tr><th>v</th><th>cor</th></tr></thead><tbody>${linhasFila}</tbody></table>` +
       arvoreTermino +
       `</div>` +
       `<div class="tm-col-uf">` +
-      `<table class="tm-wire"><thead><tr><th colspan="4">Estruturas da BFS</th></tr><tr><th>v</th><th>cor[]</th><th>pai[]</th><th>comp[]</th></tr></thead><tbody>${linhasVetores}</tbody></table>` +
+      `<table class="tm-wire"><thead><tr><th colspan="5">Estruturas da BFS</th></tr><tr><th>v</th><th>marcado[]</th><th>cor[]</th><th>pai[]</th><th>comp[]</th></tr></thead><tbody>${linhasVetores}</tbody></table>` +
       `</div></div>`;
   }
 

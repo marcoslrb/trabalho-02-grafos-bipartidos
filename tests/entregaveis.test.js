@@ -69,29 +69,47 @@ function lerZip(buf) {
   return arquivos;
 }
 
-test("XLSX é um ZIP Open XML real (não CSV renomeado), com 7 abas, tabelas e fórmulas", () => {
+test("XLSX é um ZIP Open XML real (não CSV renomeado), com abas de Teste de Mesa no padrão do professor, tabelas e fórmulas", () => {
   const buf = lerSaida("teste-de-mesa.xlsx");
   assert.equal(buf.subarray(0, 2).toString("latin1"), "PK");
   const z = lerZip(buf);
   for (const parte of ["[Content_Types].xml", "_rels/.rels", "xl/workbook.xml", "xl/styles.xml"])
     assert.ok(z.has(parte), "falta " + parte);
   const abas = [...z.get("xl/workbook.xml").matchAll(/<sheet name="([^"]+)"/g)].map(m => m[1]);
-  assert.deepEqual(abas, ["Resumo", "Guia", "Entradas", "BFS_valido", "BFS_conflito", "Impacto", "Validacoes"]);
-  const impacto = z.get("xl/worksheets/sheet6.xml");
+  assert.deepEqual(abas, [
+    "Bipartido-Ex01", "Bipartido-GAB",
+    "Bipartido-GAB-C1", "Bipartido-GAB-T1", "Bipartido-GAB-T3", "Bipartido-GAB-C2",
+    "Bipartido-GAB-T2", "Bipartido-GAB-C3", "Bipartido-GAB-T4", "Bipartido-GAB-C4",
+    "Conflito-GAB",
+    "Resumo", "Guia", "Entradas", "BFS_valido", "BFS_conflito", "Impacto", "Validacoes"
+  ]);
+  const sheetDe = nome => z.get(`xl/worksheets/sheet${abas.indexOf(nome) + 1}.xml`);
+  // Verifica elementos visuais do padrão do professor nas abas Bipartido-*
+  for (const nomeTm of ["Bipartido-Ex01", "Bipartido-GAB", "Bipartido-GAB-C1", "Conflito-GAB"]) {
+    const xmlTm = sheetDe(nomeTm);
+    assert.match(xmlTm, /Representação do Grafo G/);
+    assert.match(xmlTm, /marcado\[\]/);
+    assert.match(xmlTm, /Fila FIFO q/);
+    assert.match(xmlTm, /<drawing r:id=/);
+  }
+  assert.ok([...z.keys()].filter(k => k.startsWith("xl/media/image") && k.endsWith(".png")).length >= 11, "imagens PNG do Grafo G embutidas");
+  const impacto = sheetDe("Impacto");
   assert.ok((impacto.match(/<f>/g) || []).length >= 12, "a aba Impacto deve ter fórmulas");
   assert.match(impacto, /<dataValidation /);
-  assert.ok([...z.keys()].filter(k => k.startsWith("xl/tables/")).length >= 7, "uma tabela (filtro) por aba, 2 no Impacto");
+  assert.ok([...z.keys()].filter(k => k.startsWith("xl/tables/")).length >= 7, "uma tabela (filtro) por aba analítica, 2 no Impacto");
   assert.match(z.get("xl/workbook.xml"), /fullCalcOnLoad="1"/);
   // Os rastros são registros: as abas BFS não contêm fórmulas.
-  assert.equal(/<f>/.test(z.get("xl/worksheets/sheet4.xml") + z.get("xl/worksheets/sheet5.xml")), false);
+  assert.equal(/<f>/.test(sheetDe("BFS_valido") + sheetDe("BFS_conflito")), false);
 });
 
 test("XLSX: rastro BFS_valido tem o mesmo número de eventos que o algoritmo", () => {
   const z = lerZip(lerSaida("teste-de-mesa.xlsx"));
+  const abas = [...z.get("xl/workbook.xml").matchAll(/<sheet name="([^"]+)"/g)].map(m => m[1]);
+  const sheetDe = nome => z.get(`xl/worksheets/sheet${abas.indexOf(nome) + 1}.xml`);
   const b = executarBfs(analisarTxt(cen.valido).grafo);
-  const linhas = (z.get("xl/worksheets/sheet4.xml").match(/<row /g) || []).length;
+  const linhas = (sheetDe("BFS_valido").match(/<row /g) || []).length;
   assert.equal(linhas, b.rastro.length + 1);
-  assert.match(z.get("xl/worksheets/sheet1.xml"), /REGISTROS da execução/);
+  assert.match(sheetDe("Resumo"), /REGISTROS da execução/);
 });
 
 test("apresentação e roteiro: 13 slides interativos (20 min conforme AVA) e fala para cada um", () => {

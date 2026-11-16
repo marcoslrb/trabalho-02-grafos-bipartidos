@@ -214,7 +214,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .ig-etapas { display: flex; flex-wrap: wrap; gap: .3rem; }
 
 /* Slides 7 e 8: Teste de Mesa :: Início e Término no layout de 4 colunas do Prof. Rafael */
-.slide .tm-prof { display: grid; grid-template-columns: 245px minmax(0, 1fr) 155px 210px; gap: .65rem; align-items: start; }
+.slide .tm-prof { display: grid; grid-template-columns: 240px minmax(0, 1fr) 130px 268px; gap: .6rem; align-items: start; }
 .slide .tm-col-esq { display: grid; gap: .35rem; }
 .slide .tm-titulo-caixa { font: 700 .82rem Arial, sans-serif; color: #111; text-align: center; }
 .slide .tm-col-esq svg { max-height: 165px; width: 100%; display: block; }
@@ -229,8 +229,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .tm-cod-box { margin: 0; padding: .4rem .55rem; background: #ffffff; border: 1px solid #333333; color: #111111; font: .68rem/1.28 Consolas, "Courier New", monospace; white-space: pre; overflow-x: auto; }
 .slide .tm-chamada { margin: .3rem 0 0; font: .8rem/1.35 Consolas, monospace; color: #111; }
 .slide .tm-wire { border-collapse: collapse; width: 100%; font-size: .74rem; background: #ffffff; }
-.slide .tm-wire th { background: #f2f2f2; border: 1px solid #444; padding: .2rem .3rem; text-align: center; font-weight: 700; color: #111; font-size: .72rem; }
-.slide .tm-wire td { border: 1px solid #555; padding: .16rem .3rem; text-align: center; color: #111; }
+.slide .tm-wire th { background: #f2f2f2; border: 1px solid #444; padding: .2rem .26rem; text-align: center; font-weight: 700; color: #111; font-size: .7rem; white-space: nowrap; }
+.slide .tm-wire td { border: 1px solid #555; padding: .16rem .26rem; text-align: center; color: #111; white-space: nowrap; }
 .slide .tm-wire td.tm-vermelho { color: #cc0000; font-weight: 600; font-family: Consolas, monospace; }
 .slide .tm-arvore { margin-top: .35rem; width: 100%; max-height: 105px; display: block; }
 .slide .tm-nota-inicio { margin-top: .4rem; padding: .35rem .5rem; border: 1px dashed #777; font-size: .72rem; color: #333; background: #fafafa; }

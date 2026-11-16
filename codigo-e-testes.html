@@ -222,7 +222,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .ig-etapas { display: flex; flex-wrap: wrap; gap: .3rem; }
 
 /* Slides 7 e 8: Teste de Mesa :: Início e Término no layout de 4 colunas do Prof. Rafael */
-.slide .tm-prof { display: grid; grid-template-columns: 245px minmax(0, 1fr) 155px 210px; gap: .65rem; align-items: start; }
+.slide .tm-prof { display: grid; grid-template-columns: 240px minmax(0, 1fr) 130px 268px; gap: .6rem; align-items: start; }
 .slide .tm-col-esq { display: grid; gap: .35rem; }
 .slide .tm-titulo-caixa { font: 700 .82rem Arial, sans-serif; color: #111; text-align: center; }
 .slide .tm-col-esq svg { max-height: 165px; width: 100%; display: block; }
@@ -237,8 +237,8 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .tm-cod-box { margin: 0; padding: .4rem .55rem; background: #ffffff; border: 1px solid #333333; color: #111111; font: .68rem/1.28 Consolas, "Courier New", monospace; white-space: pre; overflow-x: auto; }
 .slide .tm-chamada { margin: .3rem 0 0; font: .8rem/1.35 Consolas, monospace; color: #111; }
 .slide .tm-wire { border-collapse: collapse; width: 100%; font-size: .74rem; background: #ffffff; }
-.slide .tm-wire th { background: #f2f2f2; border: 1px solid #444; padding: .2rem .3rem; text-align: center; font-weight: 700; color: #111; font-size: .72rem; }
-.slide .tm-wire td { border: 1px solid #555; padding: .16rem .3rem; text-align: center; color: #111; }
+.slide .tm-wire th { background: #f2f2f2; border: 1px solid #444; padding: .2rem .26rem; text-align: center; font-weight: 700; color: #111; font-size: .7rem; white-space: nowrap; }
+.slide .tm-wire td { border: 1px solid #555; padding: .16rem .26rem; text-align: center; color: #111; white-space: nowrap; }
 .slide .tm-wire td.tm-vermelho { color: #cc0000; font-weight: 600; font-family: Consolas, monospace; }
 .slide .tm-arvore { margin-top: .35rem; width: 100%; max-height: 105px; display: block; }
 .slide .tm-nota-inicio { margin-top: .4rem; padding: .35rem .5rem; border: 1px dashed #777; font-size: .72rem; color: #333; background: #fafafa; }
@@ -1062,15 +1062,39 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
 /*
  * Escritor de XLSX real (Open XML dentro de um ZIP sem compressão), sem bibliotecas.
  * Roda no navegador (botão de download) e no Node (geração do arquivo entregue).
- * Cada aba: { name, rows, widths, height, tables, cabecalhos, entradas, colorRange, validacoes }.
- * Células: número, texto, { f, v, estilo } (fórmula com valor em cache) ou { v, estilo }.
+ * Suporta abas analíticas (com Tabelas/AutoFiltro, fórmulas e validação de dados)
+ * e abas visuais de Teste de Mesa no padrão das aulas de TPA do Prof. Rafael (Ifes),
+ * incluindo geração determinística de imagens PNG do Grafo G embutidas em xl/media/.
  */
 (function (exportar) {
   const { esc } = typeof require === "function" ? require("./grafo-svg.js") : globalThis.GrafoSvg;
   const utf8 = new TextEncoder();
 
-  // Estilos (índices de cellXfs, ver styles.xml abaixo)
-  const ESTILO = { NORMAL: 0, CABECALHO: 1, FORMULA: 2, PERCENTUAL: 3, ENTRADA: 4, NEGRITO: 5 };
+  // Estilos (índices de cellXfs em xl/styles.xml)
+  const ESTILO = {
+    NORMAL: 0,
+    CABECALHO: 1,
+    FORMULA: 2,
+    PERCENTUAL: 3,
+    ENTRADA: 4,
+    NEGRITO: 5,
+    // Estilos do Teste de Mesa no padrão do Prof. Rafael
+    TM_TITULO: 6,
+    TM_VERTICAL: 7,
+    TM_ADJ_V_BRANCO: 8,
+    TM_ADJ_V_SALMAO: 9,
+    TM_ADJ_VIZ_BRANCO: 10,
+    TM_ADJ_VIZ_SALMAO: 11,
+    TM_CAB_CINZA: 12,
+    TM_V_ID: 13,
+    TM_VAL_VERMELHO: 14,
+    TM_VAL_SALMAO: 15,
+    TM_VAL_VERDE: 16,
+    TM_VAL_RISCADO: 17,
+    TM_CODIGO: 18,
+    TM_CODIGO_ATIVO: 19,
+    TM_FUNDO_BRANCO: 20
+  };
 
   /* ---------- ZIP (método 0 = armazenado) ---------- */
   const tabelaCrc = new Uint32Array(256);
@@ -1081,7 +1105,7 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
   }
   function crc32(bytes) {
     let c = 0xffffffff;
-    for (const x of bytes) c = tabelaCrc[(c ^ x) & 255] ^ (c >>> 8);
+    for (let i = 0; i < bytes.length; i++) c = tabelaCrc[(c ^ bytes[i]) & 255] ^ (c >>> 8);
     return (c ^ 0xffffffff) >>> 0;
   }
   function zip(arquivos) {
@@ -1136,6 +1160,155 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     return saida;
   }
 
+  /* ---------- Gerador determinístico de PNG para o Grafo G ---------- */
+  const FONTE_5X7 = {
+    "C": [0b01110, 0b10001, 0b10000, 0b10000, 0b10000, 0b10001, 0b01110],
+    "T": [0b11111, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100, 0b00100],
+    "0": [0b01110, 0b10001, 0b10011, 0b10101, 0b11001, 0b10001, 0b01110],
+    "1": [0b00100, 0b01100, 0b00100, 0b00100, 0b00100, 0b00100, 0b01110],
+    "2": [0b01110, 0b10001, 0b00001, 0b00110, 0b01000, 0b10000, 0b11111],
+    "3": [0b11110, 0b00001, 0b00001, 0b01110, 0b00001, 0b00001, 0b11110],
+    "4": [0b00010, 0b00110, 0b01010, 0b10010, 0b11111, 0b00010, 0b00010]
+  };
+
+  function gerarPngGrafo(opcoes = {}) {
+    const W = 280, H = 145;
+    // Paleta: 0=fundo cinza claro, 1=branco, 2=cinza escuro, 3=aresta cinza,
+    // 4=vermelho destaque, 5=rosa visitado, 6=salmão ativo, 7=verde visitado cor 1
+    const pal = [
+      [242, 242, 242],
+      [255, 255, 255],
+      [55, 55, 55],
+      [166, 166, 166],
+      [230, 0, 0],
+      [255, 198, 208],
+      [255, 124, 128],
+      [216, 240, 210]
+    ];
+    const pix = new Uint8Array(W * H);
+    const setPx = (x, y, c) => {
+      x = Math.round(x); y = Math.round(y);
+      if (x >= 0 && x < W && y >= 0 && y < H) pix[y * W + x] = c;
+    };
+    const linha = (x0, y0, x1, y1, c, esp = 1.4) => {
+      const dx = x1 - x0, dy = y1 - y0;
+      const passos = Math.max(Math.abs(dx), Math.abs(dy)) * 2;
+      const r = Math.ceil(esp);
+      for (let i = 0; i <= passos; i++) {
+        const x = x0 + (dx * i) / passos, y = y0 + (dy * i) / passos;
+        for (let oy = -r; oy <= r; oy++)
+          for (let ox = -r; ox <= r; ox++)
+            if (ox * ox + oy * oy <= esp * esp) setPx(x + ox, y + oy, c);
+      }
+    };
+    const circulo = (cx, cy, R, preen, borda) => {
+      for (let y = -R - 1; y <= R + 1; y++) {
+        for (let x = -R - 1; x <= R + 1; x++) {
+          const d = Math.sqrt(x * x + y * y);
+          if (d <= R - 1.6) setPx(cx + x, cy + y, preen);
+          else if (d <= R + 0.4) setPx(cx + x, cy + y, borda);
+        }
+      }
+    };
+    const texto = (cx, cy, str, cor = 2, escF = 2) => {
+      const cw = 5 * escF, ch = 7 * escF, gap = 2;
+      const tw = str.length * cw + (str.length - 1) * gap;
+      let sx = Math.round(cx - tw / 2);
+      const sy = Math.round(cy - ch / 2);
+      for (const chStr of str) {
+        const bmp = FONTE_5X7[chStr];
+        if (bmp) {
+          for (let r = 0; r < 7; r++)
+            for (let c = 0; c < 5; c++)
+              if ((bmp[r] >> (4 - c)) & 1)
+                for (let dy = 0; dy < escF; dy++)
+                  for (let dx = 0; dx < escF; dx++)
+                    setPx(sx + c * escF + dx, sy + r * escF + dy, cor);
+        }
+        sx += cw + gap;
+      }
+    };
+
+    const pos = {
+      C1: [42, 34],  C2: [112, 34], C3: [184, 34], C4: [246, 34],
+      T1: [42, 112], T2: [112, 112], T3: [184, 112], T4: [246, 112]
+    };
+    const arestas = opcoes.arestas || [
+      ["C1", "T1"], ["C1", "T3"], ["C2", "T2"], ["C2", "T3"], ["C3", "T4"]
+    ];
+    const vermelhas = new Set(opcoes.arestasVermelhas || []);
+    const visitados = new Set(opcoes.visitados || []);
+    const atual = opcoes.atual || null;
+
+    for (const [u, v] of arestas) {
+      if (!vermelhas.has(`${u}-${v}`) && !vermelhas.has(`${v}-${u}`))
+        linha(pos[u][0], pos[u][1], pos[v][0], pos[v][1], 3, 1.2);
+    }
+    for (const [u, v] of arestas) {
+      if (vermelhas.has(`${u}-${v}`) || vermelhas.has(`${v}-${u}`))
+        linha(pos[u][0], pos[u][1], pos[v][0], pos[v][1], 4, 2.3);
+    }
+    for (const [id, [x, y]] of Object.entries(pos)) {
+      const visitado = visitados.has(id);
+      const preen = id === atual ? 6 : (visitado ? 5 : 1);
+      const borda = (id === atual || visitado) ? 4 : 2;
+      circulo(x, y, 16, preen, borda);
+      texto(x, y, id, 2, 2);
+    }
+
+    const rawLen = H * (1 + W);
+    const raw = new Uint8Array(rawLen);
+    let p = 0;
+    for (let y = 0; y < H; y++) {
+      raw[p++] = 0;
+      raw.set(pix.subarray(y * W, (y + 1) * W), p);
+      p += W;
+    }
+    let s1 = 1, s2 = 0;
+    for (let i = 0; i < rawLen; i++) {
+      s1 = (s1 + raw[i]) % 65521;
+      s2 = (s2 + s1) % 65521;
+    }
+    const adler = ((s2 << 16) | s1) >>> 0;
+    const z = new Uint8Array(2 + 5 + rawLen + 4);
+    z[0] = 0x78; z[1] = 0x01; z[2] = 0x01;
+    z[3] = rawLen & 0xff; z[4] = (rawLen >> 8) & 0xff;
+    const nlen = (~rawLen) & 0xffff;
+    z[5] = nlen & 0xff; z[6] = (nlen >> 8) & 0xff;
+    z.set(raw, 7);
+    new DataView(z.buffer, 7 + rawLen, 4).setUint32(0, adler, false);
+
+    function blocoPng(tipo, dados) {
+      const out = new Uint8Array(12 + dados.length);
+      const dv = new DataView(out.buffer);
+      dv.setUint32(0, dados.length, false);
+      for (let i = 0; i < 4; i++) out[4 + i] = tipo.charCodeAt(i);
+      out.set(dados, 8);
+      dv.setUint32(8 + dados.length, crc32(out.subarray(4, 8 + dados.length)), false);
+      return out;
+    }
+    const ihdr = new Uint8Array(13);
+    const dvIhdr = new DataView(ihdr.buffer);
+    dvIhdr.setUint32(0, W, false);
+    dvIhdr.setUint32(4, H, false);
+    ihdr[8] = 8; ihdr[9] = 3;
+    const plte = new Uint8Array(pal.length * 3);
+    pal.forEach((rgb, i) => { plte[i * 3] = rgb[0]; plte[i * 3 + 1] = rgb[1]; plte[i * 3 + 2] = rgb[2]; });
+
+    const partesPng = [
+      new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]),
+      blocoPng("IHDR", ihdr),
+      blocoPng("PLTE", plte),
+      blocoPng("IDAT", z),
+      blocoPng("IEND", new Uint8Array(0))
+    ];
+    const total = partesPng.reduce((s, b) => s + b.length, 0);
+    const saida = new Uint8Array(total);
+    let off = 0;
+    for (const b of partesPng) { saida.set(b, off); off += b.length; }
+    return saida;
+  }
+
   /** Índice de coluna (0 = A) -> letras. */
   function colName(indice) {
     let out = "";
@@ -1152,18 +1325,21 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     const ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
     const relns = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
     const pkgns = "http://schemas.openxmlformats.org/package/2006/relationships";
+    const xdrns = "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing";
+    const ans = "http://schemas.openxmlformats.org/drawingml/2006/main";
     const decl = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
     const arquivos = [], overrides = [];
-    let numeroTabela = 0;
+    let numeroTabela = 0, numeroDrawing = 0, temPng = false;
 
     abas.forEach((aba, si) => {
       const largura = Math.max(...aba.rows.map(r => r.length));
-      const cabecalhos = aba.cabecalhos || [1];
+      const cabecalhos = aba.cabecalhos || (aba.semTabelas ? [] : [1]);
+      const estiloPadrao = aba.estiloPadrao ?? ESTILO.NORMAL;
       const linhasXml = aba.rows.map((linha, ri) => {
         const corpo = linha.map((valor, ci) => {
           if (valor === undefined || valor === null || valor === "") return "";
           const ref = colName(ci) + (ri + 1);
-          let estilo = cabecalhos.includes(ri + 1) ? ESTILO.CABECALHO : ESTILO.NORMAL;
+          let estilo = cabecalhos.includes(ri + 1) ? ESTILO.CABECALHO : estiloPadrao;
           if ((aba.entradas || []).includes(ref)) estilo = ESTILO.ENTRADA;
           if (valor && typeof valor === "object") {
             estilo = valor.estilo ?? estilo;
@@ -1173,6 +1349,7 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
             }
             valor = valor.v;
           }
+          if (valor === "" || valor === null || valor === undefined) return `<c r="${ref}" s="${estilo}"/>`;
           if (typeof valor === "number") return `<c r="${ref}" s="${estilo}"><v>${valor}</v></c>`;
           return `<c r="${ref}" s="${estilo}" t="inlineStr"><is><t xml:space="preserve">${esc(valor)}</t></is></c>`;
         }).join("");
@@ -1180,11 +1357,11 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
         return `<row r="${ri + 1}" ht="${altura}" customHeight="1">${corpo}</row>`;
       }).join("");
 
+      const colPadrao = aba.estiloPadrao !== undefined ? ` style="${aba.estiloPadrao}"` : "";
       const colunas = Array.from({ length: largura }, (_, i) =>
-        `<col min="${i + 1}" max="${i + 1}" width="${(aba.widths || [])[i] || 18}" customWidth="1"/>`).join("");
+        `<col min="${i + 1}" max="${i + 1}" width="${(aba.widths || [])[i] || 18}"${colPadrao} customWidth="1"/>`).join("");
 
-      // Cada tabela do Excel dá filtro e estilo de listras. O nome das colunas é a linha de cabeçalho.
-      const tabelas = aba.tables || [{ startRow: 1, endRow: aba.rows.length, startCol: 1, endCol: largura }];
+      const tabelas = aba.semTabelas ? [] : (aba.tables || [{ startRow: 1, endRow: aba.rows.length, startCol: 1, endCol: largura }]);
       const partesTabela = [], relacoes = [];
       for (const t of tabelas) {
         if (t.endRow <= t.startRow) continue;
@@ -1202,30 +1379,54 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
         partesTabela.push(`<tablePart r:id="rId${rid}"/>`);
       }
 
-      // Cor 0 e cor 1 da BFS nas colunas cor_*: mesma paleta da aplicação.
+      let tagDrawing = "";
+      if (aba.imagemGrafo) {
+        temPng = true;
+        const di = ++numeroDrawing;
+        const rid = relacoes.length + 1;
+        relacoes.push(`<Relationship Id="rId${rid}" Type="${relns}/drawing" Target="../drawings/drawing${di}.xml"/>`);
+        tagDrawing = `<drawing r:id="rId${rid}"/>`;
+        arquivos.push([`xl/media/image${di}.png`, aba.imagemGrafo]);
+        arquivos.push([`xl/drawings/_rels/drawing${di}.xml.rels`,
+          decl + `<Relationships xmlns="${pkgns}"><Relationship Id="rId1" Type="${relns}/image" Target="../media/image${di}.png"/></Relationships>`]);
+        arquivos.push([`xl/drawings/drawing${di}.xml`, decl +
+          `<xdr:wsDr xmlns:xdr="${xdrns}" xmlns:a="${ans}" xmlns:r="${relns}">` +
+          `<xdr:twoCellAnchor editAs="oneCell">` +
+          `<xdr:from><xdr:col>0</xdr:col><xdr:colOff>19050</xdr:colOff><xdr:row>1</xdr:row><xdr:rowOff>19050</xdr:rowOff></xdr:from>` +
+          `<xdr:to><xdr:col>7</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>8</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to>` +
+          `<xdr:pic><xdr:nvPicPr><xdr:cNvPr id="2" name="Grafo ${di}"/><xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr>` +
+          `<xdr:blipFill><a:blip r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill>` +
+          `<xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="2667000" cy="1381125"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr>` +
+          `</xdr:pic><xdr:clientData/></xdr:twoCellAnchor></xdr:wsDr>`]);
+        overrides.push(`<Override PartName="/xl/drawings/drawing${di}.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>`);
+      }
+
       const cf = aba.colorRange ? `<conditionalFormatting sqref="${aba.colorRange}">` +
         `<cfRule type="cellIs" dxfId="0" priority="1" operator="equal"><formula>0</formula></cfRule>` +
         `<cfRule type="cellIs" dxfId="1" priority="2" operator="equal"><formula>1</formula></cfRule></conditionalFormatting>` : "";
 
-      // Células mescladas (usadas só nas notas explicativas, fora das tabelas).
       const mesclagem = (aba.mesclar || []).length ? `<mergeCells count="${aba.mesclar.length}">` +
         aba.mesclar.map(r => `<mergeCell ref="${r}"/>`).join("") + `</mergeCells>` : "";
 
-      // Validação de dados: restringe as células editáveis (ex.: somente 0 ou 1).
       const dv = (aba.validacoes || []).length ? `<dataValidations count="${aba.validacoes.length}">` +
         aba.validacoes.map(v => `<dataValidation type="list" allowBlank="0" showInputMessage="1" showErrorMessage="1" ` +
           `errorTitle="Valor inválido" error="${esc(v.erro)}" promptTitle="${esc(v.titulo)}" prompt="${esc(v.dica)}" sqref="${v.sqref}">` +
           `<formula1>"${v.lista}"</formula1></dataValidation>`).join("") + `</dataValidations>` : "";
 
+      const zoom = aba.zoom ? ` zoomScale="${aba.zoom}" zoomScaleNormal="${aba.zoom}"` : "";
+      const gridLines = aba.ocultarGrade ? ' showGridLines="0"' : "";
+      const congelar = aba.semCongelar ? "" : `<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>`;
+      const sheetPr = aba.semTabelas ? `<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr>` : "";
+      const pageSetup = aba.semTabelas ? `<pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="1"/>` : "";
+
       arquivos.push([`xl/worksheets/sheet${si + 1}.xml`, decl +
-        `<worksheet xmlns="${ns}" xmlns:r="${relns}">` +
+        `<worksheet xmlns="${ns}" xmlns:r="${relns}">${sheetPr}` +
         `<dimension ref="A1:${colName(largura - 1)}${aba.rows.length}"/>` +
-        `<sheetViews><sheetView workbookViewId="0"${si === 0 ? ' tabSelected="1"' : ""}>` +
-        `<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>` +
-        `<sheetFormatPr defaultRowHeight="30"/><cols>${colunas}</cols><sheetData>${linhasXml}</sheetData>${mesclagem}${cf}${dv}` +
-        `<pageMargins left="0.3" right="0.3" top="0.5" bottom="0.5" header="0.2" footer="0.2"/>` +
+        `<sheetViews><sheetView workbookViewId="0"${si === 0 ? ' tabSelected="1"' : ""}${zoom}${gridLines}>${congelar}</sheetView></sheetViews>` +
+        `<sheetFormatPr defaultRowHeight="${aba.height || 30}"/><cols>${colunas}</cols><sheetData>${linhasXml}</sheetData>${mesclagem}${cf}${dv}` +
+        `<pageMargins left="0.3" right="0.3" top="0.4" bottom="0.4" header="0.2" footer="0.2"/>${pageSetup}` +
         (partesTabela.length ? `<tableParts count="${partesTabela.length}">${partesTabela.join("")}</tableParts>` : "") +
-        `</worksheet>`]);
+        `${tagDrawing}</worksheet>`]);
       if (relacoes.length)
         arquivos.push([`xl/worksheets/_rels/sheet${si + 1}.xml.rels`,
           decl + `<Relationships xmlns="${pkgns}">${relacoes.join("")}</Relationships>`]);
@@ -1233,25 +1434,59 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     });
 
     const estilos = decl + `<styleSheet xmlns="${ns}">` +
-      `<fonts count="4">` +
-      `<font><sz val="11"/><color rgb="FF28251D"/><name val="Calibri"/></font>` +
-      `<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>` +
-      `<font><b/><sz val="11"/><color rgb="FF0000FF"/><name val="Calibri"/></font>` +
-      `<font><b/><sz val="11"/><color rgb="FF28251D"/><name val="Calibri"/></font></fonts>` +
-      `<fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>` +
-      `<fill><patternFill patternType="solid"><fgColor rgb="FF01696F"/><bgColor indexed="64"/></patternFill></fill>` +
-      `<fill><patternFill patternType="solid"><fgColor rgb="FFFFF2CC"/><bgColor indexed="64"/></patternFill></fill></fills>` +
-      `<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>` +
-      `<border><left style="thin"><color rgb="FF7F7F7F"/></left><right style="thin"><color rgb="FF7F7F7F"/></right>` +
-      `<top style="thin"><color rgb="FF7F7F7F"/></top><bottom style="thin"><color rgb="FF7F7F7F"/></bottom><diagonal/></border></borders>` +
+      `<fonts count="11">` +
+      /* 0 */ `<font><sz val="11"/><color rgb="FF28251D"/><name val="Calibri"/></font>` +
+      /* 1 */ `<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>` +
+      /* 2 */ `<font><b/><sz val="11"/><color rgb="FF0000FF"/><name val="Calibri"/></font>` +
+      /* 3 */ `<font><b/><sz val="11"/><color rgb="FF28251D"/><name val="Calibri"/></font>` +
+      /* 4 */ `<font><b/><sz val="12"/><color rgb="FF000000"/><name val="Calibri"/></font>` +
+      /* 5 */ `<font><b/><sz val="10.5"/><color rgb="FF000000"/><name val="Calibri"/></font>` +
+      /* 6 */ `<font><sz val="12"/><color rgb="FF000000"/><name val="Calibri"/></font>` +
+      /* 7 */ `<font><sz val="12"/><color rgb="FFFF0000"/><name val="Calibri"/></font>` +
+      /* 8 */ `<font><strike/><sz val="12"/><color rgb="FFFF0000"/><name val="Calibri"/></font>` +
+      /* 9 */ `<font><sz val="9.5"/><color rgb="FF1F1F1F"/><name val="Consolas"/></font>` +
+      /* 10 */ `<font><b/><sz val="9.5"/><color rgb="FF8C1D18"/><name val="Consolas"/></font>` +
+      `</fonts>` +
+      `<fills count="8">` +
+      /* 0 */ `<fill><patternFill patternType="none"/></fill>` +
+      /* 1 */ `<fill><patternFill patternType="gray125"/></fill>` +
+      /* 2 */ `<fill><patternFill patternType="solid"><fgColor rgb="FF01696F"/><bgColor indexed="64"/></patternFill></fill>` +
+      /* 3 */ `<fill><patternFill patternType="solid"><fgColor rgb="FFFFF2CC"/><bgColor indexed="64"/></patternFill></fill>` +
+      /* 4 */ `<fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/><bgColor indexed="64"/></patternFill></fill>` +
+      /* 5 */ `<fill><patternFill patternType="solid"><fgColor rgb="FFECECEC"/><bgColor indexed="64"/></patternFill></fill>` +
+      /* 6 */ `<fill><patternFill patternType="solid"><fgColor rgb="FFFF7C80"/><bgColor indexed="64"/></patternFill></fill>` +
+      /* 7 */ `<fill><patternFill patternType="solid"><fgColor rgb="FF92D050"/><bgColor indexed="64"/></patternFill></fill>` +
+      `</fills>` +
+      `<borders count="5">` +
+      /* 0 */ `<border><left/><right/><top/><bottom/><diagonal/></border>` +
+      /* 1 */ `<border><left style="thin"><color rgb="FF7F7F7F"/></left><right style="thin"><color rgb="FF7F7F7F"/></right><top style="thin"><color rgb="FF7F7F7F"/></top><bottom style="thin"><color rgb="FF7F7F7F"/></bottom><diagonal/></border>` +
+      /* 2 */ `<border><left style="thin"><color rgb="FF000000"/></left><right style="thin"><color rgb="FF000000"/></right><top style="thin"><color rgb="FF000000"/></top><bottom style="thin"><color rgb="FF000000"/></bottom><diagonal/></border>` +
+      /* 3 */ `<border><left style="dotted"><color rgb="FF000000"/></left><right style="dotted"><color rgb="FF000000"/></right><top style="dotted"><color rgb="FF000000"/></top><bottom style="dotted"><color rgb="FF000000"/></bottom><diagonal/></border>` +
+      /* 4 */ `<border><left/><right style="thin"><color rgb="FF000000"/></right><top/><bottom/><diagonal/></border>` +
+      `</borders>` +
       `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>` +
-      `<cellXfs count="6">` +
-      `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
-      `<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>` +
-      `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
-      `<xf numFmtId="10" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment vertical="top"/></xf>` +
-      `<xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>` +
-      `<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
+      `<cellXfs count="21">` +
+      /* 0: NORMAL */ `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
+      /* 1: CABECALHO */ `<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>` +
+      /* 2: FORMULA */ `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
+      /* 3: PERCENTUAL */ `<xf numFmtId="10" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1" applyAlignment="1"><alignment vertical="top"/></xf>` +
+      /* 4: ENTRADA */ `<xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>` +
+      /* 5: NEGRITO */ `<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>` +
+      /* 6: TM_TITULO */ `<xf numFmtId="0" fontId="4" fillId="4" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 7: TM_VERTICAL */ `<xf numFmtId="0" fontId="5" fillId="4" borderId="4" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" textRotation="90"/></xf>` +
+      /* 8: TM_ADJ_V_BRANCO */ `<xf numFmtId="0" fontId="6" fillId="4" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 9: TM_ADJ_V_SALMAO */ `<xf numFmtId="0" fontId="6" fillId="6" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 10: TM_ADJ_VIZ_BRANCO */ `<xf numFmtId="0" fontId="6" fillId="4" borderId="3" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 11: TM_ADJ_VIZ_SALMAO */ `<xf numFmtId="0" fontId="6" fillId="6" borderId="3" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 12: TM_CAB_CINZA */ `<xf numFmtId="0" fontId="3" fillId="5" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 13: TM_V_ID */ `<xf numFmtId="0" fontId="6" fillId="4" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 14: TM_VAL_VERMELHO */ `<xf numFmtId="0" fontId="7" fillId="4" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 15: TM_VAL_SALMAO */ `<xf numFmtId="0" fontId="7" fillId="6" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 16: TM_VAL_VERDE */ `<xf numFmtId="0" fontId="7" fillId="7" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 17: TM_VAL_RISCADO */ `<xf numFmtId="0" fontId="8" fillId="4" borderId="2" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>` +
+      /* 18: TM_CODIGO */ `<xf numFmtId="0" fontId="9" fillId="4" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>` +
+      /* 19: TM_CODIGO_ATIVO */ `<xf numFmtId="0" fontId="10" fillId="3" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>` +
+      /* 20: TM_FUNDO_BRANCO */ `<xf numFmtId="0" fontId="0" fillId="4" borderId="0" xfId="0" applyFill="1"/>` +
       `</cellXfs>` +
       `<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>` +
       `<dxfs count="2">` +
@@ -1263,7 +1498,6 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     arquivos.push(["xl/workbook.xml", decl +
       `<workbook xmlns="${ns}" xmlns:r="${relns}"><bookViews><workbookView/></bookViews>` +
       `<sheets>${abas.map((a, i) => `<sheet name="${esc(a.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("")}</sheets>` +
-      // fullCalcOnLoad: o Excel recalcula todas as fórmulas ao abrir (os valores gravados são só um cache).
       `<calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>`]);
     arquivos.push(["xl/_rels/workbook.xml.rels", decl +
       `<Relationships xmlns="${pkgns}">` +
@@ -1275,13 +1509,14 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
       `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">` +
       `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>` +
       `<Default Extension="xml" ContentType="application/xml"/>` +
+      (temPng ? `<Default Extension="png" ContentType="image/png"/>` : "") +
       `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>` +
       `<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>` +
       `${overrides.join("")}</Types>`]);
     return zip(arquivos);
   }
 
-  exportar({ ESTILO, colName, formula, estilizada, gerarXlsx, crc32 });
+  exportar({ ESTILO, colName, formula, estilizada, gerarXlsx, gerarPngGrafo, crc32 });
 })(typeof module === "object" ? o => { module.exports = o; } : o => { globalThis.Xlsx = o; });
 
 </script>
@@ -1289,18 +1524,305 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
 /* ===== src/planilha.js ===== */
 "use strict";
 /*
- * Conteúdo da planilha do teste de mesa (as 7 abas exigidas):
- * Resumo, Guia, Entradas, BFS_valido, BFS_conflito, Impacto, Validacoes.
+ * Conteúdo da planilha do teste de mesa (saida/teste-de-mesa.xlsx):
  *
- * Os rastros das abas BFS_* vêm de executarBfs (o MESMO algoritmo da aplicação).
- * São registros da execução, não uma BFS recalculada por fórmulas.
- * Só a aba Impacto tem fórmulas vivas (a seleção de funções é editável).
+ * 1. Abas visuais de Teste de Mesa no formato idêntico ao usado pelo Prof. Rafael Vargas Mesquita
+ *    nas aulas de TPA (como em IFES-TPA-Cap07-ArvoreGeradoraMinima-Lista04-Ex01-Gabarito.xlsx):
+ *    - Bipartido-Ex01 (estado inicial em branco: Grafo G, adj[] pontilhada branca, código, vetores e fila vazia)
+ *    - Bipartido-GAB (gabarito final: adj[] toda em salmão, vetores finais em vermelho e fila toda riscada)
+ *    - Bipartido-GAB-C1, GAB-T1, GAB-T3, GAB-C2, GAB-T2, GAB-C3, GAB-T4, GAB-C4 (passo a passo por vértice retirado da fila)
+ *    - Conflito-GAB (teste de mesa do cenário de conflito no exato momento em que C2 encontra T3 com a mesma cor)
+ *
+ * 2. Abas analíticas e de fórmulas vivas:
+ *    - Resumo, Guia, Entradas, BFS_valido, BFS_conflito, Impacto, Validacoes.
  */
 (function (exportar) {
   const N = typeof require === "function" ? require("./nucleo.js") : globalThis.Nucleo;
   const X = typeof require === "function" ? require("./xlsx.js") : globalThis.Xlsx;
   const { analisarTxt, executarBfs, consultarImpacto } = N;
-  const { colName, formula, estilizada, ESTILO, gerarXlsx } = X;
+  const { colName, formula, estilizada, ESTILO, gerarXlsx, gerarPngGrafo } = X;
+
+  const LINHAS_CODIGO_BFS = [
+    "function executarBfs(G) {",
+    "  const cor = {}, pai = {}, comp = {}, fila = [];",
+    "  for (const v of G.vertices) {",
+    "    cor[v] = -1; pai[v] = null; comp[v] = 0;",
+    "  }",
+    "  let numComp = 0;",
+    "  for (const s of G.vertices) {",
+    "    if (cor[s] !== -1) continue;",
+    "    cor[s] = 0; comp[s] = ++numComp;",
+    "    fila.push(s);",
+    "    for (let ini = 0; ini < fila.length; ini++) {",
+    "      const u = fila[ini];",
+    "      for (const v of G.adj.get(u)) {",
+    "        if (cor[v] === -1) {",
+    "          cor[v] = 1 - cor[u]; pai[v] = u;",
+    "          comp[v] = numComp; fila.push(v);",
+    "        } else if (cor[v] === cor[u]) {",
+    "          return { bipartido: false, ciclo: cicloImpar(u, v, pai) };",
+    "        }",
+    "      }",
+    "    }",
+    "  }",
+    "}"
+  ];
+
+  /**
+   * Monta uma aba visual de Teste de Mesa no formato exato das aulas do Prof. Rafael:
+   * - Colunas A..G: Grafo G (PNG embutido em A2:G8) + Representação do Grafo G / adj[] (A9:F17)
+   * - Colunas I..O: Código-fonte da BFS com destaque nas linhas ativas da rodada
+   * - Colunas Q..U: Tabela de vetores (v, marcado[], cor[], pai[], comp[]) com valores em vermelho
+   * - Colunas W..X: Fila FIFO q (v, cor) com itens retirados riscados e recém-inseridos em salmão
+   */
+  function montarAbaTesteMesaProf(nomeAba, grafo, cfg) {
+    const ids = grafo.vertices.map(v => v.id);
+    const totalLinhas = 25, totalCols = 24; // A..X
+    const rows = Array.from({ length: totalLinhas }, () =>
+      Array.from({ length: totalCols }, () => estilizada("", ESTILO.TM_FUNDO_BRANCO))
+    );
+    const mesclar = [
+      "A1:G1",
+      "A10:A17",
+      "W1:X1",
+      "A23:X23",
+      "A25:X25"
+    ];
+
+    // 1. Cabeçalhos superiores (Linha 1)
+    rows[0][0] = estilizada("Grafo G", ESTILO.TM_TITULO);
+    rows[0][16] = estilizada("v", ESTILO.TM_CAB_CINZA);
+    rows[0][17] = estilizada("marcado[]", ESTILO.TM_CAB_CINZA);
+    rows[0][18] = estilizada("cor[]", ESTILO.TM_CAB_CINZA);
+    rows[0][19] = estilizada("pai[]", ESTILO.TM_CAB_CINZA);
+    rows[0][20] = estilizada("comp[]", ESTILO.TM_CAB_CINZA);
+    rows[0][22] = estilizada("Fila FIFO q", ESTILO.TM_CAB_CINZA);
+    rows[0][23] = estilizada("", ESTILO.TM_CAB_CINZA);
+
+    // 2. Código-fonte nas colunas I..O (índices 8..14), linhas 1..23
+    const linhasAtivas = new Set(cfg.linhasAtivas || []);
+    LINHAS_CODIGO_BFS.forEach((linhaCod, idx) => {
+      const r = idx; // 0..22 -> Excel 1..23
+      if (r < 22) {
+        mesclar.push(`I${r + 1}:O${r + 1}`);
+        const est = linhasAtivas.has(r + 1) ? ESTILO.TM_CODIGO_ATIVO : ESTILO.TM_CODIGO;
+        const prefixo = linhasAtivas.has(r + 1) ? "► " : "  ";
+        rows[r][8] = estilizada(prefixo + linhaCod, est);
+      }
+    });
+
+    // 3. Tabela de vetores Q2:U9 (v, marcado[], cor[], pai[], comp[])
+    const recem = new Set(cfg.recemDescobertos || []);
+    const conflitoSet = new Set(cfg.conflitoVertices || []);
+    ids.forEach((id, i) => {
+      const r = 1 + i; // linhas 2..9 (índices 1..8)
+      const cVal = cfg.cor[id];
+      const marcado = cVal !== -1 ? "T" : "F";
+      const paiVal = cfg.pai[id] || "-";
+      const compVal = cfg.comp[id] ?? 0;
+      const estValor = conflitoSet.has(id)
+        ? ESTILO.TM_VAL_SALMAO
+        : (recem.has(id) ? ESTILO.TM_VAL_VERDE : ESTILO.TM_VAL_VERMELHO);
+      rows[r][16] = estilizada(id, ESTILO.TM_V_ID);
+      rows[r][17] = estilizada(marcado, estValor);
+      rows[r][18] = estilizada(cVal, estValor);
+      rows[r][19] = estilizada(paiVal, estValor);
+      rows[r][20] = estilizada(compVal, estValor);
+    });
+
+    // 4. Fila FIFO q em W2:X18
+    rows[1][22] = estilizada("v", ESTILO.TM_CAB_CINZA);
+    rows[1][23] = estilizada("cor", ESTILO.TM_CAB_CINZA);
+    const filaItens = cfg.filaItens || [];
+    for (let slot = 0; slot < 16; slot++) {
+      const r = 2 + slot; // linhas 3..18 (índices 2..17)
+      const item = filaItens[slot];
+      if (item) {
+        const estFila = item.estado === "riscado"
+          ? ESTILO.TM_VAL_RISCADO
+          : (item.estado === "novo" ? ESTILO.TM_VAL_SALMAO : ESTILO.TM_VAL_VERMELHO);
+        rows[r][22] = estilizada(item.id, estFila);
+        rows[r][23] = estilizada(item.cor, estFila);
+      } else {
+        rows[r][22] = estilizada("", ESTILO.TM_VAL_VERMELHO);
+        rows[r][23] = estilizada("", ESTILO.TM_VAL_VERMELHO);
+      }
+    }
+
+    // 5. Representação do Grafo G / adj[] em A9:F17
+    rows[8][1] = estilizada("adj[]", ESTILO.TM_TITULO);
+    for (let i = 0; i < 8; i++) {
+      rows[9 + i][0] = estilizada(i === 0 ? "Representação do Grafo G" : "", ESTILO.TM_VERTICAL);
+    }
+    const adjVisitados = new Set(cfg.adjVisitados || []);
+    ids.forEach((id, i) => {
+      const r = 9 + i; // linhas 10..17 (índices 9..16)
+      const visitado = adjVisitados.has(id);
+      rows[r][1] = estilizada(id, visitado ? ESTILO.TM_ADJ_V_SALMAO : ESTILO.TM_ADJ_V_BRANCO);
+      const vizinhos = grafo.adj.get(id) || [];
+      if (vizinhos.length === 0) {
+        rows[r][2] = estilizada("-", visitado ? ESTILO.TM_ADJ_VIZ_SALMAO : ESTILO.TM_ADJ_VIZ_BRANCO);
+      } else {
+        vizinhos.forEach((viz, k) => {
+          rows[r][2 + k] = estilizada(viz, visitado ? ESTILO.TM_ADJ_VIZ_SALMAO : ESTILO.TM_ADJ_VIZ_BRANCO);
+        });
+      }
+    });
+
+    // 6. Notas de rodapé (Linhas 23 e 25)
+    rows[22][0] = estilizada(cfg.nota || "", ESTILO.NEGRITO);
+    rows[24][0] = estilizada("assert: caso retorne falso (cor[v] === cor[u]), detecta conflito e reconstrói o ciclo ímpar!", ESTILO.NORMAL);
+
+    // 7. Imagem PNG do Grafo G (A2:G8)
+    const arestasGrafo = grafo.arestas.map(a => [a.u, a.v]);
+    const visitadosGrafo = ids.filter(id => cfg.cor[id] !== -1);
+    const imagemGrafo = gerarPngGrafo({
+      arestas: arestasGrafo,
+      visitados: visitadosGrafo,
+      atual: cfg.atual || null,
+      arestasVermelhas: cfg.arestasVermelhas || []
+    });
+
+    return {
+      name: nomeAba,
+      rows,
+      widths: [
+        3.5, 5.8, 5.8, 5.8, 5.8, 5.8, 5.8, // A..G (Grafo G e adj[])
+        1.8,                                // H (espaçador)
+        8.5, 8.5, 8.5, 8.5, 8.5, 10, 14,   // I..O (Código)
+        1.8,                                // P (espaçador)
+        5.5, 11, 8.5, 9.5, 8.5,            // Q..U (v, marcado[], cor[], pai[], comp[])
+        1.8,                                // V (espaçador)
+        6.8, 6.8                            // W..X (Fila FIFO q)
+      ],
+      height: 18,
+      mesclar,
+      semTabelas: true,
+      semCongelar: true,
+      estiloPadrao: ESTILO.TM_FUNDO_BRANCO,
+      zoom: 110,
+      imagemGrafo
+    };
+  }
+
+  /**
+   * Constrói todas as abas passo a passo no padrão do Gabarito do Prof. Rafael
+   * para o cenário válido (Início, GAB e GAB-<vértice>) e para o cenário de conflito.
+   */
+  function construirAbasProfessor(g, b, gc, bc) {
+    const ids = g.vertices.map(v => v.id);
+    const initMap = val => Object.fromEntries(ids.map(id => [id, val]));
+
+    // 1. Aba Inicial em branco (Bipartido-Ex01)
+    const abaInicio = montarAbaTesteMesaProf("Bipartido-Ex01", g, {
+      cor: initMap(-1),
+      pai: initMap(null),
+      comp: initMap(0),
+      filaItens: [],
+      adjVisitados: [],
+      arestasVermelhas: [],
+      linhasAtivas: [2, 3, 4],
+      nota: "Estado Inicial (antes do laço principal da BFS): adj[] não percorrida, todos os vértices com marcado[]=F, cor[]=-1, pai[]=- e Fila FIFO vazia."
+    });
+
+    // 2. Simula passo a passo por vértice retirado da fila (u) para gerar as 8 abas GAB-<vértice>
+    const cor = initMap(-1), pai = initMap(null), comp = initMap(0);
+    const historicoFila = []; // [{ id, cor, removido }]
+    const adjVisitados = [];
+    const arestasVermelhas = [];
+    const abasPassos = [];
+    let numComp = 0;
+
+    for (const s of g.vertices) {
+      if (cor[s.id] !== -1) continue;
+      numComp++;
+      cor[s.id] = 0;
+      comp[s.id] = numComp;
+      const filaComp = [s.id];
+      historicoFila.push({ id: s.id, cor: 0, removido: false, passoInsercao: s.id });
+
+      for (let ini = 0; ini < filaComp.length; ini++) {
+        const u = filaComp[ini];
+        const itemU = historicoFila.find(x => x.id === u);
+        if (itemU) itemU.removido = true;
+        adjVisitados.push(u);
+
+        const recemDescobertos = (u === s.id) ? [u] : [];
+        for (const v of g.adj.get(u)) {
+          arestasVermelhas.push(`${u}-${v}`);
+          if (cor[v] === -1) {
+            cor[v] = 1 - cor[u];
+            pai[v] = u;
+            comp[v] = numComp;
+            filaComp.push(v);
+            recemDescobertos.push(v);
+            historicoFila.push({ id: v, cor: cor[v], removido: false, passoInsercao: u });
+          }
+        }
+
+        const filaItens = historicoFila.map(item => ({
+          id: item.id,
+          cor: item.cor,
+          estado: item.removido
+            ? "riscado"
+            : (item.passoInsercao === u ? "novo" : "aguardando")
+        }));
+
+        const novosViz = recemDescobertos.filter(x => x !== u);
+        const resumoDescoberta = novosViz.length
+          ? `descobre ${novosViz.join(", ")} (cor ${ 1 - cor[u] }, pai ${u})`
+          : (g.adj.get(u).length ? "vizinhos já visitados com cor compatível" : "vértice isolado (adj vazia)");
+
+        abasPassos.push(montarAbaTesteMesaProf(`Bipartido-GAB-${u}`, g, {
+          cor: { ...cor },
+          pai: { ...pai },
+          comp: { ...comp },
+          atual: u,
+          recemDescobertos,
+          filaItens,
+          adjVisitados: [...adjVisitados],
+          arestasVermelhas: [...arestasVermelhas],
+          linhasAtivas: novosViz.length ? [12, 13, 14, 15, 16] : [12, 13],
+          nota: `Visita u = ${u} (cor ${cor[u]}, comp ${comp[u]}): percorre adj[${u}] = [${g.adj.get(u).join(", ")}] → ${resumoDescoberta}.`
+        }));
+      }
+    }
+
+    // 3. Aba Gabarito Final (Bipartido-GAB)
+    const ultimoRastro = b.rastro[b.rastro.length - 1];
+    const abaGabaritoFinal = montarAbaTesteMesaProf("Bipartido-GAB", g, {
+      cor: ultimoRastro.cor,
+      pai: ultimoRastro.pai,
+      comp: ultimoRastro.componente,
+      filaItens: historicoFila.map(item => ({ id: item.id, cor: item.cor, estado: "riscado" })),
+      adjVisitados: ids,
+      arestasVermelhas: g.arestas.map(a => `${a.u}-${a.v}`),
+      linhasAtivas: [22],
+      nota: "Término (Gabarito Final): todas as listas adj[] inspecionadas (2A = 10 exames), 3 componentes conexos e grafo confirmado BIPARTIDO."
+    });
+
+    // 4. Aba Gabarito do Cenário de Conflito (Conflito-GAB)
+    const rConflito = bc.rastro[bc.rastro.length - 1];
+    const abaConflitoGab = montarAbaTesteMesaProf("Conflito-GAB", gc, {
+      cor: rConflito.cor,
+      pai: rConflito.pai,
+      comp: rConflito.componente,
+      atual: rConflito.u,
+      conflitoVertices: [rConflito.u, rConflito.v],
+      filaItens: [
+        { id: "C1", cor: 0, estado: "riscado" },
+        { id: "T1", cor: 1, estado: "riscado" },
+        { id: "T3", cor: 1, estado: "riscado" },
+        { id: "C2", cor: 1, estado: "novo" }
+      ],
+      adjVisitados: ["C1", "T1", "T3"],
+      arestasVermelhas: ["C1-T1", "C1-T3", "C1-C2", "C2-T3"],
+      linhasAtivas: [17, 18],
+      nota: `Conflito detectado ao visitar u = ${rConflito.u}: vizinho v = ${rConflito.v} já possui a mesma cor (${rConflito.cor[rConflito.u]}). Ciclo ímpar: ${bc.ciclo.join(" → ")}.`
+    });
+
+    return [abaInicio, abaGabaritoFinal, ...abasPassos, abaConflitoGab];
+  }
 
   function aba_rastro(nome, grafo, bfs) {
     const ids = grafo.vertices.map(v => v.id);
@@ -1321,13 +1843,14 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
       name: nome, rows: linhas,
       widths: [9, 18, 8, 8, 26, 14, 14, ...ids.map(() => 9), 40, 40, 62],
       height: 34,
-      colorRange: `H2:${colName(6 + ids.length)}${linhas.length}`   // colunas cor_* (0 e 1 coloridos)
+      colorRange: `H2:${colName(6 + ids.length)}${linhas.length}`
     };
   }
 
   function montarPlanilha({ valido, conflito }, verificacoes) {
     const g = analisarTxt(valido).grafo, b = executarBfs(g);
     const gc = analisarTxt(conflito).grafo, bc = executarBfs(gc);
+    const abasProfessor = construirAbasProfessor(g, b, gc, bc);
     const abaValido = aba_rastro("BFS_valido", g, b);
     const abaConflito = aba_rastro("BFS_conflito", gc, bc);
 
@@ -1345,11 +1868,11 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     const codigos = g.vertices.filter(v => v.tipo === "CODIGO");
     const testes = g.vertices.filter(v => v.tipo === "TESTE");
     const nC = codigos.length, nT = testes.length;
-    const ultimaC = 1 + nC;                         // última linha de função
-    const primeiraCol = 4;                          // E: início da matriz de testes (índice 0 = A)
+    const ultimaC = 1 + nC;
+    const primeiraCol = 4;
     const colTeste = i => colName(primeiraCol + i);
     const colAviso = colName(primeiraCol + nT);
-    const cab2 = nC + 4;                            // linha do cabeçalho da 2ª tabela
+    const cab2 = nC + 4;
     const impacto = [[
       "Código", "Rótulo", "Alterado (1 = sim, 0 = não)", "Testes mapeados",
       ...testes.map(t => t.id), "Aviso"
@@ -1373,7 +1896,6 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     testes.forEach((t, i) => {
       const r = cab2 + 1 + i, c = colTeste(i);
       const ligadas = (resultado0.itens.find(x => x.id === t.id) || { funcoes: [] }).funcoes;
-      // Justificativa: concatena os códigos alterados cuja célula da matriz vale 1 para este teste.
       const partes = codigos.map((_, k) => `IF(AND($C$${k + 2}=1,${c}$${k + 2}=1),$A$${k + 2}&" ","")`).join("&");
       impacto.push([
         t.id, t.rotulo,
@@ -1387,7 +1909,6 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     impacto.push(["Função sem testes mapeados (ex.: C4) gera aviso; isso não significa que ela dispense testes."]);
     impacto.push(["A matriz é a do cenário válido, gravada pela aplicação. Esta aba não lê a aba Entradas."]);
     const primT = cab2 + 1, ultT = cab2 + nT;
-    // Notas do Impacto: mescladas de A até a última coluna, fora das tabelas.
     const ultimaColImpacto = colAviso;
     const mesclarImpacto = [`A${nC + 3}:${ultimaColImpacto}${nC + 3}`], alturasImpacto = { [nC + 3]: 24 };
     for (let r = ultT + 2; r <= impacto.length; r++) { mesclarImpacto.push(`A${r}:${ultimaColImpacto}${r}`); alturasImpacto[r] = 24; }
@@ -1414,34 +1935,29 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     ];
     const nResumo = resumo.length;
     resumo.push([]);
-    resumo.push([estilizada("IMPORTANTE: BFS_valido e BFS_conflito são REGISTROS da execução do algoritmo da aplicação (mesmo código, src/nucleo.js). Não são uma BFS recalculada por fórmulas: editar a aba Entradas NÃO refaz o teste de mesa.", ESTILO.NEGRITO)]);
+    resumo.push([estilizada("IMPORTANTE: As abas Bipartido-* e BFS_* são REGISTROS da execução do algoritmo da aplicação (mesmo código, src/nucleo.js). Não são uma BFS recalculada por fórmulas: editar a aba Entradas NÃO refaz o teste de mesa.", ESTILO.NEGRITO)]);
     resumo.push(["Somente a aba Impacto recalcula: altere a seleção das funções (células amarelas) e os testes indicados mudam por fórmulas."]);
     resumo.push(["Cenários didáticos autorais; não representam dados coletados de uma aplicação real nem cobertura ou desempenho medidos."]);
-    resumo.push(["Pendente: linguagem, prazo, duração, número de vértices e formato de entrega não foram confirmados (enunciado original não estava no projeto)."]);
     const mesclarResumo = [], alturasResumo = {};
     for (let r = nResumo + 2; r <= resumo.length; r++) { mesclarResumo.push(`A${r}:C${r}`); alturasResumo[r] = 36; }
 
     /* ---- Guia ---- */
     const guia = [
       ["Assunto", "Orientação", "Origem ou referência"],
+      ["Padrão do Prof. Rafael", "As 11 primeiras abas (Bipartido-Ex01, Bipartido-GAB, Bipartido-GAB-C1..C4 e Conflito-GAB) seguem o formato visual exato usado nas aulas de TPA.", "IFES-TPA-Lista04-Ex01-Gabarito.xlsx"],
       ["Natureza dos dados", "Cenários didáticos autorais; não são dados reais de uma aplicação.", "cenarios/*.txt"],
-      ["Tipo de aba", "BFS_valido e BFS_conflito: registro da execução. Impacto: fórmulas. Entradas e Validacoes: dados gravados.", "tools/gerar.js"],
+      ["Tipo de aba", "Bipartido-* e BFS_*: registro da execução. Impacto: fórmulas. Entradas e Validacoes: dados gravados.", "tools/gerar.js"],
       ["Ordem de execução", "Vértices na ordem de declaração; vizinhos na ordem das arestas; fila FIFO.", "src/nucleo.js"],
-      ["Eventos", "Cada linha mostra o estado APÓS o evento: Inicialização, Raiz, Retirada, Coloração, Aresta OK, Conflito, Fim componente, Bipartido.", "src/nucleo.js"],
       ["Cores da BFS", "-1: não visitado; 0 e 1: grupos produzidos pela BFS. Não são os tipos CODIGO/TESTE.", "src/nucleo.js"],
-      ["Pais", "O pai é gravado quando o vértice é descoberto (aresta da árvore da BFS).", "src/nucleo.js"],
-      ["Componentes", "Número do componente de cada vértice; a coluna 'Componentes iniciados' é o contador acumulado.", "src/nucleo.js"],
-      ["Exames", "Contagem acumulada de vizinhos examinados. Aresta não direcionada aparece nas duas listas.", "src/nucleo.js"],
-      ["Atualização", "Editar a aba Entradas não recalcula a BFS. Para outro grafo, use a aplicação e gere nova planilha.", "Limitação da planilha"],
+      ["Fila FIFO nas abas GAB", "Itens riscados em vermelho já saíram da fila; itens com fundo salmão entraram na rodada atual.", "src/planilha.js"],
       ["Impacto", "Células amarelas C2:C5 aceitam 1 ou 0. As fórmulas calculam testes indicados, justificativa e aviso de função sem testes.", "Aba Impacto"],
-      ["Cenário de conflito", "A aresta C1-C2 viola o domínio e forma um ciclo ímpar. É um teste negativo do verificador, não uma relação legítima.", "cenarios/cenario-conflito.txt"],
+      ["Cenário de conflito", "A aresta C1-C2 viola o domínio e forma um ciclo ímpar. É um teste negativo do verificador.", "cenarios/cenario-conflito.txt"],
       ["Complexidade", "Núcleo da BFS: O(V+E). Gravar uma cópia dos estados em cada evento custa O(V·(V+E)) em tempo e memória.", "Análise da implementação"],
-      ["Garantia", "A indicação depende do mapeamento informado; não garante cobertura completa.", "Limitação do modelo"],
-      ["Referência conceitual", "BFS com duas cores e ciclo ímpar (BipartiteX).", "https://algs4.cs.princeton.edu/41graph/BipartiteX.java.html"],
-      ["Conferência", "Abrir no Excel ou LibreOffice e conferir fórmulas, filtros, formatação e ausência de aviso de reparo.", "docs/resultado-verificacoes.md"]
+      ["Referência conceitual", "BFS com duas cores e ciclo ímpar (BipartiteX).", "https://algs4.cs.princeton.edu/41graph/BipartiteX.java.html"]
     ];
 
     return gerarXlsx([
+      ...abasProfessor,
       { name: "Resumo", rows: resumo, widths: [46, 30, 70], height: 32, mesclar: mesclarResumo, alturas: alturasResumo, tables: [{ startRow: 1, endRow: nResumo, startCol: 1, endCol: 3 }] },
       { name: "Guia", rows: guia, widths: [26, 100, 54], height: 40 },
       { name: "Entradas", rows: entradas, widths: [14, 14, 12, 14, 18, 36], height: 20 },
@@ -1711,19 +2227,24 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
       "}"
     ].join("\n");
 
-    // 4. Coluna da Fila FIFO (mostra os vértices enfileirados no Início vs processados no Término)
-    const ordemFila = ["C1", "T1", "T3", "C2", "T2", "C3", "T4", "C4"];
-    const linhasFila = ordemFila.map(id =>
-      `<tr><td class="tm-vermelho">${ehTermino ? "" : (id === "C1" ? "C1 (raiz 1)" : "—")}</td>` +
-      `<td class="tm-vermelho">${ehTermino ? `${id} (ok)` : "—"}</td></tr>`
+    // 4. Coluna da Fila FIFO q (igual ao Gabarito do professor: itens retirados aparecem riscados no Término)
+    const ordemFila = [
+      ["C1", 0], ["T1", 1], ["T3", 1], ["C2", 0],
+      ["T2", 1], ["C3", 0], ["T4", 1], ["C4", 0]
+    ];
+    const linhasFila = ordemFila.map(([id, c]) =>
+      `<tr><td class="tm-vermelho">${ehTermino ? `<del>${id}</del>` : "—"}</td>` +
+      `<td class="tm-vermelho">${ehTermino ? `<del>${c}</del>` : "—"}</td></tr>`
     ).join("");
 
-    // 5. Tabela Vetores da BFS (v | cor[] | pai[] | comp[])
+    // 5. Tabela Vetores da BFS (v | marcado[] | cor[] | pai[] | comp[])
     const linhasVetores = grafo.vertices.map(v => {
+      const m = ehTermino ? "T" : "F";
       const c = ehTermino ? estado.cor[v.id] : -1;
-      const p = ehTermino ? (estado.pai[v.id] ?? "—") : "null";
+      const p = ehTermino ? (estado.pai[v.id] ?? "-") : "-";
       const cp = ehTermino ? estado.componente[v.id] : 0;
       return `<tr><td>${esc(v.id)}</td>` +
+        `<td class="tm-vermelho">${m}</td>` +
         `<td class="tm-vermelho">${c}</td>` +
         `<td class="tm-vermelho">${esc(String(p))}</td>` +
         `<td class="tm-vermelho">${cp}</td></tr>`;
@@ -1759,11 +2280,11 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
       `<p class="tm-chamada">let resultado;<br>resultado = executarBfs(G);</p>` +
       `</div>` +
       `<div class="tm-col-fila">` +
-      `<table class="tm-wire"><thead><tr><th colspan="2">Fila FIFO (fila[])</th></tr><tr><th>Início</th><th>Saída</th></tr></thead><tbody>${linhasFila}</tbody></table>` +
+      `<table class="tm-wire"><thead><tr><th colspan="2">Fila FIFO q</th></tr><tr><th>v</th><th>cor</th></tr></thead><tbody>${linhasFila}</tbody></table>` +
       arvoreTermino +
       `</div>` +
       `<div class="tm-col-uf">` +
-      `<table class="tm-wire"><thead><tr><th colspan="4">Estruturas da BFS</th></tr><tr><th>v</th><th>cor[]</th><th>pai[]</th><th>comp[]</th></tr></thead><tbody>${linhasVetores}</tbody></table>` +
+      `<table class="tm-wire"><thead><tr><th colspan="5">Estruturas da BFS</th></tr><tr><th>v</th><th>marcado[]</th><th>cor[]</th><th>pai[]</th><th>comp[]</th></tr></thead><tbody>${linhasVetores}</tbody></table>` +
       `</div></div>`;
   }
 
