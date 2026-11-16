@@ -570,12 +570,12 @@
         topicos: [
           "Implementação em JavaScript (src/nucleo.js) fiel à estrutura clássica com listas de adjacência."
         ],
-        fala: "Aqui temos a implementação da nossa função executarBfs, seguindo exatamente o estilo de destaque do modelo da disciplina. No bloco destacado em branco, para cada vértice u retirado da fila, percorremos sua lista de adjacência: se o vizinho v ainda tem cor menos 1, ele recebe a cor complementar 1 menos cor de u, guarda u como pai e entra na fila. Se clicarmos no Bloco 4, vemos o tratamento de conflito: quando v já tem a mesma cor de u, reconstruímos o ciclo ímpar subindo pelos pais até o menor ancestral comum. Passo agora a palavra ao André."
+        fala: "Aqui temos a implementação da nossa função executarBfs, seguindo exatamente o estilo de destaque do modelo da disciplina. No bloco destacado em branco, para cada vértice u retirado da fila, percorremos sua lista de adjacência: se o vizinho v ainda tem cor menos 1, ele recebe a cor complementar 1 menos cor de u, guarda u como pai e entra na fila. Se clicarmos no Bloco 4, vemos o tratamento de conflito: quando v já tem a mesma cor de u, reconstruímos o ciclo ímpar subindo pelos pais até o menor ancestral comum."
       },
 
       /* ---------------- SLIDE 6: SOLUÇÃO / IMPLEMENTAÇÃO / INTERFACE GRÁFICA (igual ao slide 6 do modelo2) ---------------- */
       {
-        quem: quem.A, tempo: "8:30–10:00", layout: "lateral",
+        quem: quem.M, tempo: "8:30–10:00", layout: "lateral",
         linhasTitulo: ["Solução", "Implementação", "Interface Gráfica"],
         subtituloVerde: "cenario-valido.txt",
         titulo: "Solução: Implementação — Interface Gráfica",
@@ -583,7 +583,7 @@
         topicos: [
           "Leitura dos 2 arquivos TXT e separação rigorosa das 4 operações na interface."
         ],
-        fala: "Obrigado, Marcos. Seguindo o modelo da apresentação, aqui mostramos o formato dos nossos dois arquivos TXT à esquerda e a interface gráfica à direita. O arquivo declara vértices com V, arestas com E e funções alteradas com A. Nossa arquitetura separa quatro operações independentes: validação sintática do TXT com linha e motivo, verificação estrutural pela BFS, validação semântica entre CODIGO e TESTE, e consulta de impacto."
+        fala: "Seguindo o modelo da apresentação, aqui mostramos o formato dos nossos dois arquivos TXT à esquerda e a interface gráfica à direita. O arquivo declara vértices com V, arestas com E e funções alteradas com A. Nossa arquitetura separa quatro operações independentes: validação sintática do TXT com linha e motivo, verificação estrutural pela BFS, validação semântica entre CODIGO e TESTE, e consulta de impacto. Passo agora a palavra ao André."
       },
 
       /* ---------------- SLIDE 7: TESTE DE MESA :: INÍCIO (igual ao slide 7 do modelo2) ---------------- */
@@ -593,7 +593,7 @@
         subtituloVerde: "cenario-valido.txt",
         visualHtml: painelTesteDeMesaProf(g, b.rastro[0], false),
         topicos: [],
-        fala: "No Teste de Mesa :: Início, damos a visão geral do estado das estruturas antes da execução do laço principal da BFS sobre o cenario-valido.txt. À esquerda temos o grafo G e sua lista de adjacência adj com as células pontilhadas ainda não visitadas. À direita, a fila FIFO está vazia e todos os 8 vértices começam na tabela com cor igual a menos 1, pai nulo e componente 0."
+        fala: "Obrigado, Marcos. No Teste de Mesa :: Início, damos a visão geral do estado das estruturas antes da execução do laço principal da BFS sobre o cenario-valido.txt. À esquerda temos o grafo G e sua lista de adjacência adj com as células pontilhadas ainda não visitadas. À direita, a fila FIFO está vazia e todos os 8 vértices começam na tabela com cor igual a menos 1, pai nulo e componente 0."
       },
 
       /* ---------------- SLIDE 8: TESTE DE MESA :: TÉRMINO (igual ao slide 8 do modelo2) ---------------- */
@@ -1188,8 +1188,8 @@
 **Tempo oficial do edital (AVA):** **20 minutos** (pontuação máxima de 4,67 pts na apresentação).
 
 ## Divisão de tempo sugerida (20 minutos)
-- **Parte 1 — Marcos (0:00 a 8:30 · Slides 1 a 5):** Capa institucional, contextualização histórica (Dénes König, 1916/1936), definição + problema interativo de 2 cores, demonstração animada da BFS e implementação com destaque de código.
-- **Parte 2 — André (8:30 a 19:00 · Slides 6 a 13):** Interface gráfica + os 2 arquivos TXT, Teste de Mesa (Início e Término no padrão do professor), prova pela paridade de nível + cenário de conflito, cuidados conceituais (Cor ≠ Tipo e Estrutura ≠ Semântica), simulador prático ("Mudou o código: o que testar?"), complexidade e encerramento institucional.
+- **Parte 1 — Marcos (0:00 a 10:00 · Slides 1 a 6):** Capa institucional, contextualização histórica (Dénes König, 1916/1936), definição + problema interativo de 2 cores, demonstração animada da BFS, implementação com destaque de código e interface gráfica + os 2 arquivos TXT.
+- **Parte 2 — André (10:00 a 19:00 · Slides 7 a 13):** Teste de Mesa (Início e Término no padrão do professor), prova pela paridade de nível + cenário de conflito, cuidados conceituais (Cor ≠ Tipo e Estrutura ≠ Semântica), simulador prático ("Mudou o código: o que testar?"), complexidade e encerramento institucional.
 - **Fechamento e Demonstração Complementar / Excel (19:00 a 20:00):** Abrir \`saida/teste-de-mesa.xlsx\` na aba \`Impacto\` e mostrar as fórmulas reagindo.
 
 ## Atalhos da Apresentação (\`saida/apresentacao.html\`)

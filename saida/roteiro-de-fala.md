@@ -6,8 +6,8 @@
 **Tempo oficial do edital (AVA):** **20 minutos** (pontuação máxima de 4,67 pts na apresentação).
 
 ## Divisão de tempo sugerida (20 minutos)
-- **Parte 1 — Marcos (0:00 a 8:30 · Slides 1 a 5):** Capa institucional, contextualização histórica (Dénes König, 1916/1936), definição + problema interativo de 2 cores, demonstração animada da BFS e implementação com destaque de código.
-- **Parte 2 — André (8:30 a 19:00 · Slides 6 a 13):** Interface gráfica + os 2 arquivos TXT, Teste de Mesa (Início e Término no padrão do professor), prova pela paridade de nível + cenário de conflito, cuidados conceituais (Cor ≠ Tipo e Estrutura ≠ Semântica), simulador prático ("Mudou o código: o que testar?"), complexidade e encerramento institucional.
+- **Parte 1 — Marcos (0:00 a 10:00 · Slides 1 a 6):** Capa institucional, contextualização histórica (Dénes König, 1916/1936), definição + problema interativo de 2 cores, demonstração animada da BFS, implementação com destaque de código e interface gráfica + os 2 arquivos TXT.
+- **Parte 2 — André (10:00 a 19:00 · Slides 7 a 13):** Teste de Mesa (Início e Término no padrão do professor), prova pela paridade de nível + cenário de conflito, cuidados conceituais (Cor ≠ Tipo e Estrutura ≠ Semântica), simulador prático ("Mudou o código: o que testar?"), complexidade e encerramento institucional.
 - **Fechamento e Demonstração Complementar / Excel (19:00 a 20:00):** Abrir `saida/teste-de-mesa.xlsx` na aba `Impacto` e mostrar as fórmulas reagindo.
 
 ## Atalhos da Apresentação (`saida/apresentacao.html`)
@@ -66,16 +66,16 @@
 - Implementação em JavaScript (src/nucleo.js) fiel à estrutura clássica com listas de adjacência.
 
 **Fala:**
-> Aqui temos a implementação da nossa função executarBfs, seguindo exatamente o estilo de destaque do modelo da disciplina. No bloco destacado em branco, para cada vértice u retirado da fila, percorremos sua lista de adjacência: se o vizinho v ainda tem cor menos 1, ele recebe a cor complementar 1 menos cor de u, guarda u como pai e entra na fila. Se clicarmos no Bloco 4, vemos o tratamento de conflito: quando v já tem a mesma cor de u, reconstruímos o ciclo ímpar subindo pelos pais até o menor ancestral comum. Passo agora a palavra ao André.
+> Aqui temos a implementação da nossa função executarBfs, seguindo exatamente o estilo de destaque do modelo da disciplina. No bloco destacado em branco, para cada vértice u retirado da fila, percorremos sua lista de adjacência: se o vizinho v ainda tem cor menos 1, ele recebe a cor complementar 1 menos cor de u, guarda u como pai e entra na fila. Se clicarmos no Bloco 4, vemos o tratamento de conflito: quando v já tem a mesma cor de u, reconstruímos o ciclo ímpar subindo pelos pais até o menor ancestral comum.
 
 ## Slide 6 (8:30–10:00) — Solução: Implementação — Interface Gráfica
-**Quem fala:** André
+**Quem fala:** Marcos
 
 **Na tela:**
 - Leitura dos 2 arquivos TXT e separação rigorosa das 4 operações na interface.
 
 **Fala:**
-> Obrigado, Marcos. Seguindo o modelo da apresentação, aqui mostramos o formato dos nossos dois arquivos TXT à esquerda e a interface gráfica à direita. O arquivo declara vértices com V, arestas com E e funções alteradas com A. Nossa arquitetura separa quatro operações independentes: validação sintática do TXT com linha e motivo, verificação estrutural pela BFS, validação semântica entre CODIGO e TESTE, e consulta de impacto.
+> Seguindo o modelo da apresentação, aqui mostramos o formato dos nossos dois arquivos TXT à esquerda e a interface gráfica à direita. O arquivo declara vértices com V, arestas com E e funções alteradas com A. Nossa arquitetura separa quatro operações independentes: validação sintática do TXT com linha e motivo, verificação estrutural pela BFS, validação semântica entre CODIGO e TESTE, e consulta de impacto. Passo agora a palavra ao André.
 
 ## Slide 7 (10:00–11:15) — Teste de Mesa :: Início
 **Quem fala:** André
@@ -84,7 +84,7 @@
 - Visual completo de Teste de Mesa / Encerramento no padrão do professor.
 
 **Fala:**
-> No Teste de Mesa :: Início, damos a visão geral do estado das estruturas antes da execução do laço principal da BFS sobre o cenario-valido.txt. À esquerda temos o grafo G e sua lista de adjacência adj com as células pontilhadas ainda não visitadas. À direita, a fila FIFO está vazia e todos os 8 vértices começam na tabela com cor igual a menos 1, pai nulo e componente 0.
+> Obrigado, Marcos. No Teste de Mesa :: Início, damos a visão geral do estado das estruturas antes da execução do laço principal da BFS sobre o cenario-valido.txt. À esquerda temos o grafo G e sua lista de adjacência adj com as células pontilhadas ainda não visitadas. À direita, a fila FIFO está vazia e todos os 8 vértices começam na tabela com cor igual a menos 1, pai nulo e componente 0.
 
 ## Slide 8 (11:15–12:30) — Teste de Mesa :: Término
 **Quem fala:** André
