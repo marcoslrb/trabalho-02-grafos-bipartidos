@@ -145,22 +145,25 @@
 
   /** Mini grafo bipartido genérico, para o slide de outras aplicações. */
   function svgMini(tituloEsq, tituloDir, esq, dir, arestas) {
-    const W = 310, H = 205, xE = 74, xD = 236;
-    const ys = n => Array.from({ length: n }, (_, i) => n === 1 ? 108 : 54 + i * (104 / (n - 1)));
+    const W = 380, H = 232, xE = 88, xD = 292;
+    const ys = n => Array.from({ length: n }, (_, i) => n === 1 ? 124 : 66 + i * (126 / (n - 1)));
     const posE = esq.map((nome, i) => ({ nome, x: xE, y: ys(esq.length)[i] }));
     const posD = dir.map((nome, i) => ({ nome, x: xD, y: ys(dir.length)[i] }));
+    const rDir = dir.some(nome => nome.length > 3) ? 31 : 24;
     const linhas = arestas.map(([i, j]) =>
-      `<line x1="${posE[i].x}" y1="${posE[i].y}" x2="${posD[j].x}" y2="${posD[j].y}" stroke="#666" stroke-width="2"/>`).join("");
+      `<line x1="${posE[i].x}" y1="${posE[i].y}" x2="${posD[j].x}" y2="${posD[j].y}" stroke="#666" stroke-width="2.4"/>`).join("");
     const nosE = posE.map(p =>
-      `<g fill="#fff" stroke="#222" stroke-width="2"><rect x="${p.x - 34}" y="${p.y - 15}" width="68" height="30" rx="5"/></g>` +
-      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="13" font-weight="700">${esc(p.nome)}</text>`).join("");
-    const nosD = posD.map(p =>
-      `<g fill="#fff" stroke="#222" stroke-width="2"><circle cx="${p.x}" cy="${p.y}" r="19"/></g>` +
-      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="12.5" font-weight="700">${esc(p.nome)}</text>`).join("");
+      `<g fill="#fff" stroke="#222" stroke-width="2.2"><rect x="${p.x - 46}" y="${p.y - 19}" width="92" height="38" rx="7"/></g>` +
+      `<text x="${p.x}" y="${p.y + 5}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="15.5" font-weight="700">${esc(p.nome)}</text>`).join("");
+    const nosD = posD.map(p => {
+      const fSize = p.nome.length >= 7 ? 13.5 : 15;
+      return `<g fill="#fff" stroke="#222" stroke-width="2.2"><circle cx="${p.x}" cy="${p.y}" r="${rDir}"/></g>` +
+        `<text x="${p.x}" y="${p.y + 5}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="${fSize}" font-weight="700">${esc(p.nome)}</text>`;
+    }).join("");
     return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(tituloEsq)} e ${esc(tituloDir)}: grafo bipartido">` +
       `<rect x="2" y="2" width="${W - 4}" height="${H - 4}" fill="#ffffff" stroke="#888"/>` +
-      `<text x="${xE}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="13" font-weight="700">${esc(tituloEsq)}</text>` +
-      `<text x="${xD}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="13" font-weight="700">${esc(tituloDir)}</text>` +
+      `<text x="${xE}" y="26" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="15.5" font-weight="700">${esc(tituloEsq)}</text>` +
+      `<text x="${xD}" y="26" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="15.5" font-weight="700">${esc(tituloDir)}</text>` +
       `${linhas}${nosE}${nosD}</svg>`;
   }
 
@@ -643,15 +646,15 @@
       {
         quem: quem.A, tempo: "17:45–19:00", largo: true, logoCanto: true,
         titulo: "Problema: Complexidade e Outras Aplicações Práticas",
-        visualHtml: `<div class="visual-duplo">` +
-          `<div>${tabela(["Etapa / Modo", "Tempo", "Memória", "Uso na ferramenta"], [
+        visualHtml: `<div class="s12-stack">` +
+          `<div class="s12-tabela-wrap">${tabela(["Etapa / Modo", "Tempo", "Memória", "Uso na ferramenta"], [
             [td("1. Parser TXT (2 passadas)"), td("O(linhas)"), td("O(V + A)"), td("validação sintática completa")],
             [td("2a. BFS sem rastreamento"), td("O(V + A)", "bom"), td("O(V)", "bom"), td("consultas e grafos > 600 elem. (testado 50.000 V)")],
             [td("2b. BFS com rastreamento"), td("O(V·(V + A))"), td("O(V·(V + A))"), td("animação passo a passo e Teste de Mesa")],
             [td("3. Validação semântica"), td("O(A)"), td("O(1)"), td("verifica extremos CODIGO × TESTE")],
             [td("4. Consulta de impacto"), td("O(Σ grau(f))", "bom"), td("O(testes)"), td("união deduplicada com justificativa")]
           ])}` +
-          `<p class="small" style="margin-top:.45rem;color:#555"><b>Honestidade do modelo:</b> o mapeamento vem do arquivo TXT; a ferramenta não analisa Git nem executa os testes.</p></div>` +
+          `<p class="s12-nota"><b>Honestidade do modelo:</b> o mapeamento vem do arquivo TXT; a ferramenta não analisa Git nem executa os testes.</p></div>` +
           `<div class="mini-grade">` +
           figura(svgMini("CANDIDATOS", "VAGAS", ["Ana", "Bia", "Caio"], ["Backend", "Dados"], [[0, 0], [1, 0], [2, 1]]), "Alocação pessoas × vagas") +
           figura(svgMini("ALUNOS", "TURMAS", ["Ana", "Bruno"], ["TPA", "Redes"], [[0, 0], [1, 0], [1, 1]]), "Matrícula alunos × disciplinas") +
@@ -768,8 +771,11 @@
       const larg = Math.max(conteudo.offsetWidth, conteudo.scrollWidth);
       conteudo.style.flex = "";
       if (dispH < 50 || alt <= 0) { conteudo.style.transform = "none"; continue; }
-      const escala = Math.min(1, dispH / alt, dispW / (larg || dispW));
-      conteudo.style.transformOrigin = "center center";
+      const movel = slide.clientWidth <= 800;
+      const escala = movel
+        ? Math.min(1, dispW / (larg || dispW))
+        : Math.min(1, dispH / alt, dispW / (larg || dispW));
+      conteudo.style.transformOrigin = movel ? "top center" : "center center";
       conteudo.style.transform = escala < 0.999 ? `scale(${escala.toFixed(4)})` : "none";
     }
   }
@@ -842,13 +848,13 @@
           const borda = noEmConflito.has(n.id) ? "#d01118" : "#ffffff";
           const sw = noEmConflito.has(n.id) ? 3.5 : 2;
           const forma = n.tipo === "CODIGO"
-            ? `<rect x="${n.x - 46}" y="${n.y - 20}" width="92" height="40" rx="6"/>`
-            : `<circle cx="${n.x}" cy="${n.y}" r="22"/>`;
+            ? `<rect x="${n.x - 54}" y="${n.y - 23}" width="108" height="46" rx="7"/>`
+            : `<circle cx="${n.x}" cy="${n.y}" r="25"/>`;
           htmlNos += `<g data-toy-no="${n.id}" style="cursor:pointer">` +
             `<g fill="${COR_PRE[c]}" stroke="${borda}" stroke-width="${sw}">${forma}</g>` +
-            `<text x="${n.x}" y="${n.y - 1}" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">${n.id}</text>` +
-            `<text x="${n.x}" y="${n.y + 13}" text-anchor="middle" fill="#fff" font-size="11">${rCor}</text>` +
-            `<text x="${n.x}" y="${n.y + 34}" text-anchor="middle" fill="#222" font-size="12" font-weight="600">${n.rot}</text></g>`;
+            `<text x="${n.x}" y="${n.y - 1}" text-anchor="middle" fill="#fff" font-size="15.5" font-weight="700">${n.id}</text>` +
+            `<text x="${n.x}" y="${n.y + 15}" text-anchor="middle" fill="#fff" font-size="12" font-weight="600">${rCor}</text>` +
+            `<text x="${n.x}" y="${n.y + 39}" text-anchor="middle" fill="#222" font-size="13.5" font-weight="600">${n.rot}</text></g>`;
         }
 
         svg.innerHTML = `<rect x="2" y="2" width="516" height="261" fill="#f9f9f9" stroke="#bbb"/>` +

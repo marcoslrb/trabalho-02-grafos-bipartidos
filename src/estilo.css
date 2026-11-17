@@ -68,7 +68,7 @@ input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent);
 .ok { color: var(--ok); font-weight: 600; }
 .vazio { padding: var(--s4); border: 2px dashed var(--border); border-radius: var(--r); color: var(--muted); text-align: center; }
 .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: var(--s1); }
-#grafo svg { width: 100%; height: auto; display: block; }
+#grafo svg { width: 100%; max-height: 580px; height: auto; display: block; }
 .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s3); }
 .metric { padding: var(--s3); background: var(--surface2); border-radius: var(--r); }
 .metric b { display: block; font-size: var(--text-lg); }
@@ -205,7 +205,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .ig-legenda { margin: .5rem 0 0; font: 700 1.02rem Georgia, serif; color: #111; text-align: center; }
 .slide .janela-app-header { background: #f0f0f0; border: 1px solid #aaaaaa; border-bottom: none; padding: .34rem .75rem; font-size: .9rem; color: #333; display: flex; justify-content: space-between; border-radius: .3rem .3rem 0 0; }
 .slide .janela-app-body { background: #ffffff; border: 1px solid #aaaaaa; padding: .65rem .8rem; border-radius: 0 0 .3rem .3rem; display: grid; gap: .45rem; }
-.slide .janela-app-body svg { max-height: 42vh; display: block; margin: 0 auto; }
+.slide .janela-app-body svg { width: 100%; height: auto; max-height: 44vh; display: block; margin: 0 auto; }
 .slide .ig-etapas { display: flex; flex-wrap: wrap; gap: .38rem; }
 
 /* Slides 7 e 8: Teste de Mesa :: Início e Término no layout de 4 colunas do Prof. Rafael */
@@ -231,15 +231,18 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .tm-nota-inicio { margin-top: .4rem; padding: .4rem .55rem; border: 1px dashed #777; font-size: .84rem; color: #333; background: #fafafa; }
 
 /* Peças visuais gerais e tabelas */
-.slide .fig { margin: 0; background: #ffffff; border: 1px solid #cccccc; border-radius: .35rem; padding: .38rem; }
-.slide .fig svg { max-height: 35vh; display: block; margin: 0 auto; }
-.slide .fig figcaption { font-size: .88rem; color: #444; margin-top: .25rem; text-align: center; }
+.slide .fig { margin: 0; background: #ffffff; border: 1px solid #cccccc; border-radius: .35rem; padding: .42rem; }
+.slide .fig svg { width: 100%; height: auto; max-height: 36vh; display: block; margin: 0 auto; }
+.slide .fig figcaption { font-size: .92rem; color: #333; margin-top: .3rem; text-align: center; font-weight: 600; }
 .slide .visual-largo { display: grid; gap: .45rem; flex: 1; align-content: center; min-height: 0; }
 .slide .visual-duplo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s4); align-items: start; }
 .slide .visual-duplo > * { min-width: 0; }
-.slide .visual-duplo .fig svg { max-height: 33vh; }
-.slide .mini-grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
-.slide .mini-grade .fig svg { max-height: 27vh; }
+.slide .visual-duplo .fig svg { width: 100%; height: auto; max-height: 33vh; }
+.slide .s12-stack { display: grid; gap: .65rem; align-items: start; }
+.slide .s12-nota { margin: .35rem 0 0; font-size: .88rem; color: #444; }
+.slide .mini-grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: var(--s4); align-items: stretch; }
+.slide .mini-grade .fig { display: flex; flex-direction: column; justify-content: space-between; padding: .45rem .55rem; }
+.slide .mini-grade .fig svg { width: 100%; height: auto; max-height: 31vh; }
 .slide .tabela-compacta { background: #ffffff; border: 1px solid #999999; border-collapse: collapse; font-size: .88rem; width: 100%; }
 .slide .tabela-compacta th { background: #eeeeee; color: #111111; padding: .26rem .45rem; font-size: .86rem; border: 1px solid #999999; }
 .slide .tabela-compacta td { padding: .22rem .45rem; border: 1px solid #cccccc; color: #222222; }
@@ -263,9 +266,9 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 /* Widget Toy (Slide 3) */
 .slide .w-toy { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: var(--s4); align-items: start; }
 .slide .w-toy-esq { display: grid; gap: .38rem; }
-.slide .w-toy-esq svg { max-height: 33vh; display: block; margin: 0 auto; }
+.slide .w-toy-esq svg { width: 100%; height: auto; max-height: 38vh; display: block; margin: 0 auto; }
 .slide .w-toy-dir { display: grid; gap: .38rem; }
-.slide .w-toy-dir svg { max-height: 31vh; display: block; margin: 0 auto; background: #ffffff; border: 1px solid #cccccc; }
+.slide .w-toy-dir svg { width: 100%; height: auto; max-height: 34vh; display: block; margin: 0 auto; background: #ffffff; border: 1px solid #cccccc; }
 
 /* Widget BFS (Slide 4 - cabeçalho estilo Sedgewick & Wayne do slide 4 do professor) */
 .slide .w-bfs { display: grid; gap: .5rem; border: 1px solid #bbbbbb; background: #f7f7f7; padding: .55rem; }
@@ -276,7 +279,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .w-barra-cenarios button.on { background: #ffffff; color: #8c2d19; border-color: #ffffff; font-weight: 700; }
 .slide .w-bfs-corpo { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: .8rem; align-items: start; }
 .slide .w-bfs-grafo { background: #ffffff; border: 1px solid #cccccc; padding: .45rem; }
-.slide .w-bfs-grafo svg { max-height: 44vh; display: block; margin: 0 auto; }
+.slide .w-bfs-grafo svg { width: 100%; height: auto; max-height: 46vh; display: block; margin: 0 auto; }
 .slide .w-bfs-painel { display: grid; gap: .45rem; }
 .slide .w-status-linha { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .slide .w-desc { padding: .45rem .68rem; background: #ffffff; border-left: 4px solid #8c2d19; font-size: .95rem; min-height: 2.4rem; }
@@ -290,7 +293,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 /* Widget Impacto (Slide 11) */
 .slide .w-imp { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: .8rem; align-items: start; }
 .slide .w-imp-grafo { background: #ffffff; border: 1px solid #bbbbbb; padding: .35rem; }
-.slide .w-imp-grafo svg { max-height: 36vh; display: block; margin: 0 auto; }
+.slide .w-imp-grafo svg { width: 100%; height: auto; max-height: 44vh; display: block; margin: 0 auto; }
 .slide .w-imp-painel { min-width: 0; }
 .slide .w-imp-resumo { display: grid; gap: .28rem; }
 

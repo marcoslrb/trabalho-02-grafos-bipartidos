@@ -26,13 +26,20 @@
     const codigos = grafo.vertices.filter(n => n.tipo === "CODIGO");
     const testes = grafo.vertices.filter(n => n.tipo === "TESTE");
     const maior = Math.max(codigos.length, testes.length);
-    const passo = maior > 12 ? 56 : 94;
-    const altura = Math.max(320, maior * passo + 115);
-    const X_CODIGO = 210, X_TESTE = 740;
+    const compacto = maior > 12;
+    const passo = compacto ? 56 : 114;
+    const inicioY = compacto ? 76 : 100;
+    const altura = Math.max(340, inicioY + Math.max(0, maior - 1) * passo + (compacto ? 64 : 74));
+    const larguraSvg = compacto ? 940 : 720;
+    const X_CODIGO = compacto ? 210 : 165;
+    const X_TESTE = compacto ? 740 : 565;
+    const rectW = compacto ? 114 : 154;
+    const rectH = compacto ? 46 : 60;
+    const circR = compacto ? 24 : 36;
 
     const pos = new Map();
     for (const [lista, x] of [[codigos, X_CODIGO], [testes, X_TESTE]])
-      lista.forEach((n, i) => pos.set(n.id, { x, y: 95 + i * passo }));
+      lista.forEach((n, i) => pos.set(n.id, { x, y: inicioY + i * passo }));
 
     const par = (a, b) => [a, b].sort().join("|");
     const arestasCiclo = new Set();
@@ -47,10 +54,10 @@
       const atual = estado && ((estado.u === e.u && estado.v === e.v) || (estado.u === e.v && estado.v === e.u));
       const relacionada = alteradas.has(e.u) || alteradas.has(e.v);
       const cor = emCiclo || mesmoTipo ? VERMELHO : atual ? "#a45209" : relacionada ? "#6a4c93" : "#a4acb1";
-      const largura = emCiclo || atual ? 5 : relacionada ? 3 : 2;
+      const largura = emCiclo || atual ? 5 : relacionada ? 3.2 : 2.2;
       // Aresta entre vértices da mesma coluna sai pela borda externa, formando um arco visível fora dos nós.
       const lado = a.x === X_CODIGO ? -1 : 1;
-      const xBorda = a.x + lado * (a.x === X_CODIGO ? 62 : 30);
+      const xBorda = a.x + lado * (a.x === X_CODIGO ? rectW / 2 : circR);
       const abertura = Math.min(130, 55 + Math.abs(b.y - a.y) * 0.35);
       const caminho = a.x === b.x
         ? `M ${xBorda} ${a.y} Q ${xBorda + lado * abertura} ${(a.y + b.y) / 2} ${xBorda} ${b.y}`
@@ -71,23 +78,23 @@
       const contorno = noCiclo.has(n.id) ? VERMELHO : atual ? "#e0a100" : alterada ? "currentColor" : "#ffffff";
       const espessura = noCiclo.has(n.id) || alterada || atual ? 4 : 2;
       const forma = n.tipo === "CODIGO"
-        ? `<rect x="${x - 62}" y="${y - 26}" width="124" height="52" rx="7"/>`
-        : `<circle cx="${x}" cy="${y}" r="30"/>`;
+        ? `<rect x="${x - rectW / 2}" y="${y - rectH / 2}" width="${rectW}" height="${rectH}" rx="9"/>`
+        : `<circle cx="${x}" cy="${y}" r="${circR}"/>`;
       const rotulo = n.rotulo.length > 27 ? n.rotulo.slice(0, 24) + "…" : n.rotulo;
       nos += `<g><title>${esc(n.id)} — ${esc(n.rotulo)}; tipo ${esc(n.tipo)}; ${rotuloCor}${alterada ? "; função alterada" : ""}</title>` +
         `<g fill="${fill}" stroke="${contorno}" stroke-width="${espessura}">${forma}</g>` +
-        `<text x="${x}" y="${y}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="18" font-weight="700">${esc(n.id)}</text>` +
-        `<text x="${x}" y="${y + 17}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="13" font-weight="600">${rotuloCor}</text>` +
-        (alterada ? `<text x="${x + (n.tipo === "CODIGO" ? 62 : 30)}" y="${y - 33}" text-anchor="end" fill="currentColor" font-family="sans-serif" font-size="12.5" font-weight="700" letter-spacing="0.5">ALTERADA</text>` : "") +
-        `<text x="${x}" y="${y + 45}" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="15.5" font-weight="600">${esc(rotulo)}</text></g>`;
+        `<text x="${x}" y="${y + (compacto ? 0 : -1)}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="${compacto ? 17 : 22}" font-weight="700">${esc(n.id)}</text>` +
+        `<text x="${x}" y="${y + (compacto ? 15 : 19)}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="${compacto ? 12 : 15}" font-weight="600">${rotuloCor}</text>` +
+        (alterada ? `<text x="${x + (n.tipo === "CODIGO" ? rectW / 2 : circR)}" y="${y - (n.tipo === "CODIGO" ? rectH / 2 + 6 : circR + 6)}" text-anchor="end" fill="currentColor" font-family="sans-serif" font-size="${compacto ? 11.5 : 13}" font-weight="700" letter-spacing="0.5">ALTERADA</text>` : "") +
+        `<text x="${x}" y="${y + (n.tipo === "CODIGO" ? rectH / 2 + 20 : circR + 20)}" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="${compacto ? 13 : 17}" font-weight="600">${esc(rotulo)}</text></g>`;
     }
 
     const vazio = grafo.vertices.length === 0
-      ? `<text x="470" y="170" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="18">Grafo vazio: nenhum vértice declarado.</text>` : "";
+      ? `<text x="${larguraSvg / 2}" y="170" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="20">Grafo vazio: nenhum vértice declarado.</text>` : "";
 
-    return `<svg viewBox="0 0 940 ${altura}" role="img" aria-label="Grafo de funções (retângulos) e testes (círculos)">` +
-      `<text x="${X_CODIGO}" y="32" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="20" font-weight="700">FUNÇÕES (CODIGO) ▭</text>` +
-      `<text x="${X_TESTE}" y="32" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="20" font-weight="700">TESTES (TESTE) ◯</text>` +
+    return `<svg viewBox="0 0 ${larguraSvg} ${altura}" role="img" aria-label="Grafo de funções (retângulos) e testes (círculos)">` +
+      `<text x="${X_CODIGO}" y="34" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="${compacto ? 18 : 21}" font-weight="700">FUNÇÕES (CODIGO) ▭</text>` +
+      `<text x="${X_TESTE}" y="34" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="${compacto ? 18 : 21}" font-weight="700">TESTES (TESTE) ◯</text>` +
       `${vazio}${arestas}${nos}</svg>`;
   }
 
