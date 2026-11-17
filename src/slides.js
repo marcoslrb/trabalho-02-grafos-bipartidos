@@ -9,8 +9,8 @@
  *  - Marca oficial "INSTITUTO FEDERAL Espírito Santo" no canto inferior direito e no slide final.
  *  - Capa limpa com título em verde-escuro (#006400), subtítulo em verde (#006808) e autores em verde-limão (#62b412).
  *  - Slides de Contextualização e Aplicação com título em vermelho (#f22626) e tópicos em cinza (#525252).
- *  - Slides de Solução (Demonstração, Implementação, Interface Gráfica) com coluna lateral esquerda
- *    em vermelho (#f22626) e subtítulo do arquivo em verde (#00994d).
+ *  - Slides de Solução (Demonstração, Implementação, Interface Gráfica) com cabeçalho no topo
+ *    em vermelho (#f22626) e subtítulo do arquivo em verde (#00994d), liberando toda a largura para o visual.
  *  - Slide de Implementação no estilo Sedgewick/Prof. Rafael: quadro de código cinza (#cccccc),
  *    faixa branca destacando o bloco ativo e setas vinho (←───) apontando para as linhas.
  *  - Slides Teste de Mesa :: Início e Término no layout de 4 colunas do professor:
@@ -62,14 +62,14 @@
   /** Figura no estilo Sedgewick & Wayne (como no slide 3 do professor: "graph" vs "bipartite" vs "odd cycle"). */
   function svgDefinicaoSedgewick() {
     const no = (x, y, id, pre = "#ffffff", txt = "#111111", borda = "#222222") =>
-      `<circle cx="${x}" cy="${y}" r="14" fill="${pre}" stroke="${borda}" stroke-width="2"/>` +
-      `<text x="${x}" y="${y + 4}" text-anchor="middle" fill="${txt}" font-family="Arial, sans-serif" font-size="11" font-weight="700">${id}</text>`;
+      `<circle cx="${x}" cy="${y}" r="15" fill="${pre}" stroke="${borda}" stroke-width="2"/>` +
+      `<text x="${x}" y="${y + 4}" text-anchor="middle" fill="${txt}" font-family="Arial, sans-serif" font-size="12" font-weight="700">${id}</text>`;
     const lin = (x1, y1, x2, y2, cor = "#b5b5b5", w = 2) =>
       `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${cor}" stroke-width="${w}"/>`;
     return `<svg viewBox="0 0 520 220" role="img" aria-label="Comparação estilo Sedgewick: grafo original, bipartição em dois lados e ciclo ímpar">` +
-      `<text x="80" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="12.5" font-weight="700">grafo G</text>` +
-      `<text x="260" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="12.5" font-weight="700">bipartição (V₁ × V₂)</text>` +
-      `<text x="438" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="12.5" font-weight="700">ciclo ímpar (não bipartido)</text>` +
+      `<text x="80" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="13.5" font-weight="700">grafo G</text>` +
+      `<text x="260" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="13.5" font-weight="700">bipartição (V₁ × V₂)</text>` +
+      `<text x="438" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="13.5" font-weight="700">ciclo ímpar (não bipartido)</text>` +
       /* 1. Grafo G em layout livre */
       lin(50, 60, 115, 55, "#222", 2.5) + lin(50, 60, 110, 150, "#222", 2.5) +
       lin(45, 130, 115, 105, "#222", 2.5) + lin(45, 130, 110, 150, "#222", 2.5) +
@@ -86,7 +86,7 @@
       no(305, 58, "T1", "#a45209", "#fff", "#7a3b00") +
       no(305, 108, "T2", "#a45209", "#fff", "#7a3b00") +
       no(305, 158, "T3", "#a45209", "#fff", "#7a3b00") +
-      `<text x="260" y="198" text-anchor="middle" fill="#444" font-size="11">toda aresta cruza de V₁ para V₂</text>` +
+      `<text x="260" y="198" text-anchor="middle" fill="#444" font-size="12">toda aresta cruza de V₁ para V₂</text>` +
       /* 3. Triângulo ímpar C1-T3-C2 */
       lin(395, 70, 485, 115, "#d01118", 3.5) +
       lin(395, 155, 485, 115, "#d01118", 3.5) +
@@ -94,7 +94,7 @@
       no(395, 70, "C1", "#116b74", "#fff", "#d01118") +
       no(395, 155, "C2", "#a45209", "#fff", "#d01118") +
       no(485, 115, "T3", "#d01118", "#fff", "#880000") +
-      `<text x="440" y="198" text-anchor="middle" fill="#b22222" font-size="11" font-weight="700">C1–T3–C2: 3 arestas (conflito!)</text>` +
+      `<text x="440" y="198" text-anchor="middle" fill="#b22222" font-size="12" font-weight="700">C1–T3–C2: 3 arestas (conflito!)</text>` +
       `</svg>`;
   }
 
@@ -120,18 +120,18 @@
   /** Diagrama da árvore BFS e paridade de nível. */
   function svgProva() {
     const t = (x, y, s, extra = "") =>
-      `<text x="${x}" y="${y}" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#222" ${extra}>${s}</text>`;
+      `<text x="${x}" y="${y}" text-anchor="middle" font-family="sans-serif" font-size="13.5" fill="#222" ${extra}>${s}</text>`;
     const no = (x, y, id, cor) =>
-      `<circle cx="${x}" cy="${y}" r="18" fill="${cor}" stroke="#222" stroke-width="2"/>` +
-      `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="sans-serif" font-size="12.5" font-weight="700" fill="#fff">${id}</text>`;
+      `<circle cx="${x}" cy="${y}" r="19" fill="${cor}" stroke="#222" stroke-width="2"/>` +
+      `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="sans-serif" font-size="13.5" font-weight="700" fill="#fff">${id}</text>`;
     const nivel = (y, rotulo) =>
       `<line x1="24" y1="${y}" x2="596" y2="${y}" stroke="#b8b8b8" stroke-dasharray="3 5"/>` +
-      `<text x="30" y="${y - 6}" font-family="sans-serif" font-size="11" fill="#555">${rotulo}</text>`;
+      `<text x="30" y="${y - 6}" font-family="sans-serif" font-size="12" fill="#555">${rotulo}</text>`;
     return `<svg viewBox="0 0 620 275" role="img" aria-label="Árvore BFS: paridade de nível e ciclo ímpar">` +
       `<rect x="2" y="2" width="616" height="271" fill="#ffffff" stroke="#888" stroke-width="1.5"/>` +
       nivel(42, "nível 0 (raiz, cor 0)") + nivel(104, "nível d(a) — menor ancestral comum (LCA)") +
       `<line x1="24" y1="226" x2="596" y2="226" stroke="#b8b8b8" stroke-dasharray="3 5"/>` +
-      `<text x="30" y="200" font-family="sans-serif" font-size="11" fill="#555">nível d(u) ≡ d(v) (mod 2) — mesma cor!</text>` +
+      `<text x="30" y="200" font-family="sans-serif" font-size="12" fill="#555">nível d(u) ≡ d(v) (mod 2) — mesma cor!</text>` +
       `<line x1="310" y1="42" x2="310" y2="104" stroke="#555" stroke-width="2.5"/>` +
       `<path d="M310 104 C 255 148, 215 186, 195 226" fill="none" stroke="#116b74" stroke-width="3.5" stroke-dasharray="8 5"/>` +
       `<path d="M310 104 C 365 148, 405 186, 425 226" fill="none" stroke="#a45209" stroke-width="3.5" stroke-dasharray="8 5"/>` +
@@ -152,15 +152,15 @@
     const linhas = arestas.map(([i, j]) =>
       `<line x1="${posE[i].x}" y1="${posE[i].y}" x2="${posD[j].x}" y2="${posD[j].y}" stroke="#666" stroke-width="2"/>`).join("");
     const nosE = posE.map(p =>
-      `<g fill="#fff" stroke="#222" stroke-width="2"><rect x="${p.x - 28}" y="${p.y - 13}" width="56" height="26" rx="4"/></g>` +
-      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="10.5" font-weight="700">${esc(p.nome)}</text>`).join("");
+      `<g fill="#fff" stroke="#222" stroke-width="2"><rect x="${p.x - 34}" y="${p.y - 15}" width="68" height="30" rx="5"/></g>` +
+      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="13" font-weight="700">${esc(p.nome)}</text>`).join("");
     const nosD = posD.map(p =>
-      `<g fill="#fff" stroke="#222" stroke-width="2"><circle cx="${p.x}" cy="${p.y}" r="16"/></g>` +
-      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="10" font-weight="700">${esc(p.nome)}</text>`).join("");
+      `<g fill="#fff" stroke="#222" stroke-width="2"><circle cx="${p.x}" cy="${p.y}" r="19"/></g>` +
+      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="12.5" font-weight="700">${esc(p.nome)}</text>`).join("");
     return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(tituloEsq)} e ${esc(tituloDir)}: grafo bipartido">` +
       `<rect x="2" y="2" width="${W - 4}" height="${H - 4}" fill="#ffffff" stroke="#888"/>` +
-      `<text x="${xE}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="11" font-weight="700">${esc(tituloEsq)}</text>` +
-      `<text x="${xD}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="11" font-weight="700">${esc(tituloDir)}</text>` +
+      `<text x="${xE}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="13" font-weight="700">${esc(tituloEsq)}</text>` +
+      `<text x="${xD}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="13" font-weight="700">${esc(tituloDir)}</text>` +
       `${linhas}${nosE}${nosD}</svg>`;
   }
 
@@ -189,8 +189,8 @@
     const nosHtml = pos.map(p => {
       const c = ehTermino ? estado.cor[p.id] : -1;
       const fill = !ehTermino ? "#ffffff" : (c === 0 ? "#ffffff" : "#eaeaea");
-      return `<circle cx="${p.x}" cy="${p.y}" r="13" fill="${fill}" stroke="#222222" stroke-width="1.6"/>` +
-        `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" font-family="Arial, sans-serif" font-size="10.5" font-weight="700" fill="#111">${p.id}</text>`;
+      return `<circle cx="${p.x}" cy="${p.y}" r="14" fill="${fill}" stroke="#222222" stroke-width="1.8"/>` +
+        `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" font-family="Arial, sans-serif" font-size="11.5" font-weight="700" fill="#111">${p.id}</text>`;
     }).join("");
     const svgGrafo = `<svg viewBox="0 0 260 182" role="img" aria-label="Grafo G">` +
       `<rect x="1" y="1" width="258" height="180" fill="#f3f3f3" stroke="#999"/>` +
@@ -265,17 +265,17 @@
     // 6. Pequena árvore BFS gerada no Término (igual ao canto inferior do slide 8 do professor)
     const arvoreTermino = ehTermino
       ? `<svg class="tm-arvore" viewBox="0 0 210 110" role="img" aria-label="Árvore BFS gerada">` +
-        `<line x1="55" y1="18" x2="25" y2="52" stroke="#222" stroke-width="1.5"/>` +
-        `<line x1="55" y1="18" x2="85" y2="52" stroke="#222" stroke-width="1.5"/>` +
-        `<line x1="85" y1="52" x2="85" y2="90" stroke="#222" stroke-width="1.5"/>` +
-        `<line x1="145" y1="18" x2="145" y2="52" stroke="#222" stroke-width="1.5"/>` +
-        `<circle cx="55" cy="18" r="11" fill="#fff" stroke="#222"/><text x="55" y="22" text-anchor="middle" font-size="9.5" font-weight="700">C1</text>` +
-        `<circle cx="25" cy="52" r="11" fill="#eaeaea" stroke="#222"/><text x="25" y="56" text-anchor="middle" font-size="9.5" font-weight="700">T1</text>` +
-        `<circle cx="85" cy="52" r="11" fill="#eaeaea" stroke="#222"/><text x="85" y="56" text-anchor="middle" font-size="9.5" font-weight="700">T3</text>` +
-        `<circle cx="85" cy="90" r="11" fill="#fff" stroke="#222"/><text x="85" y="94" text-anchor="middle" font-size="9.5" font-weight="700">C2</text>` +
-        `<circle cx="145" cy="18" r="11" fill="#fff" stroke="#222"/><text x="145" y="22" text-anchor="middle" font-size="9.5" font-weight="700">C3</text>` +
-        `<circle cx="145" cy="52" r="11" fill="#eaeaea" stroke="#222"/><text x="145" y="56" text-anchor="middle" font-size="9.5" font-weight="700">T4</text>` +
-        `<circle cx="190" cy="18" r="11" fill="#fff" stroke="#222"/><text x="190" y="22" text-anchor="middle" font-size="9.5" font-weight="700">C4</text>` +
+        `<line x1="55" y1="18" x2="25" y2="52" stroke="#222" stroke-width="1.8"/>` +
+        `<line x1="55" y1="18" x2="85" y2="52" stroke="#222" stroke-width="1.8"/>` +
+        `<line x1="85" y1="52" x2="85" y2="90" stroke="#222" stroke-width="1.8"/>` +
+        `<line x1="145" y1="18" x2="145" y2="52" stroke="#222" stroke-width="1.8"/>` +
+        `<circle cx="55" cy="18" r="12.5" fill="#fff" stroke="#222" stroke-width="1.5"/><text x="55" y="22" text-anchor="middle" font-size="11" font-weight="700">C1</text>` +
+        `<circle cx="25" cy="52" r="12.5" fill="#eaeaea" stroke="#222" stroke-width="1.5"/><text x="25" y="56" text-anchor="middle" font-size="11" font-weight="700">T1</text>` +
+        `<circle cx="85" cy="52" r="12.5" fill="#eaeaea" stroke="#222" stroke-width="1.5"/><text x="85" y="56" text-anchor="middle" font-size="11" font-weight="700">T3</text>` +
+        `<circle cx="85" cy="90" r="12.5" fill="#fff" stroke="#222" stroke-width="1.5"/><text x="85" y="94" text-anchor="middle" font-size="11" font-weight="700">C2</text>` +
+        `<circle cx="145" cy="18" r="12.5" fill="#fff" stroke="#222" stroke-width="1.5"/><text x="145" y="22" text-anchor="middle" font-size="11" font-weight="700">C3</text>` +
+        `<circle cx="145" cy="52" r="12.5" fill="#eaeaea" stroke="#222" stroke-width="1.5"/><text x="145" y="56" text-anchor="middle" font-size="11" font-weight="700">T4</text>` +
+        `<circle cx="190" cy="18" r="12.5" fill="#fff" stroke="#222" stroke-width="1.5"/><text x="190" y="22" text-anchor="middle" font-size="11" font-weight="700">C4</text>` +
         `</svg>`
       : `<div class="tm-nota-inicio">Antes do laço:<br>• <code>cor[v] = -1</code><br>• <code>pai[v] = null</code><br>• <code>exames = 0</code></div>`;
 
@@ -549,10 +549,9 @@
         fala: "Pela definição formal, um grafo é bipartido quando conseguimos dividir seus vértices em dois conjuntos disjuntos V1 e V2 de modo que toda aresta atravesse de um lado para o outro, sem arestas internas. Aqui no slide podemos testar ao vivo: com funções de um lado e testes do outro, duas cores bastam. Mas se clicarmos em 'Adicionar aresta C1–C2', fechamos o triângulo C1–T3–C2 de 3 arestas, e duas cores se tornam matematicamente impossíveis."
       },
 
-      /* ---------------- SLIDE 4: SOLUÇÃO / BFS 2-CORES / DEMONSTRAÇÃO (igual ao slide 4 do modelo2) ---------------- */
+      /* ---------------- SLIDE 4: SOLUÇÃO / BFS 2-CORES / DEMONSTRAÇÃO ---------------- */
       {
-        quem: quem.M, tempo: "4:15–6:45", layout: "lateral",
-        linhasTitulo: ["Solução", "BFS 2-Cores", "Demonstração"],
+        quem: quem.M, tempo: "4:15–6:45", layout: "topo-compacto",
         titulo: "Solução: BFS 2-Cores — Demonstração",
         visualHtml: htmlWidgetBfs(),
         topicos: [
@@ -561,10 +560,9 @@
         fala: "Neste slide demonstramos o algoritmo em funcionamento passo a passo. A busca começa em C1 com cor 0. Ao inspecionar a lista de adjacência de C1, descobrimos T1 e T3 com a cor oposta, cor 1, e colocamos ambos na fila FIFO. De T3, descobrimos C2 com cor 0. Quando o primeiro componente termina, o laço externo garante a visita a C3 e T4 e também ao vértice isolado C4. E trocando aqui em cima para o segundo cenário, vemos a BFS detectar o conflito ímpar no exato momento em que examina T3 para C2."
       },
 
-      /* ---------------- SLIDE 5: SOLUÇÃO / BFS 2-CORES / IMPLEMENTAÇÃO (igual ao slide 5 do modelo2) ---------------- */
+      /* ---------------- SLIDE 5: SOLUÇÃO / BFS 2-CORES / IMPLEMENTAÇÃO ---------------- */
       {
-        quem: quem.M, tempo: "6:45–8:30", layout: "lateral",
-        linhasTitulo: ["Solução", "BFS 2-Cores", "Implementação"],
+        quem: quem.M, tempo: "6:45–8:30", layout: "topo-compacto",
         titulo: "Solução: BFS 2-Cores — Implementação",
         visualHtml: htmlWidgetCodigo(),
         topicos: [
@@ -573,10 +571,9 @@
         fala: "Aqui temos a implementação da nossa função executarBfs, seguindo exatamente o estilo de destaque do modelo da disciplina. No bloco destacado em branco, para cada vértice u retirado da fila, percorremos sua lista de adjacência: se o vizinho v ainda tem cor menos 1, ele recebe a cor complementar 1 menos cor de u, guarda u como pai e entra na fila. Se clicarmos no Bloco 4, vemos o tratamento de conflito: quando v já tem a mesma cor de u, reconstruímos o ciclo ímpar subindo pelos pais até o menor ancestral comum."
       },
 
-      /* ---------------- SLIDE 6: SOLUÇÃO / IMPLEMENTAÇÃO / INTERFACE GRÁFICA (igual ao slide 6 do modelo2) ---------------- */
+      /* ---------------- SLIDE 6: SOLUÇÃO / IMPLEMENTAÇÃO / INTERFACE GRÁFICA ---------------- */
       {
-        quem: quem.M, tempo: "8:30–10:00", layout: "lateral",
-        linhasTitulo: ["Solução", "Implementação", "Interface Gráfica"],
+        quem: quem.M, tempo: "8:30–10:00", layout: "topo-compacto",
         subtituloVerde: "cenario-valido.txt",
         titulo: "Solução: Implementação — Interface Gráfica",
         visualHtml: visualInterfaceTxt,
@@ -719,14 +716,12 @@
           `<div class="ctx-retrato">${s.visualHtml}</div>` +
           `</div>` +
           (s.logoCanto ? svgLogoIfes("ifes-logo-canto") : "");
-      } else if (s.layout === "lateral") {
-        corpo = `<div class="lateral-grid">` +
-          `<aside class="lateral-esq">` +
-          `<h2 class="slide-t-lateral">${s.linhasTitulo.map(l => esc(l)).join("<br>")}</h2>` +
+      } else if (s.layout === "topo-compacto") {
+        corpo = `<header class="slide-head-modelo2 slide-head-inline">` +
+          `<h2 class="slide-t">${esc(s.titulo)}</h2>` +
           (s.subtituloVerde ? `<p class="sub-verde">${esc(s.subtituloVerde)}</p>` : "") +
-          `</aside>` +
-          `<section class="lateral-dir">${s.visualHtml}</section>` +
-          `</div>`;
+          `</header>` +
+          `<div class="visual-largo">${s.visualHtml}</div>`;
       } else if (s.layout === "teste-mesa") {
         corpo = `<header class="slide-head-tm">` +
           `<h2 class="slide-t">${esc(s.titulo)}</h2>` +
@@ -762,11 +757,16 @@
     for (const slide of raiz.querySelectorAll(".slide")) {
       const conteudo = slide.querySelector(".content");
       if (!conteudo) continue;
+      const topo = slide.querySelector(".ifes-bar-top");
+      const base = slide.querySelector(".ifes-bar-bot");
+      const barrasH = (topo ? topo.offsetHeight : 0) + (base ? base.offsetHeight : 0);
       conteudo.style.transform = "none";
-      const dispH = slide.clientHeight - 28;
+      conteudo.style.flex = "0 0 auto";
+      const dispH = slide.clientHeight - barrasH;
       const dispW = slide.clientWidth - 16;
-      const alt = conteudo.offsetHeight;
-      const larg = conteudo.offsetWidth;
+      const alt = Math.max(conteudo.offsetHeight, conteudo.scrollHeight);
+      const larg = Math.max(conteudo.offsetWidth, conteudo.scrollWidth);
+      conteudo.style.flex = "";
       if (dispH < 50 || alt <= 0) { conteudo.style.transform = "none"; continue; }
       const escala = Math.min(1, dispH / alt, dispW / (larg || dispW));
       conteudo.style.transformOrigin = "center center";
@@ -842,18 +842,18 @@
           const borda = noEmConflito.has(n.id) ? "#d01118" : "#ffffff";
           const sw = noEmConflito.has(n.id) ? 3.5 : 2;
           const forma = n.tipo === "CODIGO"
-            ? `<rect x="${n.x - 44}" y="${n.y - 19}" width="88" height="38" rx="6"/>`
-            : `<circle cx="${n.x}" cy="${n.y}" r="21"/>`;
+            ? `<rect x="${n.x - 46}" y="${n.y - 20}" width="92" height="40" rx="6"/>`
+            : `<circle cx="${n.x}" cy="${n.y}" r="22"/>`;
           htmlNos += `<g data-toy-no="${n.id}" style="cursor:pointer">` +
             `<g fill="${COR_PRE[c]}" stroke="${borda}" stroke-width="${sw}">${forma}</g>` +
-            `<text x="${n.x}" y="${n.y - 1}" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">${n.id}</text>` +
-            `<text x="${n.x}" y="${n.y + 12}" text-anchor="middle" fill="#fff" font-size="10">${rCor}</text>` +
-            `<text x="${n.x}" y="${n.y + 32}" text-anchor="middle" fill="#222" font-size="10.5">${n.rot}</text></g>`;
+            `<text x="${n.x}" y="${n.y - 1}" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">${n.id}</text>` +
+            `<text x="${n.x}" y="${n.y + 13}" text-anchor="middle" fill="#fff" font-size="11">${rCor}</text>` +
+            `<text x="${n.x}" y="${n.y + 34}" text-anchor="middle" fill="#222" font-size="12" font-weight="600">${n.rot}</text></g>`;
         }
 
         svg.innerHTML = `<rect x="2" y="2" width="516" height="261" fill="#f9f9f9" stroke="#bbb"/>` +
-          `<text x="125" y="24" text-anchor="middle" fill="#222" font-size="12" font-weight="700">FUNÇÕES (V₁) — clique para pintar</text>` +
-          `<text x="395" y="24" text-anchor="middle" fill="#222" font-size="12" font-weight="700">TESTES (V₂) — clique para pintar</text>` +
+          `<text x="125" y="24" text-anchor="middle" fill="#222" font-size="13" font-weight="700">FUNÇÕES (V₁) — clique para pintar</text>` +
+          `<text x="395" y="24" text-anchor="middle" fill="#222" font-size="13" font-weight="700">TESTES (V₂) — clique para pintar</text>` +
           htmlArestas + htmlNos;
 
         svg.querySelectorAll("[data-toy-no]").forEach(gNo => {

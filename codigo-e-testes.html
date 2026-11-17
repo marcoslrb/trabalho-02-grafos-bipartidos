@@ -147,7 +147,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .ifes-logo-canto { position: absolute; right: 2.2rem; bottom: .65rem; width: 175px; height: auto; pointer-events: none; z-index: 3; }
 .slide .ifes-logo-central { width: 340px; height: auto; display: block; margin: 0 auto; }
 
-.slide .content { position: relative; z-index: 2; flex: 1; width: 100%; max-width: 1220px; margin: 0 auto; padding: 1.35rem 2.4rem .9rem; display: flex; flex-direction: column; justify-content: flex-start; min-height: 0; }
+.slide .content { position: relative; z-index: 2; flex: 1; width: 100%; max-width: min(1560px, 96vw); margin: 0 auto; padding: 1.05rem 2rem .75rem; display: flex; flex-direction: column; justify-content: flex-start; min-height: 0; }
 
 /* Slide 1: Capa idêntica ao slide 1 do modelo2 */
 .slide .capa-modelo2 { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 3.2rem 2.5rem 2.2rem 4.2rem; position: relative; }
@@ -159,21 +159,22 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 /* Slide 13: Encerramento idêntico ao slide 10 do modelo2 */
 .slide .encerramento-modelo2 { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem; text-align: center; padding: 2rem; }
 .slide .ifes-lema { font-size: clamp(1.25rem, 2vw, 1.65rem); color: #6ab46e; font-weight: 400; margin: 0; }
-.slide .encerramento-resumo { margin-top: 1.2rem; padding: .65rem 1.2rem; background: #f8faf8; border: 1px solid #d5e3d6; border-radius: .45rem; color: #444; font-size: .85rem; }
+.slide .encerramento-resumo { margin-top: 1.2rem; padding: .65rem 1.2rem; background: #f8faf8; border: 1px solid #d5e3d6; border-radius: .45rem; color: #444; font-size: .92rem; }
 .slide .encerramento-resumo p { margin: .18rem 0; }
 
 /* Títulos e subtítulos padrão modelo2 (vermelho #f22626 + verde #00994d + texto cinza #525252) */
-.slide-head-modelo2 { margin-bottom: .55rem; }
-.slide-head-tm { margin-bottom: .35rem; }
+.slide-head-modelo2 { margin-bottom: .45rem; }
+.slide-head-inline { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem 1.2rem; }
+.slide-head-tm { margin-bottom: .3rem; }
 .slide h2.slide-t { font-size: clamp(1.55rem, 2.5vw, 2.15rem); color: #f22626; margin: 0; line-height: 1.15; font-weight: 700; }
 .slide .sub-verde { font-size: clamp(1.1rem, 1.6vw, 1.4rem); color: #00994d; font-weight: 700; margin: .08rem 0 0; }
-.slide li { font-size: clamp(.95rem, 1.3vw, 1.15rem); margin-bottom: .35rem; color: #525252; line-height: 1.38; }
+.slide li { font-size: clamp(1rem, 1.3vw, 1.18rem); margin-bottom: .3rem; color: #525252; line-height: 1.35; }
 .slide li::marker { color: #111111; }
-.slide .topicos-modelo2 { margin: 0 0 .55rem; padding-left: 1.35rem; }
-.slide .topicos-modelo2 li { font-size: clamp(.95rem, 1.25vw, 1.12rem); margin-bottom: .25rem; }
+.slide .topicos-modelo2 { margin: 0 0 .45rem; padding-left: 1.35rem; }
+.slide .topicos-modelo2 li { font-size: clamp(1rem, 1.25vw, 1.15rem); margin-bottom: .22rem; }
 .slide .centro { text-align: center; }
 .slide .negrito { font-weight: 700; }
-.slide .hint { font-size: .74rem; color: #555; margin: .15rem 0 0; }
+.slide .hint { font-size: .86rem; color: #555; margin: .15rem 0 0; }
 
 /* Slide 2: Contextualização (lista grande em cinza à esquerda + retrato de König à direita) */
 .slide .ctx-grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); gap: 2rem; align-items: center; padding: .5rem 1rem 2rem 2.5rem; }
@@ -181,129 +182,123 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .topicos-ctx li { font-size: clamp(1.25rem, 1.9vw, 1.62rem); color: #525252; margin-bottom: 1.15rem; line-height: 1.35; }
 .slide .retrato-autor { margin: 0 auto; text-align: center; width: 190px; }
 .slide .retrato-autor svg { width: 175px; height: auto; display: block; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
-.slide .retrato-autor figcaption { font-size: .92rem; color: #525252; margin-top: .4rem; line-height: 1.25; }
+.slide .retrato-autor figcaption { font-size: .95rem; color: #525252; margin-top: .4rem; line-height: 1.25; }
 
-/* Slides 4, 5, 6: Layout com coluna lateral esquerda em vermelho (Solução / Algoritmo / Etapa) */
-.slide .lateral-grid { flex: 1; display: grid; grid-template-columns: 205px minmax(0, 1fr); gap: 1.2rem; align-items: stretch; min-height: 0; }
-.slide .lateral-esq { padding-top: .2rem; }
-.slide .slide-t-lateral { font-size: clamp(1.5rem, 2.2vw, 1.95rem); color: #f22626; margin: 0; line-height: 1.22; font-weight: 700; }
-.slide .lateral-dir { display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 0; }
-
-/* Slide 5: Implementação no estilo exato do slide 5 do Prof. Rafael (caixa cinza + faixa branca + setas vinho) */
+/* Slides 4, 5, 6: Cabeçalho no topo libera toda a largura para widgets e código */
 .slide .w-cod-prof { display: grid; gap: .45rem; }
 .slide .w-cod-barra { background: #f4f4f4; border-color: #cccccc; }
 .slide .prof-code-grid { display: grid; background: transparent; border-radius: .2rem; }
-.slide .prof-ln { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr); align-items: center; }
+.slide .prof-ln { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); align-items: center; }
 .slide .prof-code-cell {
-  background: #cccccc; color: #111111; font: .75rem/1.36 Consolas, "Courier New", monospace;
-  padding: .05rem .65rem; white-space: pre; border-left: 1px solid #b8b8b8; border-right: 1px solid #b8b8b8;
+  background: #cccccc; color: #111111; font: 1rem/1.3 Consolas, "Courier New", monospace;
+  padding: .04rem .75rem; white-space: pre; border-left: 1px solid #b8b8b8; border-right: 1px solid #b8b8b8;
   box-shadow: 2px 0 4px rgba(0,0,0,.08);
 }
-.slide .prof-ln:first-child .prof-code-cell { padding-top: .35rem; border-top: 1px solid #b8b8b8; }
-.slide .prof-ln:last-child .prof-code-cell { padding-bottom: .35rem; border-bottom: 1px solid #b8b8b8; box-shadow: 2px 3px 5px rgba(0,0,0,.12); }
-.slide .prof-code-cell .ln-num { color: #666666; user-select: none; margin-right: .5rem; font-size: .68rem; }
+.slide .prof-ln:first-child .prof-code-cell { padding-top: .32rem; border-top: 1px solid #b8b8b8; }
+.slide .prof-ln:last-child .prof-code-cell { padding-bottom: .32rem; border-bottom: 1px solid #b8b8b8; box-shadow: 2px 3px 5px rgba(0,0,0,.12); }
+.slide .prof-code-cell .ln-num { color: #555555; user-select: none; margin-right: .55rem; font-size: .86rem; }
 .slide .prof-ln.hl .prof-code-cell { background: #ffffff; color: #000000; font-weight: 700; }
-.slide .prof-arrow-cell { padding-left: .65rem; font-size: .8rem; color: #7a2626; display: flex; align-items: center; gap: .35rem; opacity: .35; transition: opacity .15s; }
+.slide .prof-arrow-cell { padding-left: .75rem; font-size: 1rem; color: #7a2626; display: flex; align-items: center; gap: .38rem; opacity: .58; transition: opacity .15s; }
 .slide .prof-ln.hl .prof-arrow-cell { opacity: 1; font-weight: 700; }
 .slide .prof-seta { color: #7a2626; font-weight: 800; letter-spacing: -.05em; }
 .slide .prof-nota { color: #7a2626; }
 
 /* Slide 6: Interface Gráfica + TXT anotado com setas (estilo slide 6 do professor) */
-.slide .ig-grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 1rem; align-items: start; }
-.slide .ig-txt-anotado { background: #ffffff; border: 1px solid #d0d0d0; padding: .6rem .8rem; border-radius: .35rem; }
-.slide .ig-txt-titulo { font: 700 1rem Georgia, serif; color: #8b1a1a; margin-bottom: .3rem; }
-.slide .ig-txt-linha { display: flex; align-items: center; justify-content: space-between; gap: .4rem; font: .73rem/1.38 Consolas, monospace; color: #222; }
-.slide .ig-txt-linha.ig-conflito { margin-top: .25rem; padding-top: .25rem; border-top: 1px dashed #d01118; color: #b20000; font-weight: 700; }
-.slide .ig-seta { font: italic .74rem Georgia, serif; color: #a12020; white-space: nowrap; }
-.slide .ig-legenda { margin: .45rem 0 0; font: 700 .88rem Georgia, serif; color: #111; text-align: center; }
-.slide .janela-app-header { background: #f0f0f0; border: 1px solid #aaaaaa; border-bottom: none; padding: .28rem .65rem; font-size: .74rem; color: #333; display: flex; justify-content: space-between; border-radius: .3rem .3rem 0 0; }
-.slide .janela-app-body { background: #ffffff; border: 1px solid #aaaaaa; padding: .55rem .7rem; border-radius: 0 0 .3rem .3rem; display: grid; gap: .4rem; }
-.slide .janela-app-body svg { max-height: 29vh; display: block; margin: 0 auto; }
-.slide .ig-etapas { display: flex; flex-wrap: wrap; gap: .3rem; }
+.slide .ig-grid { display: grid; grid-template-columns: minmax(0, .96fr) minmax(0, 1.04fr); gap: 1.15rem; align-items: start; }
+.slide .ig-txt-anotado { background: #ffffff; border: 1px solid #d0d0d0; padding: .7rem .95rem; border-radius: .35rem; }
+.slide .ig-txt-titulo { font: 700 1.14rem Georgia, serif; color: #8b1a1a; margin-bottom: .35rem; }
+.slide .ig-txt-linha { display: flex; align-items: center; justify-content: space-between; gap: .5rem; font: .95rem/1.4 Consolas, monospace; color: #222; }
+.slide .ig-txt-linha.ig-conflito { margin-top: .3rem; padding-top: .3rem; border-top: 1px dashed #d01118; color: #b20000; font-weight: 700; }
+.slide .ig-seta { font: italic .95rem Georgia, serif; color: #a12020; white-space: nowrap; }
+.slide .ig-legenda { margin: .5rem 0 0; font: 700 1.02rem Georgia, serif; color: #111; text-align: center; }
+.slide .janela-app-header { background: #f0f0f0; border: 1px solid #aaaaaa; border-bottom: none; padding: .34rem .75rem; font-size: .9rem; color: #333; display: flex; justify-content: space-between; border-radius: .3rem .3rem 0 0; }
+.slide .janela-app-body { background: #ffffff; border: 1px solid #aaaaaa; padding: .65rem .8rem; border-radius: 0 0 .3rem .3rem; display: grid; gap: .45rem; }
+.slide .janela-app-body svg { max-height: 42vh; display: block; margin: 0 auto; }
+.slide .ig-etapas { display: flex; flex-wrap: wrap; gap: .38rem; }
 
 /* Slides 7 e 8: Teste de Mesa :: Início e Término no layout de 4 colunas do Prof. Rafael */
-.slide .tm-prof { display: grid; grid-template-columns: 240px minmax(0, 1fr) 130px 268px; gap: .6rem; align-items: start; }
+.slide .tm-prof { display: grid; grid-template-columns: 268px minmax(0, 1fr) 174px 306px; gap: .7rem; align-items: start; }
 .slide .tm-col-esq { display: grid; gap: .35rem; }
-.slide .tm-titulo-caixa { font: 700 .82rem Arial, sans-serif; color: #111; text-align: center; }
-.slide .tm-col-esq svg { max-height: 165px; width: 100%; display: block; }
-.slide .tm-adj-wrap { display: grid; grid-template-columns: 18px 1fr; gap: .25rem; align-items: stretch; }
-.slide .tm-adj-vert { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font: 700 .72rem Arial, sans-serif; color: #111; }
-.slide .tm-adj-label { font: 700 .8rem Consolas, monospace; color: #111; margin-bottom: .1rem; }
-.slide .tm-adj-tab { border-collapse: collapse; width: 100%; font: .73rem Consolas, monospace; }
-.slide .tm-adj-tab td { padding: .14rem .32rem; text-align: center; }
-.slide .tm-adj-tab td.adj-idx { border: 1px solid #333; background: #ffffff; font-weight: 700; width: 32px; }
+.slide .tm-titulo-caixa { font: 700 .92rem Arial, sans-serif; color: #111; text-align: center; }
+.slide .tm-col-esq svg { max-height: 195px; width: 100%; display: block; }
+.slide .tm-adj-wrap { display: grid; grid-template-columns: 20px 1fr; gap: .25rem; align-items: stretch; }
+.slide .tm-adj-vert { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font: 700 .82rem Arial, sans-serif; color: #111; }
+.slide .tm-adj-label { font: 700 .9rem Consolas, monospace; color: #111; margin-bottom: .1rem; }
+.slide .tm-adj-tab { border-collapse: collapse; width: 100%; font: .86rem Consolas, monospace; }
+.slide .tm-adj-tab td { padding: .15rem .34rem; text-align: center; }
+.slide .tm-adj-tab td.adj-idx { border: 1px solid #333; background: #ffffff; font-weight: 700; width: 36px; }
 .slide .tm-adj-tab td.adj-cel { border: 1px dashed #555; background: #ffffff; }
 .slide .tm-adj-tab td.adj-cel.visitada { background: #f28b82; color: #111; font-weight: 700; }
-.slide .tm-cod-box { margin: 0; padding: .4rem .55rem; background: #ffffff; border: 1px solid #333333; color: #111111; font: .68rem/1.28 Consolas, "Courier New", monospace; white-space: pre; overflow-x: auto; }
-.slide .tm-chamada { margin: .3rem 0 0; font: .8rem/1.35 Consolas, monospace; color: #111; }
-.slide .tm-wire { border-collapse: collapse; width: 100%; font-size: .74rem; background: #ffffff; }
-.slide .tm-wire th { background: #f2f2f2; border: 1px solid #444; padding: .2rem .26rem; text-align: center; font-weight: 700; color: #111; font-size: .7rem; white-space: nowrap; }
-.slide .tm-wire td { border: 1px solid #555; padding: .16rem .26rem; text-align: center; color: #111; white-space: nowrap; }
+.slide .tm-cod-box { margin: 0; padding: .42rem .6rem; background: #ffffff; border: 1px solid #333333; color: #111111; font: .84rem/1.26 Consolas, "Courier New", monospace; white-space: pre; overflow-x: auto; }
+.slide .tm-chamada { margin: .3rem 0 0; font: .9rem/1.32 Consolas, monospace; color: #111; }
+.slide .tm-wire { border-collapse: collapse; width: 100%; font-size: .86rem; background: #ffffff; }
+.slide .tm-wire th { background: #f2f2f2; border: 1px solid #444; padding: .2rem .28rem; text-align: center; font-weight: 700; color: #111; font-size: .84rem; white-space: nowrap; }
+.slide .tm-wire td { border: 1px solid #555; padding: .18rem .28rem; text-align: center; color: #111; white-space: nowrap; }
 .slide .tm-wire td.tm-vermelho { color: #cc0000; font-weight: 600; font-family: Consolas, monospace; }
-.slide .tm-arvore { margin-top: .35rem; width: 100%; max-height: 105px; display: block; }
-.slide .tm-nota-inicio { margin-top: .4rem; padding: .35rem .5rem; border: 1px dashed #777; font-size: .72rem; color: #333; background: #fafafa; }
+.slide .tm-arvore { margin-top: .35rem; width: 100%; max-height: 140px; display: block; }
+.slide .tm-nota-inicio { margin-top: .4rem; padding: .4rem .55rem; border: 1px dashed #777; font-size: .84rem; color: #333; background: #fafafa; }
 
 /* Peças visuais gerais e tabelas */
 .slide .fig { margin: 0; background: #ffffff; border: 1px solid #cccccc; border-radius: .35rem; padding: .38rem; }
-.slide .fig svg { max-height: 32vh; display: block; margin: 0 auto; }
-.slide .fig figcaption { font-size: .74rem; color: #444; margin-top: .25rem; text-align: center; }
+.slide .fig svg { max-height: 35vh; display: block; margin: 0 auto; }
+.slide .fig figcaption { font-size: .88rem; color: #444; margin-top: .25rem; text-align: center; }
 .slide .visual-largo { display: grid; gap: .45rem; flex: 1; align-content: center; min-height: 0; }
 .slide .visual-duplo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s4); align-items: start; }
 .slide .visual-duplo > * { min-width: 0; }
-.slide .visual-duplo .fig svg { max-height: 29vh; }
+.slide .visual-duplo .fig svg { max-height: 33vh; }
 .slide .mini-grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
-.slide .mini-grade .fig svg { max-height: 22vh; }
-.slide .tabela-compacta { background: #ffffff; border: 1px solid #999999; border-collapse: collapse; font-size: .75rem; width: 100%; }
-.slide .tabela-compacta th { background: #eeeeee; color: #111111; padding: .24rem .42rem; font-size: .73rem; border: 1px solid #999999; }
-.slide .tabela-compacta td { padding: .2rem .42rem; border: 1px solid #cccccc; color: #222222; }
+.slide .mini-grade .fig svg { max-height: 27vh; }
+.slide .tabela-compacta { background: #ffffff; border: 1px solid #999999; border-collapse: collapse; font-size: .88rem; width: 100%; }
+.slide .tabela-compacta th { background: #eeeeee; color: #111111; padding: .26rem .45rem; font-size: .86rem; border: 1px solid #999999; }
+.slide .tabela-compacta td { padding: .22rem .45rem; border: 1px solid #cccccc; color: #222222; }
 .slide .tabela-compacta td.alerta { background: #fbe5ea; font-weight: 700; color: #a10000; }
 .slide .tabela-compacta td.bom { background: #e3f3e8; font-weight: 700; color: #006400; }
-.slide .rotulo-bloco { margin: 0 0 .2rem; font: 700 .78rem var(--font-body); color: #006808; }
-.slide .chip { display: inline-block; padding: .15rem .5rem; border-radius: 999px; font-size: .72rem; font-weight: 700; background: #eeeeee; color: #222; border: 1px solid #bbbbbb; }
+.slide .rotulo-bloco { margin: 0 0 .22rem; font: 700 .9rem var(--font-body); color: #006808; }
+.slide .chip { display: inline-block; padding: .18rem .55rem; border-radius: 999px; font-size: .84rem; font-weight: 700; background: #eeeeee; color: #222; border: 1px solid #bbbbbb; }
 .slide .chip.chip-ok, .slide .chip.ok { background: #e3f3e8; color: #006400; border-color: #88c494; }
 .slide .chip.chip-bad, .slide .chip.err { background: #fbe5ea; color: #a10000; border-color: #d98c98; }
 
 /* Controles dos Widgets Interativos (Toy, BFS e Impacto) */
-.slide .w-barra { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; background: #f2f2f2; border: 1px solid #cccccc; border-radius: .35rem; padding: .3rem .5rem; }
-.slide .w-barra button { min-height: 28px; padding: .16rem .55rem; font-size: .73rem; border-radius: .3rem; background: #ffffff; color: #222222; border: 1px solid #999999; font-weight: 700; cursor: pointer; }
+.slide .w-barra { display: flex; flex-wrap: wrap; align-items: center; gap: .38rem; background: #f2f2f2; border: 1px solid #cccccc; border-radius: .35rem; padding: .32rem .55rem; }
+.slide .w-barra button { min-height: 31px; padding: .18rem .6rem; font-size: .85rem; border-radius: .3rem; background: #ffffff; color: #222222; border: 1px solid #999999; font-weight: 700; cursor: pointer; }
 .slide .w-barra button:hover { background: #e8f5e9; }
 .slide .w-barra button.on, .slide .w-barra button.ativo { background: #319938; color: #ffffff; border-color: #217326; }
 .slide .w-barra button.bad-btn { background: #d01118; color: #ffffff; border-color: #990a0f; }
-.slide .w-msg { margin: 0; padding: .36rem .62rem; border-radius: .35rem; font-size: .78rem; font-weight: 600; border: 1px solid #cccccc; background: #f9f9f9; line-height: 1.35; }
+.slide .w-msg { margin: 0; padding: .38rem .65rem; border-radius: .35rem; font-size: .88rem; font-weight: 600; border: 1px solid #cccccc; background: #f9f9f9; line-height: 1.35; }
 .slide .w-msg.ok { background: #e3f3e8; border-color: #88c494; color: #005a00; }
 .slide .w-msg.bad, .slide .w-msg.err { background: #fbe5ea; border-color: #d98c98; color: #990000; }
 
 /* Widget Toy (Slide 3) */
 .slide .w-toy { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: var(--s4); align-items: start; }
 .slide .w-toy-esq { display: grid; gap: .38rem; }
-.slide .w-toy-esq svg { max-height: 27vh; display: block; margin: 0 auto; }
+.slide .w-toy-esq svg { max-height: 33vh; display: block; margin: 0 auto; }
 .slide .w-toy-dir { display: grid; gap: .38rem; }
-.slide .w-toy-dir svg { max-height: 25vh; display: block; margin: 0 auto; background: #ffffff; border: 1px solid #cccccc; }
+.slide .w-toy-dir svg { max-height: 31vh; display: block; margin: 0 auto; background: #ffffff; border: 1px solid #cccccc; }
 
 /* Widget BFS (Slide 4 - cabeçalho estilo Sedgewick & Wayne do slide 4 do professor) */
-.slide .w-bfs { display: grid; gap: .4rem; border: 1px solid #bbbbbb; background: #f7f7f7; padding: .45rem; }
-.slide .w-bfs-topo-sedgewick { background: #8c2d19; color: #ffffff; padding: .32rem .65rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem; }
-.slide .sw-marca { font: 700 .88rem Georgia, "Times New Roman", serif; letter-spacing: .02em; }
-.slide .w-barra-cenarios { display: flex; gap: .3rem; }
-.slide .w-barra-cenarios button { min-height: 25px; padding: .12rem .5rem; font-size: .71rem; background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.45); border-radius: .25rem; cursor: pointer; font-weight: 600; }
+.slide .w-bfs { display: grid; gap: .5rem; border: 1px solid #bbbbbb; background: #f7f7f7; padding: .55rem; }
+.slide .w-bfs-topo-sedgewick { background: #8c2d19; color: #ffffff; padding: .42rem .75rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; }
+.slide .sw-marca { font: 700 1.06rem Georgia, "Times New Roman", serif; letter-spacing: .02em; }
+.slide .w-barra-cenarios { display: flex; gap: .38rem; }
+.slide .w-barra-cenarios button { min-height: 30px; padding: .16rem .65rem; font-size: .88rem; background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.45); border-radius: .25rem; cursor: pointer; font-weight: 600; }
 .slide .w-barra-cenarios button.on { background: #ffffff; color: #8c2d19; border-color: #ffffff; font-weight: 700; }
-.slide .w-bfs-corpo { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: .65rem; align-items: start; }
-.slide .w-bfs-grafo { background: #ffffff; border: 1px solid #cccccc; padding: .35rem; }
-.slide .w-bfs-grafo svg { max-height: 31vh; display: block; margin: 0 auto; }
-.slide .w-bfs-painel { display: grid; gap: .35rem; }
+.slide .w-bfs-corpo { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: .8rem; align-items: start; }
+.slide .w-bfs-grafo { background: #ffffff; border: 1px solid #cccccc; padding: .45rem; }
+.slide .w-bfs-grafo svg { max-height: 44vh; display: block; margin: 0 auto; }
+.slide .w-bfs-painel { display: grid; gap: .45rem; }
 .slide .w-status-linha { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
-.slide .w-desc { padding: .35rem .55rem; background: #ffffff; border-left: 4px solid #8c2d19; font-size: .77rem; min-height: 2.1rem; }
-.slide .w-progresso { height: 6px; background: #dddddd; border-radius: 999px; overflow: hidden; }
+.slide .w-desc { padding: .45rem .68rem; background: #ffffff; border-left: 4px solid #8c2d19; font-size: .95rem; min-height: 2.4rem; }
+.slide .w-progresso { height: 7px; background: #dddddd; border-radius: 999px; overflow: hidden; }
 .slide .w-progresso-barra { height: 100%; width: 0; background: #319938; transition: width .16s ease; }
-.slide .w-kv { display: grid; gap: .22rem; font-size: .77rem; background: #ffffff; border: 1px solid #cccccc; padding: .38rem .55rem; }
-.slide .w-veredito { font-weight: 700; padding: .25rem .45rem; border-radius: .25rem; background: #eeeeee; color: #222; }
+.slide .w-kv { display: grid; gap: .32rem; font-size: .95rem; background: #ffffff; border: 1px solid #cccccc; padding: .5rem .68rem; }
+.slide .w-veredito { font-weight: 700; padding: .32rem .55rem; border-radius: .25rem; background: #eeeeee; color: #222; }
 .slide .w-veredito.ok { background: #e3f3e8; color: #005a00; }
 .slide .w-veredito.bad { background: #fbe5ea; color: #990000; }
 
 /* Widget Impacto (Slide 11) */
 .slide .w-imp { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: .8rem; align-items: start; }
 .slide .w-imp-grafo { background: #ffffff; border: 1px solid #bbbbbb; padding: .35rem; }
-.slide .w-imp-grafo svg { max-height: 31vh; display: block; margin: 0 auto; }
+.slide .w-imp-grafo svg { max-height: 36vh; display: block; margin: 0 auto; }
 .slide .w-imp-painel { min-width: 0; }
 .slide .w-imp-resumo { display: grid; gap: .28rem; }
 
@@ -314,7 +309,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
   .grid { grid-template-columns: 1fr; }
   header, main, footer { padding: var(--s4); }
   .panel { padding: var(--s4); }
-  .slide .ctx-grid, .slide .lateral-grid, .slide .ig-grid, .slide .tm-prof, .slide .w-toy, .slide .w-bfs-corpo, .slide .w-imp { grid-template-columns: 1fr; }
+  .slide .ctx-grid, .slide .ig-grid, .slide .tm-prof, .slide .w-toy, .slide .w-bfs-corpo, .slide .w-imp { grid-template-columns: 1fr; }
   .slide { overflow-y: auto; }
   .slide .visual-duplo, .slide .mini-grade { grid-template-columns: 1fr; }
   .deck { min-height: 570px; }
@@ -856,7 +851,7 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
       const largura = emCiclo || atual ? 5 : relacionada ? 3 : 2;
       // Aresta entre vértices da mesma coluna sai pela borda externa, formando um arco visível fora dos nós.
       const lado = a.x === X_CODIGO ? -1 : 1;
-      const xBorda = a.x + lado * (a.x === X_CODIGO ? 57 : 28);
+      const xBorda = a.x + lado * (a.x === X_CODIGO ? 62 : 30);
       const abertura = Math.min(130, 55 + Math.abs(b.y - a.y) * 0.35);
       const caminho = a.x === b.x
         ? `M ${xBorda} ${a.y} Q ${xBorda + lado * abertura} ${(a.y + b.y) / 2} ${xBorda} ${b.y}`
@@ -877,23 +872,23 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
       const contorno = noCiclo.has(n.id) ? VERMELHO : atual ? "#e0a100" : alterada ? "currentColor" : "#ffffff";
       const espessura = noCiclo.has(n.id) || alterada || atual ? 4 : 2;
       const forma = n.tipo === "CODIGO"
-        ? `<rect x="${x - 57}" y="${y - 25}" width="114" height="50" rx="7"/>`
-        : `<circle cx="${x}" cy="${y}" r="28"/>`;
+        ? `<rect x="${x - 62}" y="${y - 26}" width="124" height="52" rx="7"/>`
+        : `<circle cx="${x}" cy="${y}" r="30"/>`;
       const rotulo = n.rotulo.length > 27 ? n.rotulo.slice(0, 24) + "…" : n.rotulo;
       nos += `<g><title>${esc(n.id)} — ${esc(n.rotulo)}; tipo ${esc(n.tipo)}; ${rotuloCor}${alterada ? "; função alterada" : ""}</title>` +
         `<g fill="${fill}" stroke="${contorno}" stroke-width="${espessura}">${forma}</g>` +
-        `<text x="${x}" y="${y + 1}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="17" font-weight="700">${esc(n.id)}</text>` +
-        `<text x="${x}" y="${y + 16}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="11">${rotuloCor}</text>` +
-        (alterada ? `<text x="${x + (n.tipo === "CODIGO" ? 57 : 28)}" y="${y - 31}" text-anchor="end" fill="currentColor" font-family="sans-serif" font-size="11" font-weight="700" letter-spacing="0.5">ALTERADA</text>` : "") +
-        `<text x="${x}" y="${y + 43}" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="13">${esc(rotulo)}</text></g>`;
+        `<text x="${x}" y="${y}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="18" font-weight="700">${esc(n.id)}</text>` +
+        `<text x="${x}" y="${y + 17}" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="13" font-weight="600">${rotuloCor}</text>` +
+        (alterada ? `<text x="${x + (n.tipo === "CODIGO" ? 62 : 30)}" y="${y - 33}" text-anchor="end" fill="currentColor" font-family="sans-serif" font-size="12.5" font-weight="700" letter-spacing="0.5">ALTERADA</text>` : "") +
+        `<text x="${x}" y="${y + 45}" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="15.5" font-weight="600">${esc(rotulo)}</text></g>`;
     }
 
     const vazio = grafo.vertices.length === 0
       ? `<text x="470" y="170" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="18">Grafo vazio: nenhum vértice declarado.</text>` : "";
 
     return `<svg viewBox="0 0 940 ${altura}" role="img" aria-label="Grafo de funções (retângulos) e testes (círculos)">` +
-      `<text x="${X_CODIGO}" y="30" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="18" font-weight="700">FUNÇÕES (CODIGO) ▭</text>` +
-      `<text x="${X_TESTE}" y="30" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="18" font-weight="700">TESTES (TESTE) ◯</text>` +
+      `<text x="${X_CODIGO}" y="32" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="20" font-weight="700">FUNÇÕES (CODIGO) ▭</text>` +
+      `<text x="${X_TESTE}" y="32" text-anchor="middle" fill="currentColor" font-family="sans-serif" font-size="20" font-weight="700">TESTES (TESTE) ◯</text>` +
       `${vazio}${arestas}${nos}</svg>`;
   }
 
@@ -1997,8 +1992,8 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
  *  - Marca oficial "INSTITUTO FEDERAL Espírito Santo" no canto inferior direito e no slide final.
  *  - Capa limpa com título em verde-escuro (#006400), subtítulo em verde (#006808) e autores em verde-limão (#62b412).
  *  - Slides de Contextualização e Aplicação com título em vermelho (#f22626) e tópicos em cinza (#525252).
- *  - Slides de Solução (Demonstração, Implementação, Interface Gráfica) com coluna lateral esquerda
- *    em vermelho (#f22626) e subtítulo do arquivo em verde (#00994d).
+ *  - Slides de Solução (Demonstração, Implementação, Interface Gráfica) com cabeçalho no topo
+ *    em vermelho (#f22626) e subtítulo do arquivo em verde (#00994d), liberando toda a largura para o visual.
  *  - Slide de Implementação no estilo Sedgewick/Prof. Rafael: quadro de código cinza (#cccccc),
  *    faixa branca destacando o bloco ativo e setas vinho (←───) apontando para as linhas.
  *  - Slides Teste de Mesa :: Início e Término no layout de 4 colunas do professor:
@@ -2050,14 +2045,14 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
   /** Figura no estilo Sedgewick & Wayne (como no slide 3 do professor: "graph" vs "bipartite" vs "odd cycle"). */
   function svgDefinicaoSedgewick() {
     const no = (x, y, id, pre = "#ffffff", txt = "#111111", borda = "#222222") =>
-      `<circle cx="${x}" cy="${y}" r="14" fill="${pre}" stroke="${borda}" stroke-width="2"/>` +
-      `<text x="${x}" y="${y + 4}" text-anchor="middle" fill="${txt}" font-family="Arial, sans-serif" font-size="11" font-weight="700">${id}</text>`;
+      `<circle cx="${x}" cy="${y}" r="15" fill="${pre}" stroke="${borda}" stroke-width="2"/>` +
+      `<text x="${x}" y="${y + 4}" text-anchor="middle" fill="${txt}" font-family="Arial, sans-serif" font-size="12" font-weight="700">${id}</text>`;
     const lin = (x1, y1, x2, y2, cor = "#b5b5b5", w = 2) =>
       `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${cor}" stroke-width="${w}"/>`;
     return `<svg viewBox="0 0 520 220" role="img" aria-label="Comparação estilo Sedgewick: grafo original, bipartição em dois lados e ciclo ímpar">` +
-      `<text x="80" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="12.5" font-weight="700">grafo G</text>` +
-      `<text x="260" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="12.5" font-weight="700">bipartição (V₁ × V₂)</text>` +
-      `<text x="438" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="12.5" font-weight="700">ciclo ímpar (não bipartido)</text>` +
+      `<text x="80" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="13.5" font-weight="700">grafo G</text>` +
+      `<text x="260" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="13.5" font-weight="700">bipartição (V₁ × V₂)</text>` +
+      `<text x="438" y="20" text-anchor="middle" fill="#b22222" font-family="Arial, sans-serif" font-size="13.5" font-weight="700">ciclo ímpar (não bipartido)</text>` +
       /* 1. Grafo G em layout livre */
       lin(50, 60, 115, 55, "#222", 2.5) + lin(50, 60, 110, 150, "#222", 2.5) +
       lin(45, 130, 115, 105, "#222", 2.5) + lin(45, 130, 110, 150, "#222", 2.5) +
@@ -2074,7 +2069,7 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
       no(305, 58, "T1", "#a45209", "#fff", "#7a3b00") +
       no(305, 108, "T2", "#a45209", "#fff", "#7a3b00") +
       no(305, 158, "T3", "#a45209", "#fff", "#7a3b00") +
-      `<text x="260" y="198" text-anchor="middle" fill="#444" font-size="11">toda aresta cruza de V₁ para V₂</text>` +
+      `<text x="260" y="198" text-anchor="middle" fill="#444" font-size="12">toda aresta cruza de V₁ para V₂</text>` +
       /* 3. Triângulo ímpar C1-T3-C2 */
       lin(395, 70, 485, 115, "#d01118", 3.5) +
       lin(395, 155, 485, 115, "#d01118", 3.5) +
@@ -2082,7 +2077,7 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
       no(395, 70, "C1", "#116b74", "#fff", "#d01118") +
       no(395, 155, "C2", "#a45209", "#fff", "#d01118") +
       no(485, 115, "T3", "#d01118", "#fff", "#880000") +
-      `<text x="440" y="198" text-anchor="middle" fill="#b22222" font-size="11" font-weight="700">C1–T3–C2: 3 arestas (conflito!)</text>` +
+      `<text x="440" y="198" text-anchor="middle" fill="#b22222" font-size="12" font-weight="700">C1–T3–C2: 3 arestas (conflito!)</text>` +
       `</svg>`;
   }
 
@@ -2108,18 +2103,18 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
   /** Diagrama da árvore BFS e paridade de nível. */
   function svgProva() {
     const t = (x, y, s, extra = "") =>
-      `<text x="${x}" y="${y}" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#222" ${extra}>${s}</text>`;
+      `<text x="${x}" y="${y}" text-anchor="middle" font-family="sans-serif" font-size="13.5" fill="#222" ${extra}>${s}</text>`;
     const no = (x, y, id, cor) =>
-      `<circle cx="${x}" cy="${y}" r="18" fill="${cor}" stroke="#222" stroke-width="2"/>` +
-      `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="sans-serif" font-size="12.5" font-weight="700" fill="#fff">${id}</text>`;
+      `<circle cx="${x}" cy="${y}" r="19" fill="${cor}" stroke="#222" stroke-width="2"/>` +
+      `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="sans-serif" font-size="13.5" font-weight="700" fill="#fff">${id}</text>`;
     const nivel = (y, rotulo) =>
       `<line x1="24" y1="${y}" x2="596" y2="${y}" stroke="#b8b8b8" stroke-dasharray="3 5"/>` +
-      `<text x="30" y="${y - 6}" font-family="sans-serif" font-size="11" fill="#555">${rotulo}</text>`;
+      `<text x="30" y="${y - 6}" font-family="sans-serif" font-size="12" fill="#555">${rotulo}</text>`;
     return `<svg viewBox="0 0 620 275" role="img" aria-label="Árvore BFS: paridade de nível e ciclo ímpar">` +
       `<rect x="2" y="2" width="616" height="271" fill="#ffffff" stroke="#888" stroke-width="1.5"/>` +
       nivel(42, "nível 0 (raiz, cor 0)") + nivel(104, "nível d(a) — menor ancestral comum (LCA)") +
       `<line x1="24" y1="226" x2="596" y2="226" stroke="#b8b8b8" stroke-dasharray="3 5"/>` +
-      `<text x="30" y="200" font-family="sans-serif" font-size="11" fill="#555">nível d(u) ≡ d(v) (mod 2) — mesma cor!</text>` +
+      `<text x="30" y="200" font-family="sans-serif" font-size="12" fill="#555">nível d(u) ≡ d(v) (mod 2) — mesma cor!</text>` +
       `<line x1="310" y1="42" x2="310" y2="104" stroke="#555" stroke-width="2.5"/>` +
       `<path d="M310 104 C 255 148, 215 186, 195 226" fill="none" stroke="#116b74" stroke-width="3.5" stroke-dasharray="8 5"/>` +
       `<path d="M310 104 C 365 148, 405 186, 425 226" fill="none" stroke="#a45209" stroke-width="3.5" stroke-dasharray="8 5"/>` +
@@ -2140,15 +2135,15 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     const linhas = arestas.map(([i, j]) =>
       `<line x1="${posE[i].x}" y1="${posE[i].y}" x2="${posD[j].x}" y2="${posD[j].y}" stroke="#666" stroke-width="2"/>`).join("");
     const nosE = posE.map(p =>
-      `<g fill="#fff" stroke="#222" stroke-width="2"><rect x="${p.x - 28}" y="${p.y - 13}" width="56" height="26" rx="4"/></g>` +
-      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="10.5" font-weight="700">${esc(p.nome)}</text>`).join("");
+      `<g fill="#fff" stroke="#222" stroke-width="2"><rect x="${p.x - 34}" y="${p.y - 15}" width="68" height="30" rx="5"/></g>` +
+      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="13" font-weight="700">${esc(p.nome)}</text>`).join("");
     const nosD = posD.map(p =>
-      `<g fill="#fff" stroke="#222" stroke-width="2"><circle cx="${p.x}" cy="${p.y}" r="16"/></g>` +
-      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="10" font-weight="700">${esc(p.nome)}</text>`).join("");
+      `<g fill="#fff" stroke="#222" stroke-width="2"><circle cx="${p.x}" cy="${p.y}" r="19"/></g>` +
+      `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" fill="#111" font-family="sans-serif" font-size="12.5" font-weight="700">${esc(p.nome)}</text>`).join("");
     return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(tituloEsq)} e ${esc(tituloDir)}: grafo bipartido">` +
       `<rect x="2" y="2" width="${W - 4}" height="${H - 4}" fill="#ffffff" stroke="#888"/>` +
-      `<text x="${xE}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="11" font-weight="700">${esc(tituloEsq)}</text>` +
-      `<text x="${xD}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="11" font-weight="700">${esc(tituloDir)}</text>` +
+      `<text x="${xE}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="13" font-weight="700">${esc(tituloEsq)}</text>` +
+      `<text x="${xD}" y="24" text-anchor="middle" fill="#222" font-family="sans-serif" font-size="13" font-weight="700">${esc(tituloDir)}</text>` +
       `${linhas}${nosE}${nosD}</svg>`;
   }
 
@@ -2177,8 +2172,8 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     const nosHtml = pos.map(p => {
       const c = ehTermino ? estado.cor[p.id] : -1;
       const fill = !ehTermino ? "#ffffff" : (c === 0 ? "#ffffff" : "#eaeaea");
-      return `<circle cx="${p.x}" cy="${p.y}" r="13" fill="${fill}" stroke="#222222" stroke-width="1.6"/>` +
-        `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" font-family="Arial, sans-serif" font-size="10.5" font-weight="700" fill="#111">${p.id}</text>`;
+      return `<circle cx="${p.x}" cy="${p.y}" r="14" fill="${fill}" stroke="#222222" stroke-width="1.8"/>` +
+        `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" font-family="Arial, sans-serif" font-size="11.5" font-weight="700" fill="#111">${p.id}</text>`;
     }).join("");
     const svgGrafo = `<svg viewBox="0 0 260 182" role="img" aria-label="Grafo G">` +
       `<rect x="1" y="1" width="258" height="180" fill="#f3f3f3" stroke="#999"/>` +
@@ -2253,17 +2248,17 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     // 6. Pequena árvore BFS gerada no Término (igual ao canto inferior do slide 8 do professor)
     const arvoreTermino = ehTermino
       ? `<svg class="tm-arvore" viewBox="0 0 210 110" role="img" aria-label="Árvore BFS gerada">` +
-        `<line x1="55" y1="18" x2="25" y2="52" stroke="#222" stroke-width="1.5"/>` +
-        `<line x1="55" y1="18" x2="85" y2="52" stroke="#222" stroke-width="1.5"/>` +
-        `<line x1="85" y1="52" x2="85" y2="90" stroke="#222" stroke-width="1.5"/>` +
-        `<line x1="145" y1="18" x2="145" y2="52" stroke="#222" stroke-width="1.5"/>` +
-        `<circle cx="55" cy="18" r="11" fill="#fff" stroke="#222"/><text x="55" y="22" text-anchor="middle" font-size="9.5" font-weight="700">C1</text>` +
-        `<circle cx="25" cy="52" r="11" fill="#eaeaea" stroke="#222"/><text x="25" y="56" text-anchor="middle" font-size="9.5" font-weight="700">T1</text>` +
-        `<circle cx="85" cy="52" r="11" fill="#eaeaea" stroke="#222"/><text x="85" y="56" text-anchor="middle" font-size="9.5" font-weight="700">T3</text>` +
-        `<circle cx="85" cy="90" r="11" fill="#fff" stroke="#222"/><text x="85" y="94" text-anchor="middle" font-size="9.5" font-weight="700">C2</text>` +
-        `<circle cx="145" cy="18" r="11" fill="#fff" stroke="#222"/><text x="145" y="22" text-anchor="middle" font-size="9.5" font-weight="700">C3</text>` +
-        `<circle cx="145" cy="52" r="11" fill="#eaeaea" stroke="#222"/><text x="145" y="56" text-anchor="middle" font-size="9.5" font-weight="700">T4</text>` +
-        `<circle cx="190" cy="18" r="11" fill="#fff" stroke="#222"/><text x="190" y="22" text-anchor="middle" font-size="9.5" font-weight="700">C4</text>` +
+        `<line x1="55" y1="18" x2="25" y2="52" stroke="#222" stroke-width="1.8"/>` +
+        `<line x1="55" y1="18" x2="85" y2="52" stroke="#222" stroke-width="1.8"/>` +
+        `<line x1="85" y1="52" x2="85" y2="90" stroke="#222" stroke-width="1.8"/>` +
+        `<line x1="145" y1="18" x2="145" y2="52" stroke="#222" stroke-width="1.8"/>` +
+        `<circle cx="55" cy="18" r="12.5" fill="#fff" stroke="#222" stroke-width="1.5"/><text x="55" y="22" text-anchor="middle" font-size="11" font-weight="700">C1</text>` +
+        `<circle cx="25" cy="52" r="12.5" fill="#eaeaea" stroke="#222" stroke-width="1.5"/><text x="25" y="56" text-anchor="middle" font-size="11" font-weight="700">T1</text>` +
+        `<circle cx="85" cy="52" r="12.5" fill="#eaeaea" stroke="#222" stroke-width="1.5"/><text x="85" y="56" text-anchor="middle" font-size="11" font-weight="700">T3</text>` +
+        `<circle cx="85" cy="90" r="12.5" fill="#fff" stroke="#222" stroke-width="1.5"/><text x="85" y="94" text-anchor="middle" font-size="11" font-weight="700">C2</text>` +
+        `<circle cx="145" cy="18" r="12.5" fill="#fff" stroke="#222" stroke-width="1.5"/><text x="145" y="22" text-anchor="middle" font-size="11" font-weight="700">C3</text>` +
+        `<circle cx="145" cy="52" r="12.5" fill="#eaeaea" stroke="#222" stroke-width="1.5"/><text x="145" y="56" text-anchor="middle" font-size="11" font-weight="700">T4</text>` +
+        `<circle cx="190" cy="18" r="12.5" fill="#fff" stroke="#222" stroke-width="1.5"/><text x="190" y="22" text-anchor="middle" font-size="11" font-weight="700">C4</text>` +
         `</svg>`
       : `<div class="tm-nota-inicio">Antes do laço:<br>• <code>cor[v] = -1</code><br>• <code>pai[v] = null</code><br>• <code>exames = 0</code></div>`;
 
@@ -2537,10 +2532,9 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
         fala: "Pela definição formal, um grafo é bipartido quando conseguimos dividir seus vértices em dois conjuntos disjuntos V1 e V2 de modo que toda aresta atravesse de um lado para o outro, sem arestas internas. Aqui no slide podemos testar ao vivo: com funções de um lado e testes do outro, duas cores bastam. Mas se clicarmos em 'Adicionar aresta C1–C2', fechamos o triângulo C1–T3–C2 de 3 arestas, e duas cores se tornam matematicamente impossíveis."
       },
 
-      /* ---------------- SLIDE 4: SOLUÇÃO / BFS 2-CORES / DEMONSTRAÇÃO (igual ao slide 4 do modelo2) ---------------- */
+      /* ---------------- SLIDE 4: SOLUÇÃO / BFS 2-CORES / DEMONSTRAÇÃO ---------------- */
       {
-        quem: quem.M, tempo: "4:15–6:45", layout: "lateral",
-        linhasTitulo: ["Solução", "BFS 2-Cores", "Demonstração"],
+        quem: quem.M, tempo: "4:15–6:45", layout: "topo-compacto",
         titulo: "Solução: BFS 2-Cores — Demonstração",
         visualHtml: htmlWidgetBfs(),
         topicos: [
@@ -2549,10 +2543,9 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
         fala: "Neste slide demonstramos o algoritmo em funcionamento passo a passo. A busca começa em C1 com cor 0. Ao inspecionar a lista de adjacência de C1, descobrimos T1 e T3 com a cor oposta, cor 1, e colocamos ambos na fila FIFO. De T3, descobrimos C2 com cor 0. Quando o primeiro componente termina, o laço externo garante a visita a C3 e T4 e também ao vértice isolado C4. E trocando aqui em cima para o segundo cenário, vemos a BFS detectar o conflito ímpar no exato momento em que examina T3 para C2."
       },
 
-      /* ---------------- SLIDE 5: SOLUÇÃO / BFS 2-CORES / IMPLEMENTAÇÃO (igual ao slide 5 do modelo2) ---------------- */
+      /* ---------------- SLIDE 5: SOLUÇÃO / BFS 2-CORES / IMPLEMENTAÇÃO ---------------- */
       {
-        quem: quem.M, tempo: "6:45–8:30", layout: "lateral",
-        linhasTitulo: ["Solução", "BFS 2-Cores", "Implementação"],
+        quem: quem.M, tempo: "6:45–8:30", layout: "topo-compacto",
         titulo: "Solução: BFS 2-Cores — Implementação",
         visualHtml: htmlWidgetCodigo(),
         topicos: [
@@ -2561,10 +2554,9 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
         fala: "Aqui temos a implementação da nossa função executarBfs, seguindo exatamente o estilo de destaque do modelo da disciplina. No bloco destacado em branco, para cada vértice u retirado da fila, percorremos sua lista de adjacência: se o vizinho v ainda tem cor menos 1, ele recebe a cor complementar 1 menos cor de u, guarda u como pai e entra na fila. Se clicarmos no Bloco 4, vemos o tratamento de conflito: quando v já tem a mesma cor de u, reconstruímos o ciclo ímpar subindo pelos pais até o menor ancestral comum."
       },
 
-      /* ---------------- SLIDE 6: SOLUÇÃO / IMPLEMENTAÇÃO / INTERFACE GRÁFICA (igual ao slide 6 do modelo2) ---------------- */
+      /* ---------------- SLIDE 6: SOLUÇÃO / IMPLEMENTAÇÃO / INTERFACE GRÁFICA ---------------- */
       {
-        quem: quem.M, tempo: "8:30–10:00", layout: "lateral",
-        linhasTitulo: ["Solução", "Implementação", "Interface Gráfica"],
+        quem: quem.M, tempo: "8:30–10:00", layout: "topo-compacto",
         subtituloVerde: "cenario-valido.txt",
         titulo: "Solução: Implementação — Interface Gráfica",
         visualHtml: visualInterfaceTxt,
@@ -2707,14 +2699,12 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
           `<div class="ctx-retrato">${s.visualHtml}</div>` +
           `</div>` +
           (s.logoCanto ? svgLogoIfes("ifes-logo-canto") : "");
-      } else if (s.layout === "lateral") {
-        corpo = `<div class="lateral-grid">` +
-          `<aside class="lateral-esq">` +
-          `<h2 class="slide-t-lateral">${s.linhasTitulo.map(l => esc(l)).join("<br>")}</h2>` +
+      } else if (s.layout === "topo-compacto") {
+        corpo = `<header class="slide-head-modelo2 slide-head-inline">` +
+          `<h2 class="slide-t">${esc(s.titulo)}</h2>` +
           (s.subtituloVerde ? `<p class="sub-verde">${esc(s.subtituloVerde)}</p>` : "") +
-          `</aside>` +
-          `<section class="lateral-dir">${s.visualHtml}</section>` +
-          `</div>`;
+          `</header>` +
+          `<div class="visual-largo">${s.visualHtml}</div>`;
       } else if (s.layout === "teste-mesa") {
         corpo = `<header class="slide-head-tm">` +
           `<h2 class="slide-t">${esc(s.titulo)}</h2>` +
@@ -2750,11 +2740,16 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
     for (const slide of raiz.querySelectorAll(".slide")) {
       const conteudo = slide.querySelector(".content");
       if (!conteudo) continue;
+      const topo = slide.querySelector(".ifes-bar-top");
+      const base = slide.querySelector(".ifes-bar-bot");
+      const barrasH = (topo ? topo.offsetHeight : 0) + (base ? base.offsetHeight : 0);
       conteudo.style.transform = "none";
-      const dispH = slide.clientHeight - 28;
+      conteudo.style.flex = "0 0 auto";
+      const dispH = slide.clientHeight - barrasH;
       const dispW = slide.clientWidth - 16;
-      const alt = conteudo.offsetHeight;
-      const larg = conteudo.offsetWidth;
+      const alt = Math.max(conteudo.offsetHeight, conteudo.scrollHeight);
+      const larg = Math.max(conteudo.offsetWidth, conteudo.scrollWidth);
+      conteudo.style.flex = "";
       if (dispH < 50 || alt <= 0) { conteudo.style.transform = "none"; continue; }
       const escala = Math.min(1, dispH / alt, dispW / (larg || dispW));
       conteudo.style.transformOrigin = "center center";
@@ -2830,18 +2825,18 @@ globalThis.CENARIOS_EMBUTIDOS = {"valido":"# Cenário VÁLIDO — mapeamento did
           const borda = noEmConflito.has(n.id) ? "#d01118" : "#ffffff";
           const sw = noEmConflito.has(n.id) ? 3.5 : 2;
           const forma = n.tipo === "CODIGO"
-            ? `<rect x="${n.x - 44}" y="${n.y - 19}" width="88" height="38" rx="6"/>`
-            : `<circle cx="${n.x}" cy="${n.y}" r="21"/>`;
+            ? `<rect x="${n.x - 46}" y="${n.y - 20}" width="92" height="40" rx="6"/>`
+            : `<circle cx="${n.x}" cy="${n.y}" r="22"/>`;
           htmlNos += `<g data-toy-no="${n.id}" style="cursor:pointer">` +
             `<g fill="${COR_PRE[c]}" stroke="${borda}" stroke-width="${sw}">${forma}</g>` +
-            `<text x="${n.x}" y="${n.y - 1}" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">${n.id}</text>` +
-            `<text x="${n.x}" y="${n.y + 12}" text-anchor="middle" fill="#fff" font-size="10">${rCor}</text>` +
-            `<text x="${n.x}" y="${n.y + 32}" text-anchor="middle" fill="#222" font-size="10.5">${n.rot}</text></g>`;
+            `<text x="${n.x}" y="${n.y - 1}" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">${n.id}</text>` +
+            `<text x="${n.x}" y="${n.y + 13}" text-anchor="middle" fill="#fff" font-size="11">${rCor}</text>` +
+            `<text x="${n.x}" y="${n.y + 34}" text-anchor="middle" fill="#222" font-size="12" font-weight="600">${n.rot}</text></g>`;
         }
 
         svg.innerHTML = `<rect x="2" y="2" width="516" height="261" fill="#f9f9f9" stroke="#bbb"/>` +
-          `<text x="125" y="24" text-anchor="middle" fill="#222" font-size="12" font-weight="700">FUNÇÕES (V₁) — clique para pintar</text>` +
-          `<text x="395" y="24" text-anchor="middle" fill="#222" font-size="12" font-weight="700">TESTES (V₂) — clique para pintar</text>` +
+          `<text x="125" y="24" text-anchor="middle" fill="#222" font-size="13" font-weight="700">FUNÇÕES (V₁) — clique para pintar</text>` +
+          `<text x="395" y="24" text-anchor="middle" fill="#222" font-size="13" font-weight="700">TESTES (V₂) — clique para pintar</text>` +
           htmlArestas + htmlNos;
 
         svg.querySelectorAll("[data-toy-no]").forEach(gNo => {

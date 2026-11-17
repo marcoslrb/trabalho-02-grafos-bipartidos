@@ -139,7 +139,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .ifes-logo-canto { position: absolute; right: 2.2rem; bottom: .65rem; width: 175px; height: auto; pointer-events: none; z-index: 3; }
 .slide .ifes-logo-central { width: 340px; height: auto; display: block; margin: 0 auto; }
 
-.slide .content { position: relative; z-index: 2; flex: 1; width: 100%; max-width: 1220px; margin: 0 auto; padding: 1.35rem 2.4rem .9rem; display: flex; flex-direction: column; justify-content: flex-start; min-height: 0; }
+.slide .content { position: relative; z-index: 2; flex: 1; width: 100%; max-width: min(1560px, 96vw); margin: 0 auto; padding: 1.05rem 2rem .75rem; display: flex; flex-direction: column; justify-content: flex-start; min-height: 0; }
 
 /* Slide 1: Capa idêntica ao slide 1 do modelo2 */
 .slide .capa-modelo2 { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 3.2rem 2.5rem 2.2rem 4.2rem; position: relative; }
@@ -151,21 +151,22 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 /* Slide 13: Encerramento idêntico ao slide 10 do modelo2 */
 .slide .encerramento-modelo2 { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem; text-align: center; padding: 2rem; }
 .slide .ifes-lema { font-size: clamp(1.25rem, 2vw, 1.65rem); color: #6ab46e; font-weight: 400; margin: 0; }
-.slide .encerramento-resumo { margin-top: 1.2rem; padding: .65rem 1.2rem; background: #f8faf8; border: 1px solid #d5e3d6; border-radius: .45rem; color: #444; font-size: .85rem; }
+.slide .encerramento-resumo { margin-top: 1.2rem; padding: .65rem 1.2rem; background: #f8faf8; border: 1px solid #d5e3d6; border-radius: .45rem; color: #444; font-size: .92rem; }
 .slide .encerramento-resumo p { margin: .18rem 0; }
 
 /* Títulos e subtítulos padrão modelo2 (vermelho #f22626 + verde #00994d + texto cinza #525252) */
-.slide-head-modelo2 { margin-bottom: .55rem; }
-.slide-head-tm { margin-bottom: .35rem; }
+.slide-head-modelo2 { margin-bottom: .45rem; }
+.slide-head-inline { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .3rem 1.2rem; }
+.slide-head-tm { margin-bottom: .3rem; }
 .slide h2.slide-t { font-size: clamp(1.55rem, 2.5vw, 2.15rem); color: #f22626; margin: 0; line-height: 1.15; font-weight: 700; }
 .slide .sub-verde { font-size: clamp(1.1rem, 1.6vw, 1.4rem); color: #00994d; font-weight: 700; margin: .08rem 0 0; }
-.slide li { font-size: clamp(.95rem, 1.3vw, 1.15rem); margin-bottom: .35rem; color: #525252; line-height: 1.38; }
+.slide li { font-size: clamp(1rem, 1.3vw, 1.18rem); margin-bottom: .3rem; color: #525252; line-height: 1.35; }
 .slide li::marker { color: #111111; }
-.slide .topicos-modelo2 { margin: 0 0 .55rem; padding-left: 1.35rem; }
-.slide .topicos-modelo2 li { font-size: clamp(.95rem, 1.25vw, 1.12rem); margin-bottom: .25rem; }
+.slide .topicos-modelo2 { margin: 0 0 .45rem; padding-left: 1.35rem; }
+.slide .topicos-modelo2 li { font-size: clamp(1rem, 1.25vw, 1.15rem); margin-bottom: .22rem; }
 .slide .centro { text-align: center; }
 .slide .negrito { font-weight: 700; }
-.slide .hint { font-size: .74rem; color: #555; margin: .15rem 0 0; }
+.slide .hint { font-size: .86rem; color: #555; margin: .15rem 0 0; }
 
 /* Slide 2: Contextualização (lista grande em cinza à esquerda + retrato de König à direita) */
 .slide .ctx-grid { flex: 1; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); gap: 2rem; align-items: center; padding: .5rem 1rem 2rem 2.5rem; }
@@ -173,129 +174,123 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
 .slide .topicos-ctx li { font-size: clamp(1.25rem, 1.9vw, 1.62rem); color: #525252; margin-bottom: 1.15rem; line-height: 1.35; }
 .slide .retrato-autor { margin: 0 auto; text-align: center; width: 190px; }
 .slide .retrato-autor svg { width: 175px; height: auto; display: block; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
-.slide .retrato-autor figcaption { font-size: .92rem; color: #525252; margin-top: .4rem; line-height: 1.25; }
+.slide .retrato-autor figcaption { font-size: .95rem; color: #525252; margin-top: .4rem; line-height: 1.25; }
 
-/* Slides 4, 5, 6: Layout com coluna lateral esquerda em vermelho (Solução / Algoritmo / Etapa) */
-.slide .lateral-grid { flex: 1; display: grid; grid-template-columns: 205px minmax(0, 1fr); gap: 1.2rem; align-items: stretch; min-height: 0; }
-.slide .lateral-esq { padding-top: .2rem; }
-.slide .slide-t-lateral { font-size: clamp(1.5rem, 2.2vw, 1.95rem); color: #f22626; margin: 0; line-height: 1.22; font-weight: 700; }
-.slide .lateral-dir { display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 0; }
-
-/* Slide 5: Implementação no estilo exato do slide 5 do Prof. Rafael (caixa cinza + faixa branca + setas vinho) */
+/* Slides 4, 5, 6: Cabeçalho no topo libera toda a largura para widgets e código */
 .slide .w-cod-prof { display: grid; gap: .45rem; }
 .slide .w-cod-barra { background: #f4f4f4; border-color: #cccccc; }
 .slide .prof-code-grid { display: grid; background: transparent; border-radius: .2rem; }
-.slide .prof-ln { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr); align-items: center; }
+.slide .prof-ln { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); align-items: center; }
 .slide .prof-code-cell {
-  background: #cccccc; color: #111111; font: .75rem/1.36 Consolas, "Courier New", monospace;
-  padding: .05rem .65rem; white-space: pre; border-left: 1px solid #b8b8b8; border-right: 1px solid #b8b8b8;
+  background: #cccccc; color: #111111; font: 1rem/1.3 Consolas, "Courier New", monospace;
+  padding: .04rem .75rem; white-space: pre; border-left: 1px solid #b8b8b8; border-right: 1px solid #b8b8b8;
   box-shadow: 2px 0 4px rgba(0,0,0,.08);
 }
-.slide .prof-ln:first-child .prof-code-cell { padding-top: .35rem; border-top: 1px solid #b8b8b8; }
-.slide .prof-ln:last-child .prof-code-cell { padding-bottom: .35rem; border-bottom: 1px solid #b8b8b8; box-shadow: 2px 3px 5px rgba(0,0,0,.12); }
-.slide .prof-code-cell .ln-num { color: #666666; user-select: none; margin-right: .5rem; font-size: .68rem; }
+.slide .prof-ln:first-child .prof-code-cell { padding-top: .32rem; border-top: 1px solid #b8b8b8; }
+.slide .prof-ln:last-child .prof-code-cell { padding-bottom: .32rem; border-bottom: 1px solid #b8b8b8; box-shadow: 2px 3px 5px rgba(0,0,0,.12); }
+.slide .prof-code-cell .ln-num { color: #555555; user-select: none; margin-right: .55rem; font-size: .86rem; }
 .slide .prof-ln.hl .prof-code-cell { background: #ffffff; color: #000000; font-weight: 700; }
-.slide .prof-arrow-cell { padding-left: .65rem; font-size: .8rem; color: #7a2626; display: flex; align-items: center; gap: .35rem; opacity: .35; transition: opacity .15s; }
+.slide .prof-arrow-cell { padding-left: .75rem; font-size: 1rem; color: #7a2626; display: flex; align-items: center; gap: .38rem; opacity: .58; transition: opacity .15s; }
 .slide .prof-ln.hl .prof-arrow-cell { opacity: 1; font-weight: 700; }
 .slide .prof-seta { color: #7a2626; font-weight: 800; letter-spacing: -.05em; }
 .slide .prof-nota { color: #7a2626; }
 
 /* Slide 6: Interface Gráfica + TXT anotado com setas (estilo slide 6 do professor) */
-.slide .ig-grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 1rem; align-items: start; }
-.slide .ig-txt-anotado { background: #ffffff; border: 1px solid #d0d0d0; padding: .6rem .8rem; border-radius: .35rem; }
-.slide .ig-txt-titulo { font: 700 1rem Georgia, serif; color: #8b1a1a; margin-bottom: .3rem; }
-.slide .ig-txt-linha { display: flex; align-items: center; justify-content: space-between; gap: .4rem; font: .73rem/1.38 Consolas, monospace; color: #222; }
-.slide .ig-txt-linha.ig-conflito { margin-top: .25rem; padding-top: .25rem; border-top: 1px dashed #d01118; color: #b20000; font-weight: 700; }
-.slide .ig-seta { font: italic .74rem Georgia, serif; color: #a12020; white-space: nowrap; }
-.slide .ig-legenda { margin: .45rem 0 0; font: 700 .88rem Georgia, serif; color: #111; text-align: center; }
-.slide .janela-app-header { background: #f0f0f0; border: 1px solid #aaaaaa; border-bottom: none; padding: .28rem .65rem; font-size: .74rem; color: #333; display: flex; justify-content: space-between; border-radius: .3rem .3rem 0 0; }
-.slide .janela-app-body { background: #ffffff; border: 1px solid #aaaaaa; padding: .55rem .7rem; border-radius: 0 0 .3rem .3rem; display: grid; gap: .4rem; }
-.slide .janela-app-body svg { max-height: 29vh; display: block; margin: 0 auto; }
-.slide .ig-etapas { display: flex; flex-wrap: wrap; gap: .3rem; }
+.slide .ig-grid { display: grid; grid-template-columns: minmax(0, .96fr) minmax(0, 1.04fr); gap: 1.15rem; align-items: start; }
+.slide .ig-txt-anotado { background: #ffffff; border: 1px solid #d0d0d0; padding: .7rem .95rem; border-radius: .35rem; }
+.slide .ig-txt-titulo { font: 700 1.14rem Georgia, serif; color: #8b1a1a; margin-bottom: .35rem; }
+.slide .ig-txt-linha { display: flex; align-items: center; justify-content: space-between; gap: .5rem; font: .95rem/1.4 Consolas, monospace; color: #222; }
+.slide .ig-txt-linha.ig-conflito { margin-top: .3rem; padding-top: .3rem; border-top: 1px dashed #d01118; color: #b20000; font-weight: 700; }
+.slide .ig-seta { font: italic .95rem Georgia, serif; color: #a12020; white-space: nowrap; }
+.slide .ig-legenda { margin: .5rem 0 0; font: 700 1.02rem Georgia, serif; color: #111; text-align: center; }
+.slide .janela-app-header { background: #f0f0f0; border: 1px solid #aaaaaa; border-bottom: none; padding: .34rem .75rem; font-size: .9rem; color: #333; display: flex; justify-content: space-between; border-radius: .3rem .3rem 0 0; }
+.slide .janela-app-body { background: #ffffff; border: 1px solid #aaaaaa; padding: .65rem .8rem; border-radius: 0 0 .3rem .3rem; display: grid; gap: .45rem; }
+.slide .janela-app-body svg { max-height: 42vh; display: block; margin: 0 auto; }
+.slide .ig-etapas { display: flex; flex-wrap: wrap; gap: .38rem; }
 
 /* Slides 7 e 8: Teste de Mesa :: Início e Término no layout de 4 colunas do Prof. Rafael */
-.slide .tm-prof { display: grid; grid-template-columns: 240px minmax(0, 1fr) 130px 268px; gap: .6rem; align-items: start; }
+.slide .tm-prof { display: grid; grid-template-columns: 268px minmax(0, 1fr) 174px 306px; gap: .7rem; align-items: start; }
 .slide .tm-col-esq { display: grid; gap: .35rem; }
-.slide .tm-titulo-caixa { font: 700 .82rem Arial, sans-serif; color: #111; text-align: center; }
-.slide .tm-col-esq svg { max-height: 165px; width: 100%; display: block; }
-.slide .tm-adj-wrap { display: grid; grid-template-columns: 18px 1fr; gap: .25rem; align-items: stretch; }
-.slide .tm-adj-vert { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font: 700 .72rem Arial, sans-serif; color: #111; }
-.slide .tm-adj-label { font: 700 .8rem Consolas, monospace; color: #111; margin-bottom: .1rem; }
-.slide .tm-adj-tab { border-collapse: collapse; width: 100%; font: .73rem Consolas, monospace; }
-.slide .tm-adj-tab td { padding: .14rem .32rem; text-align: center; }
-.slide .tm-adj-tab td.adj-idx { border: 1px solid #333; background: #ffffff; font-weight: 700; width: 32px; }
+.slide .tm-titulo-caixa { font: 700 .92rem Arial, sans-serif; color: #111; text-align: center; }
+.slide .tm-col-esq svg { max-height: 195px; width: 100%; display: block; }
+.slide .tm-adj-wrap { display: grid; grid-template-columns: 20px 1fr; gap: .25rem; align-items: stretch; }
+.slide .tm-adj-vert { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font: 700 .82rem Arial, sans-serif; color: #111; }
+.slide .tm-adj-label { font: 700 .9rem Consolas, monospace; color: #111; margin-bottom: .1rem; }
+.slide .tm-adj-tab { border-collapse: collapse; width: 100%; font: .86rem Consolas, monospace; }
+.slide .tm-adj-tab td { padding: .15rem .34rem; text-align: center; }
+.slide .tm-adj-tab td.adj-idx { border: 1px solid #333; background: #ffffff; font-weight: 700; width: 36px; }
 .slide .tm-adj-tab td.adj-cel { border: 1px dashed #555; background: #ffffff; }
 .slide .tm-adj-tab td.adj-cel.visitada { background: #f28b82; color: #111; font-weight: 700; }
-.slide .tm-cod-box { margin: 0; padding: .4rem .55rem; background: #ffffff; border: 1px solid #333333; color: #111111; font: .68rem/1.28 Consolas, "Courier New", monospace; white-space: pre; overflow-x: auto; }
-.slide .tm-chamada { margin: .3rem 0 0; font: .8rem/1.35 Consolas, monospace; color: #111; }
-.slide .tm-wire { border-collapse: collapse; width: 100%; font-size: .74rem; background: #ffffff; }
-.slide .tm-wire th { background: #f2f2f2; border: 1px solid #444; padding: .2rem .26rem; text-align: center; font-weight: 700; color: #111; font-size: .7rem; white-space: nowrap; }
-.slide .tm-wire td { border: 1px solid #555; padding: .16rem .26rem; text-align: center; color: #111; white-space: nowrap; }
+.slide .tm-cod-box { margin: 0; padding: .42rem .6rem; background: #ffffff; border: 1px solid #333333; color: #111111; font: .84rem/1.26 Consolas, "Courier New", monospace; white-space: pre; overflow-x: auto; }
+.slide .tm-chamada { margin: .3rem 0 0; font: .9rem/1.32 Consolas, monospace; color: #111; }
+.slide .tm-wire { border-collapse: collapse; width: 100%; font-size: .86rem; background: #ffffff; }
+.slide .tm-wire th { background: #f2f2f2; border: 1px solid #444; padding: .2rem .28rem; text-align: center; font-weight: 700; color: #111; font-size: .84rem; white-space: nowrap; }
+.slide .tm-wire td { border: 1px solid #555; padding: .18rem .28rem; text-align: center; color: #111; white-space: nowrap; }
 .slide .tm-wire td.tm-vermelho { color: #cc0000; font-weight: 600; font-family: Consolas, monospace; }
-.slide .tm-arvore { margin-top: .35rem; width: 100%; max-height: 105px; display: block; }
-.slide .tm-nota-inicio { margin-top: .4rem; padding: .35rem .5rem; border: 1px dashed #777; font-size: .72rem; color: #333; background: #fafafa; }
+.slide .tm-arvore { margin-top: .35rem; width: 100%; max-height: 140px; display: block; }
+.slide .tm-nota-inicio { margin-top: .4rem; padding: .4rem .55rem; border: 1px dashed #777; font-size: .84rem; color: #333; background: #fafafa; }
 
 /* Peças visuais gerais e tabelas */
 .slide .fig { margin: 0; background: #ffffff; border: 1px solid #cccccc; border-radius: .35rem; padding: .38rem; }
-.slide .fig svg { max-height: 32vh; display: block; margin: 0 auto; }
-.slide .fig figcaption { font-size: .74rem; color: #444; margin-top: .25rem; text-align: center; }
+.slide .fig svg { max-height: 35vh; display: block; margin: 0 auto; }
+.slide .fig figcaption { font-size: .88rem; color: #444; margin-top: .25rem; text-align: center; }
 .slide .visual-largo { display: grid; gap: .45rem; flex: 1; align-content: center; min-height: 0; }
 .slide .visual-duplo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s4); align-items: start; }
 .slide .visual-duplo > * { min-width: 0; }
-.slide .visual-duplo .fig svg { max-height: 29vh; }
+.slide .visual-duplo .fig svg { max-height: 33vh; }
 .slide .mini-grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); }
-.slide .mini-grade .fig svg { max-height: 22vh; }
-.slide .tabela-compacta { background: #ffffff; border: 1px solid #999999; border-collapse: collapse; font-size: .75rem; width: 100%; }
-.slide .tabela-compacta th { background: #eeeeee; color: #111111; padding: .24rem .42rem; font-size: .73rem; border: 1px solid #999999; }
-.slide .tabela-compacta td { padding: .2rem .42rem; border: 1px solid #cccccc; color: #222222; }
+.slide .mini-grade .fig svg { max-height: 27vh; }
+.slide .tabela-compacta { background: #ffffff; border: 1px solid #999999; border-collapse: collapse; font-size: .88rem; width: 100%; }
+.slide .tabela-compacta th { background: #eeeeee; color: #111111; padding: .26rem .45rem; font-size: .86rem; border: 1px solid #999999; }
+.slide .tabela-compacta td { padding: .22rem .45rem; border: 1px solid #cccccc; color: #222222; }
 .slide .tabela-compacta td.alerta { background: #fbe5ea; font-weight: 700; color: #a10000; }
 .slide .tabela-compacta td.bom { background: #e3f3e8; font-weight: 700; color: #006400; }
-.slide .rotulo-bloco { margin: 0 0 .2rem; font: 700 .78rem var(--font-body); color: #006808; }
-.slide .chip { display: inline-block; padding: .15rem .5rem; border-radius: 999px; font-size: .72rem; font-weight: 700; background: #eeeeee; color: #222; border: 1px solid #bbbbbb; }
+.slide .rotulo-bloco { margin: 0 0 .22rem; font: 700 .9rem var(--font-body); color: #006808; }
+.slide .chip { display: inline-block; padding: .18rem .55rem; border-radius: 999px; font-size: .84rem; font-weight: 700; background: #eeeeee; color: #222; border: 1px solid #bbbbbb; }
 .slide .chip.chip-ok, .slide .chip.ok { background: #e3f3e8; color: #006400; border-color: #88c494; }
 .slide .chip.chip-bad, .slide .chip.err { background: #fbe5ea; color: #a10000; border-color: #d98c98; }
 
 /* Controles dos Widgets Interativos (Toy, BFS e Impacto) */
-.slide .w-barra { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; background: #f2f2f2; border: 1px solid #cccccc; border-radius: .35rem; padding: .3rem .5rem; }
-.slide .w-barra button { min-height: 28px; padding: .16rem .55rem; font-size: .73rem; border-radius: .3rem; background: #ffffff; color: #222222; border: 1px solid #999999; font-weight: 700; cursor: pointer; }
+.slide .w-barra { display: flex; flex-wrap: wrap; align-items: center; gap: .38rem; background: #f2f2f2; border: 1px solid #cccccc; border-radius: .35rem; padding: .32rem .55rem; }
+.slide .w-barra button { min-height: 31px; padding: .18rem .6rem; font-size: .85rem; border-radius: .3rem; background: #ffffff; color: #222222; border: 1px solid #999999; font-weight: 700; cursor: pointer; }
 .slide .w-barra button:hover { background: #e8f5e9; }
 .slide .w-barra button.on, .slide .w-barra button.ativo { background: #319938; color: #ffffff; border-color: #217326; }
 .slide .w-barra button.bad-btn { background: #d01118; color: #ffffff; border-color: #990a0f; }
-.slide .w-msg { margin: 0; padding: .36rem .62rem; border-radius: .35rem; font-size: .78rem; font-weight: 600; border: 1px solid #cccccc; background: #f9f9f9; line-height: 1.35; }
+.slide .w-msg { margin: 0; padding: .38rem .65rem; border-radius: .35rem; font-size: .88rem; font-weight: 600; border: 1px solid #cccccc; background: #f9f9f9; line-height: 1.35; }
 .slide .w-msg.ok { background: #e3f3e8; border-color: #88c494; color: #005a00; }
 .slide .w-msg.bad, .slide .w-msg.err { background: #fbe5ea; border-color: #d98c98; color: #990000; }
 
 /* Widget Toy (Slide 3) */
 .slide .w-toy { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); gap: var(--s4); align-items: start; }
 .slide .w-toy-esq { display: grid; gap: .38rem; }
-.slide .w-toy-esq svg { max-height: 27vh; display: block; margin: 0 auto; }
+.slide .w-toy-esq svg { max-height: 33vh; display: block; margin: 0 auto; }
 .slide .w-toy-dir { display: grid; gap: .38rem; }
-.slide .w-toy-dir svg { max-height: 25vh; display: block; margin: 0 auto; background: #ffffff; border: 1px solid #cccccc; }
+.slide .w-toy-dir svg { max-height: 31vh; display: block; margin: 0 auto; background: #ffffff; border: 1px solid #cccccc; }
 
 /* Widget BFS (Slide 4 - cabeçalho estilo Sedgewick & Wayne do slide 4 do professor) */
-.slide .w-bfs { display: grid; gap: .4rem; border: 1px solid #bbbbbb; background: #f7f7f7; padding: .45rem; }
-.slide .w-bfs-topo-sedgewick { background: #8c2d19; color: #ffffff; padding: .32rem .65rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem; }
-.slide .sw-marca { font: 700 .88rem Georgia, "Times New Roman", serif; letter-spacing: .02em; }
-.slide .w-barra-cenarios { display: flex; gap: .3rem; }
-.slide .w-barra-cenarios button { min-height: 25px; padding: .12rem .5rem; font-size: .71rem; background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.45); border-radius: .25rem; cursor: pointer; font-weight: 600; }
+.slide .w-bfs { display: grid; gap: .5rem; border: 1px solid #bbbbbb; background: #f7f7f7; padding: .55rem; }
+.slide .w-bfs-topo-sedgewick { background: #8c2d19; color: #ffffff; padding: .42rem .75rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; }
+.slide .sw-marca { font: 700 1.06rem Georgia, "Times New Roman", serif; letter-spacing: .02em; }
+.slide .w-barra-cenarios { display: flex; gap: .38rem; }
+.slide .w-barra-cenarios button { min-height: 30px; padding: .16rem .65rem; font-size: .88rem; background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.45); border-radius: .25rem; cursor: pointer; font-weight: 600; }
 .slide .w-barra-cenarios button.on { background: #ffffff; color: #8c2d19; border-color: #ffffff; font-weight: 700; }
-.slide .w-bfs-corpo { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: .65rem; align-items: start; }
-.slide .w-bfs-grafo { background: #ffffff; border: 1px solid #cccccc; padding: .35rem; }
-.slide .w-bfs-grafo svg { max-height: 31vh; display: block; margin: 0 auto; }
-.slide .w-bfs-painel { display: grid; gap: .35rem; }
+.slide .w-bfs-corpo { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: .8rem; align-items: start; }
+.slide .w-bfs-grafo { background: #ffffff; border: 1px solid #cccccc; padding: .45rem; }
+.slide .w-bfs-grafo svg { max-height: 44vh; display: block; margin: 0 auto; }
+.slide .w-bfs-painel { display: grid; gap: .45rem; }
 .slide .w-status-linha { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
-.slide .w-desc { padding: .35rem .55rem; background: #ffffff; border-left: 4px solid #8c2d19; font-size: .77rem; min-height: 2.1rem; }
-.slide .w-progresso { height: 6px; background: #dddddd; border-radius: 999px; overflow: hidden; }
+.slide .w-desc { padding: .45rem .68rem; background: #ffffff; border-left: 4px solid #8c2d19; font-size: .95rem; min-height: 2.4rem; }
+.slide .w-progresso { height: 7px; background: #dddddd; border-radius: 999px; overflow: hidden; }
 .slide .w-progresso-barra { height: 100%; width: 0; background: #319938; transition: width .16s ease; }
-.slide .w-kv { display: grid; gap: .22rem; font-size: .77rem; background: #ffffff; border: 1px solid #cccccc; padding: .38rem .55rem; }
-.slide .w-veredito { font-weight: 700; padding: .25rem .45rem; border-radius: .25rem; background: #eeeeee; color: #222; }
+.slide .w-kv { display: grid; gap: .32rem; font-size: .95rem; background: #ffffff; border: 1px solid #cccccc; padding: .5rem .68rem; }
+.slide .w-veredito { font-weight: 700; padding: .32rem .55rem; border-radius: .25rem; background: #eeeeee; color: #222; }
 .slide .w-veredito.ok { background: #e3f3e8; color: #005a00; }
 .slide .w-veredito.bad { background: #fbe5ea; color: #990000; }
 
 /* Widget Impacto (Slide 11) */
 .slide .w-imp { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: .8rem; align-items: start; }
 .slide .w-imp-grafo { background: #ffffff; border: 1px solid #bbbbbb; padding: .35rem; }
-.slide .w-imp-grafo svg { max-height: 31vh; display: block; margin: 0 auto; }
+.slide .w-imp-grafo svg { max-height: 36vh; display: block; margin: 0 auto; }
 .slide .w-imp-painel { min-width: 0; }
 .slide .w-imp-resumo { display: grid; gap: .28rem; }
 
@@ -306,7 +301,7 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface2
   .grid { grid-template-columns: 1fr; }
   header, main, footer { padding: var(--s4); }
   .panel { padding: var(--s4); }
-  .slide .ctx-grid, .slide .lateral-grid, .slide .ig-grid, .slide .tm-prof, .slide .w-toy, .slide .w-bfs-corpo, .slide .w-imp { grid-template-columns: 1fr; }
+  .slide .ctx-grid, .slide .ig-grid, .slide .tm-prof, .slide .w-toy, .slide .w-bfs-corpo, .slide .w-imp { grid-template-columns: 1fr; }
   .slide { overflow-y: auto; }
   .slide .visual-duplo, .slide .mini-grade { grid-template-columns: 1fr; }
   .deck { min-height: 570px; }
